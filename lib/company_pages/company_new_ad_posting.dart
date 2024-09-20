@@ -28,19 +28,15 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // const Padding(
-                    //   padding: EdgeInsets.only(top: 50),
-                    //   child:
-                    //   // SizedBox(
-                    //   //   height: 250,
-                    //   //   width: 250,
-                    //   //   child: Image(
-                    //   //       image: AssetImage('assets/round_latest.png'),
-                    //   //       fit: BoxFit.contain),
-                    //   // ),
-                    // ),
+                    const Padding(
+                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        child: Text(
+                          "JOB POSTING",
+                          style: TextStyle(
+                              fontSize: 38, fontWeight: FontWeight.w900),
+                        )),
                     Padding(
-                      padding: const EdgeInsets.only(top: 110),
+                      padding: const EdgeInsets.only(top: 10),
                       child: DropdownButtonFormField(
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -48,7 +44,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                     const BorderSide(color: Colors.black12),
                                 borderRadius: BorderRadius.circular(15)),
                             labelText: 'Category',
-                            prefixIcon: const Icon(Icons.location_on_outlined)),
+                            prefixIcon: const Icon(Icons.category_outlined)),
                         dropdownColor: const Color(0xFF97C5FF),
                         items: [
                           'Software Engineer',
@@ -92,8 +88,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                             //     width: 2)
                           ),
                           // boxShadow:const [BoxShadow(color: Colors.lightBlueAccent)],
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.send),
+                          prefixIcon: IconButton(
+                            icon: const Icon(Icons.description_outlined),
                             onPressed: () {
                               // Navigator.push(
                               //     context,
@@ -167,7 +163,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                     const BorderSide(color: Colors.black12),
                                 borderRadius: BorderRadius.circular(15)),
                             labelText: 'Salary',
-                            prefixIcon: const Icon(Icons.location_on_outlined)),
+                            prefixIcon: const Icon(Icons.currency_pound)),
                         dropdownColor: const Color(0xFF97C5FF),
                         items: [
                           '10000-50000',
@@ -259,7 +255,6 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                   ),
                                 )))
                         : Container(),
-
                     Padding(
                       padding: const EdgeInsets.symmetric(),
                       child: Row(
@@ -289,7 +284,7 @@ class MCQ {
   String correctAnswer = '';
 }
 
-class MCQCard extends StatelessWidget {
+class MCQCard extends StatefulWidget {
   final MCQ mcq;
   final VoidCallback onDelete;
   final VoidCallback onAdd;
@@ -298,6 +293,19 @@ class MCQCard extends StatelessWidget {
       required this.mcq,
       required this.onDelete,
       required this.onAdd});
+
+  @override
+  State<MCQCard> createState() => _MCQCardState();
+}
+
+class _MCQCardState extends State<MCQCard> {
+  void showAddMCQModal() {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container();
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -317,7 +325,7 @@ class MCQCard extends StatelessWidget {
                   labelText: 'Question',
                 ),
                 onChanged: (text) {
-                  mcq.question = text;
+                  widget.mcq.question = text;
                 },
               ),
             ),
@@ -328,7 +336,7 @@ class MCQCard extends StatelessWidget {
                 labelText: 'Option 1',
               ),
               onChanged: (text) {
-                mcq.option1 = text;
+                widget.mcq.option1 = text;
               },
             ),
             TextField(
@@ -338,7 +346,7 @@ class MCQCard extends StatelessWidget {
                 labelText: 'Option 2',
               ),
               onChanged: (text) {
-                mcq.option2 = text;
+                widget.mcq.option2 = text;
               },
             ),
             TextField(
@@ -348,7 +356,7 @@ class MCQCard extends StatelessWidget {
                 labelText: 'Option 3',
               ),
               onChanged: (text) {
-                mcq.option3 = text;
+                widget.mcq.option3 = text;
               },
             ),
             TextField(
@@ -358,13 +366,15 @@ class MCQCard extends StatelessWidget {
                 labelText: 'Option 4',
               ),
               onChanged: (text) {
-                mcq.option4 = text;
+                widget.mcq.option4 = text;
               },
             ),
             DropdownButton(
-              value: mcq.correctAnswer.isEmpty ? 'Option 1' : mcq.correctAnswer,
+              value: widget.mcq.correctAnswer.isEmpty
+                  ? 'Option 1'
+                  : widget.mcq.correctAnswer,
               onChanged: (value) {
-                mcq.correctAnswer = value!;
+                widget.mcq.correctAnswer = value!;
               },
               items: <String>['Option 1', 'Option 2', 'Option 3', 'Option 4']
                   .map((option) {
@@ -379,11 +389,11 @@ class MCQCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 OutlinedButton(
-                  onPressed: onAdd,
+                  onPressed: widget.onAdd,
                   child: const Text('ADD'),
                 ),
                 OutlinedButton(
-                  onPressed: onDelete,
+                  onPressed: widget.onDelete,
                   child: const Text('Delete'),
                 ),
               ],
