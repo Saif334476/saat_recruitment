@@ -298,7 +298,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                             CupertinoButton(
                               color:const Color(0xff1C4374),
                               onPressed: () {},
-                              child: const Text('Post AD',style: TextStyle(color: Colors.white),),
+                              child: const Text('Post Job',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w900,fontSize: 18),),
                             ),
                           ]),
                     )
