@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import '../job_seeker_pages/job_seeker_profile.dart';
 
 class CompanyNewAdPosting extends StatefulWidget {
@@ -10,6 +12,10 @@ class CompanyNewAdPosting extends StatefulWidget {
 
 class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   String _selectedOption = '';
+  String? _selectedCategory;
+  final TextEditingController _jobTitle = TextEditingController();
+  final TextEditingController _salary = TextEditingController();
+  String? _location;
   List<MCQ> mcqs = List.generate(10, (index) => MCQ());
   @override
   Widget build(BuildContext context) {
@@ -26,92 +32,125 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
               padding: const EdgeInsets.only(right: 20, left: 20),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Padding(
-                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        padding: EdgeInsets.only(top: 20, bottom: 20),
                         child: Text(
                           "JOB POSTING",
                           style: TextStyle(
                               fontSize: 38, fontWeight: FontWeight.w900),
                         )),
                     Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: textFormField(
+                          onChanged: () {
+                            setState(() {});
+                          },
+                          "Enter Job Title",
+                          Icons.title_outlined,
+                          false,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Please Enter Job title";
+                            }
+                            return null;
+                          },
+                          controller: _jobTitle,
+                          keyboard: TextInputType.text),
+                    ),
+                    Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child: DropdownButtonFormField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.black12),
-                                borderRadius: BorderRadius.circular(15)),
-                            labelText: 'Category',
-                            prefixIcon: const Icon(Icons.category_outlined)),
-                        dropdownColor: const Color(0xFF97C5FF),
+                      child: dropDown(
                         items: [
-                          'Software Engineer',
-                          'Call Center',
-                          'Graphic Designer',
-                          'Office Boy',
-                          'Manager',
-                        ].map((gender) {
+                          'IT & Technology',
+                          'Healthcare',
+                          'Sales & Marketing',
+                          'Finance & Accounting',
+                          'Customer Service',
+                          'Administration & HR',
+                          'Engineering & Manufacturing',
+                          'Creative & Design',
+                          'Hospitality & Tourism',
+                          'Education & Training'
+                        ].map((category) {
                           return DropdownMenuItem(
-                            value: gender,
-                            child: Text(gender),
+                            value: category,
+                            child: Text(category),
                           );
                         }).toList(),
                         validator: (value) {
                           if (value == null) {
-                            return 'Select Job Location';
+                            return 'Select Job Category';
                           }
                           return null;
                         },
-                        onChanged: (String? value) {},
+                        text: 'Job Category',
+                        icon: Icons.category_outlined,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCategory = value;
+                          });
+                        },
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child: TextField(
-                        onSubmitted: (value) {},
+                      child: dropDown(
+                        items: [
+                          'Remote',
+                          'Full-time',
+                          'Part-time',
+                          'Contract',
+                          'Freelance',
+                          'Internship',
+                        ].map((jobType) {
+                          return DropdownMenuItem(
+                            value: jobType,
+                            child: Text(jobType),
+                          );
+                        }).toList(),
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Select Job Type';
+                          }
+                          return null;
+                        },
                         onChanged: (value) {},
-                        textInputAction: TextInputAction.done,
-                        decoration: InputDecoration(
-                          labelText: "Enter Job Description",
-                          hintText: "",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: const BorderSide(
-                                width: 20.0, color: Colors.lightBlueAccent),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            // borderSide: const BorderSide(
-                            //     color: Colors.lightBlueAccent,
-                            //     width: 2)
-                          ),
-                          // boxShadow:const [BoxShadow(color: Colors.lightBlueAccent)],
-                          prefixIcon: IconButton(
-                            icon: const Icon(Icons.description_outlined),
-                            onPressed: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) =>
-                              //         const JobSeekerProfile()));
-                            },
-                          ),
-                        ),
+                        text: 'Job Type',
+                        icon: Icons.type_specimen_rounded,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child: DropdownButtonFormField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.black12),
-                                borderRadius: BorderRadius.circular(15)),
-                            labelText: 'Location',
-                            prefixIcon: const Icon(Icons.location_on_outlined)),
-                        dropdownColor: const Color(0xFF97C5FF),
+                      child: dropDown(
+                        items: [
+                          'No',
+                          'One Year',
+                          'Two Years',
+                          'Three Years',
+                          'Five Years',
+                        ].map((jobExperience) {
+                          return DropdownMenuItem(
+                            value: jobExperience,
+                            child: Text(jobExperience),
+                          );
+                        }).toList(),
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Select Job Experience';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {},
+                        text: 'Required Experience',
+                        icon: Icons.type_specimen_rounded,
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: dropDown(
                         items: [
                           'Karachi',
                           'Lahore',
@@ -139,60 +178,50 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           'Bawalnagar',
                           'Chakwal',
                           'Mianwali',
-                        ].map((gender) {
+                        ].map((location) {
                           return DropdownMenuItem(
-                            value: gender,
-                            child: Text(gender),
+                            value: location,
+                            child: Text(location),
                           );
                         }).toList(),
                         validator: (value) {
                           if (value == null) {
-                            return 'Job Location';
+                            return 'Select Job Location';
                           }
                           return null;
                         },
-                        onChanged: (String? value) {},
+                        onChanged: (value) {
+                          setState(() {
+                            _location = value;
+                          });
+                        },
+                        text: 'Job Location',
+                        icon: Icons.my_location_outlined,
                       ),
                     ),
-                    Padding(
+                       Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child: DropdownButtonFormField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.black12),
-                                borderRadius: BorderRadius.circular(15)),
-                            labelText: 'Salary',
-                            prefixIcon: const Icon(Icons.currency_pound)),
-                        dropdownColor: const Color(0xFF97C5FF),
-                        items: [
-                          '10000-50000',
-                          '50000-100000',
-                          '100000-150000',
-                          '150000-200000',
-                          '200000-500000',
-                        ].map((gender) {
-                          return DropdownMenuItem(
-                            value: gender,
-                            child: Text(gender),
-                          );
-                        }).toList(),
-                        validator: (value) {
-                          if (value == null) {
-                            return 'Select Your Salary';
-                          }
-                          return null;
-                        },
-                        onChanged: (String? value) {},
-                      ),
+                      child: textFormField(
+                          onChanged: () {
+                            setState(() {});
+                          },
+                          "Salary",
+                          Icons.currency_pound_outlined,
+                          false,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Please Enter Salary";
+                            }
+                            return null;
+                          },
+                          controller: _salary,
+                          keyboard: TextInputType.text),
                     ),
                     Column(children: [
                       const Padding(
                         padding: EdgeInsets.all(10),
                         child: Text(
-                          'Do you want to add MCQs for this Ad? Get ready to '
-                          'put Candidates to the test with 10 tricky MCQs '
-                          'designed  to separate the experts from the rest',
+                          'Do you want to add MCQs for this Ad?',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
@@ -256,17 +285,20 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 )))
                         : Container(),
                     Padding(
-                      padding: const EdgeInsets.symmetric(),
-                      child: Row(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            OutlinedButton(
+                            // CupertinoButton(
+                            //   color:const Color(0xff1C4374),
+                            //   onPressed: () {},
+                            //   child: const Text('Preview AD',style: TextStyle(color: Colors.white),),
+                            // ),
+                      // SizedBox(height: 10,),
+                            CupertinoButton(
+                              color:const Color(0xff1C4374),
                               onPressed: () {},
-                              child: const Text('Preview AD'),
-                            ),
-                            OutlinedButton(
-                              onPressed: () {},
-                              child: const Text('Post AD'),
+                              child: const Text('Post AD',style: TextStyle(color: Colors.white),),
                             ),
                           ]),
                     )
