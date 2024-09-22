@@ -54,22 +54,49 @@ class _JobAdsListViewState extends State<JobAdsListView> {
                 _jobAds?[index]['Title'],
                 style: const TextStyle(fontWeight: FontWeight.w900),
               ),
-              subtitle: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              subtitle: Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Job Type: ",
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                      Row(
+                        children: [
+                          const Text(
+                            "Job Type: ",
+                            style: TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                          Text(_jobAds?[index]['JobType']),
+                        ],
                       ),
-                    
-                  Text(_jobAds?[index]['JobType']),
-                  ],),
+                      Row(
+                        children: [
+                          const Text(
+                            "Location: ",
+                            style: TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                          Text(_jobAds?[index]['JobLocation'])
+                        ],
+                      ),
+                    ],
+                  ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("Location: ",style: TextStyle(fontWeight: FontWeight.w700),),
-                      Text(_jobAds?[index]['JobLocation'])
+                      Row(
+                        children: [
+                          const Text(
+                            "Req. Experience: ",
+                            style: TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                          Text(_jobAds?[index]["RequiredExperience"]),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text("Salary: ",style: TextStyle(fontWeight: FontWeight.w700),),
+                          Text(_jobAds?[index]["Salary"])
+                        ],
+                      )
                     ],
                   )
                 ],
