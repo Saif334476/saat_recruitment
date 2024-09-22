@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saat_recruitment/company_pages/company_new_ad_posting.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_profile_page.dart';
+import 'package:saat_recruitment/company_pages/list_job_ads.dart';
 import 'package:saat_recruitment/job_seeker_pages/job_seeker_profile.dart';
 import 'package:saat_recruitment/job_seeker_pages/js_profile_page.dart';
 import '../Models/job_seeker_model.dart';
@@ -16,7 +19,7 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
   int _currentIndex = 0;
 
   final List<Widget> _children = [
-    const HomePage(),
+    HomePage(),
     const CompanyNewAdPosting(),
     const CompanyProfilePage(),
   ];
@@ -50,9 +53,11 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
 
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String? uid = FirebaseAuth.instance.currentUser?.uid;
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -130,85 +135,8 @@ class HomePage extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              ListView.builder(
-                                physics: const ScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: 15,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 8, right: 10, left: 10),
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.lightBlueAccent),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                  color: Colors.blue,
-                                                  blurRadius: 7,
-                                                  blurStyle: BlurStyle.outer),
-                                            ],
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(10)),
-                                          ),
-                                          child: const ListTile(
-                                            leading:
-                                                Icon(Icons.computer_outlined),
-                                            title: Text(
-                                              "Flutter Developer",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18),
-                                            ),
-                                            subtitle: Column(
-                                              //      mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 6),
-                                                      child: Text(
-                                                        'SAAT Softs',
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    )),
-                                                Row(children: [
-                                                  Icon(Icons
-                                                      .location_on_outlined),
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      'Jhang,Satellite Town',
-                                                      textAlign: TextAlign.left,
-                                                    ),
-                                                  ),
-                                                ]),
-                                                Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 6),
-                                                    child: Text(
-                                                      '40,000-50000 PKR',
-                                                      textAlign: TextAlign.left,
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )));
-                                },
-                              ),
+
+                              JobAdsListView()
                             ])
                       ]))
             ])));
