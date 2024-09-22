@@ -188,7 +188,7 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                                       );
 
                                       await FirebaseFirestore.instance
-                                          .collection('JobProviders')
+                                          .collection('Users')
                                           .doc(credential.user?.uid)
                                           .set({
                                         'role': widget.credentials,

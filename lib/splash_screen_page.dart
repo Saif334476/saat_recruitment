@@ -27,7 +27,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       if (user != null) {
         final uId = user.uid;
         final doc = await FirebaseFirestore.instance
-            .collection('JobProviders')
+            .collection('Users')
             .doc(uId)
             .get();
 

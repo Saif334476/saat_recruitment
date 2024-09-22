@@ -184,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                               )
                                   .then((user) async {
                                 final role = await FirebaseFirestore.instance
-                                    .collection('JobProviders')
+                                    .collection('Users')
                                     .doc(user.user?.uid)
                                     .get()
                                     .then((doc) => doc.data()?['role']);
@@ -193,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
 
                                 final profileStatus = await FirebaseFirestore
                                     .instance
-                                    .collection('JobProviders')
+                                    .collection('Users')
                                     .doc(user.user?.uid)
                                     .get()
                                     .then((doc) => doc.data()?['isComplete']);

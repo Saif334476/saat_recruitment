@@ -55,7 +55,7 @@ class ReviewAndSubmitPage extends StatelessWidget {
                         final downloadUrl =
                             await (await uploadTask).ref.getDownloadURL();
                         await FirebaseFirestore.instance
-                            .collection('JobProviders')
+                            .collection('Users')
                             .doc(FirebaseAuth.instance.currentUser?.uid)
                             .set({
                           'resumeUrl': downloadUrl,

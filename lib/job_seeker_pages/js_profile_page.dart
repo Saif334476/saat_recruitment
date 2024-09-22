@@ -17,7 +17,7 @@ class JsProfilePage extends StatefulWidget {
 
 Future<Map<String, dynamic>?> fetchCompanyInfo(String uid) async {
   final doc = await FirebaseFirestore.instance
-      .collection('JobProviders')
+      .collection('Users')
       .doc(uid)
       .get();
   return doc.data();

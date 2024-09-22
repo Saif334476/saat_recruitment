@@ -235,7 +235,7 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                     if (_formKey.currentState!.validate()) {
                       try {
                         await FirebaseFirestore.instance
-                            .collection('JobProviders')
+                            .collection('Users')
                             .doc(widget.uid)
                             .update({
                           'Name': _companyName.text,

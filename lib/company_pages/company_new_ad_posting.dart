@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
-import '../job_seeker_pages/job_seeker_profile.dart';
 
 class CompanyNewAdPosting extends StatefulWidget {
   const CompanyNewAdPosting({super.key});
@@ -12,8 +11,10 @@ class CompanyNewAdPosting extends StatefulWidget {
 
 class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   String _selectedOption = '';
-  String? _selectedCategory;
+  String _selectedCategory='';
   final TextEditingController _jobTitle = TextEditingController();
+  String _jobType='';
+  String _requiredExperience='';
   final TextEditingController _salary = TextEditingController();
   String? _location;
   List<MCQ> mcqs = List.generate(10, (index) => MCQ());
@@ -116,7 +117,9 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           }
                           return null;
                         },
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          _jobType=value;
+                        },
                         text: 'Job Type',
                         icon: Icons.type_specimen_rounded,
                       ),
@@ -142,7 +145,9 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           }
                           return null;
                         },
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          _requiredExperience=value;
+                        },
                         text: 'Required Experience',
                         icon: Icons.type_specimen_rounded,
                       ),

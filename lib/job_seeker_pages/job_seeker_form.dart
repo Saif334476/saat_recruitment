@@ -440,12 +440,12 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
         resumeUrl = await (await uploadTask).ref.getDownloadURL();
       }
       await FirebaseFirestore.instance
-          .collection('JobProviders')
+          .collection('Users')
           .doc(widget.uId)
           .set({
         'Name': _name.text,
         'Phone': _phoneNumber.text,
-        'Email': widget.emailController,
+        'Email': widget.email,
         'Gender': _gender,
         'Dob': _dateController.text,
         'Location': _city,
