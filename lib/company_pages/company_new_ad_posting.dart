@@ -11,10 +11,10 @@ class CompanyNewAdPosting extends StatefulWidget {
 
 class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   String _selectedOption = '';
-  String _selectedCategory='';
+  String _selectedCategory = '';
   final TextEditingController _jobTitle = TextEditingController();
-  String _jobType='';
-  String _requiredExperience='';
+  String _jobType = '';
+  String _requiredExperience = '';
   final TextEditingController _salary = TextEditingController();
   String? _location;
   List<MCQ> mcqs = List.generate(10, (index) => MCQ());
@@ -32,15 +32,23 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
           Padding(
               padding: const EdgeInsets.only(right: 20, left: 20),
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   // crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: SizedBox(
+                        height: 120,
+                        width: 200,
+                        child: Image.asset("assets/job_posting.webp",color: const Color(0xff1C4374),),
+                      ),
+                    ),
                     const Padding(
-                        padding: EdgeInsets.only(top: 20, bottom: 20),
+                        padding: EdgeInsets.only( bottom: 00),
                         child: Text(
                           "JOB POSTING",
                           style: TextStyle(
-                              fontSize: 38, fontWeight: FontWeight.w900),
+                              fontSize: 28, fontWeight: FontWeight.w900),
                         )),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
@@ -118,7 +126,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           return null;
                         },
                         onChanged: (value) {
-                          _jobType=value;
+                          _jobType = value;
                         },
                         text: 'Job Type',
                         icon: Icons.type_specimen_rounded,
@@ -146,13 +154,12 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           return null;
                         },
                         onChanged: (value) {
-                          _requiredExperience=value;
+                          _requiredExperience = value;
                         },
                         text: 'Required Experience',
                         icon: Icons.type_specimen_rounded,
                       ),
                     ),
-
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: dropDown(
@@ -204,7 +211,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                         icon: Icons.my_location_outlined,
                       ),
                     ),
-                       Padding(
+                    Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: textFormField(
                           onChanged: () {
@@ -299,11 +306,17 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                             //   onPressed: () {},
                             //   child: const Text('Preview AD',style: TextStyle(color: Colors.white),),
                             // ),
-                      // SizedBox(height: 10,),
+                            // SizedBox(height: 10,),
                             CupertinoButton(
-                              color:const Color(0xff1C4374),
+                              color: const Color(0xff1C4374),
                               onPressed: () {},
-                              child: const Text('Post Job',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w900,fontSize: 18),),
+                              child: const Text(
+                                'Post Job',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 18),
+                              ),
                             ),
                           ]),
                     )
