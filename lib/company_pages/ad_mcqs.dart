@@ -34,6 +34,17 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
               ),
             ),
           ),
+          const Padding(
+            padding: EdgeInsets.only(top: 15.0,right: 10,left: 10),
+            child: Text(
+              "Choose number of MCQ's to add for this job Ad",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                color: Color(0xff1C4374),
+              ),
+            ),
+          ),
           Wrap(
             direction: Axis.horizontal,
             children: [
