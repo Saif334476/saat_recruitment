@@ -53,7 +53,6 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
   }
 }
 
-
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -78,45 +77,32 @@ class HomePage extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: const [
-                                BoxShadow(
-                                    color: Colors.lightBlueAccent,
-                                    blurRadius: 7,
-                                    blurStyle: BlurStyle.outer),
-                              ],
-                            ),
-                            child: TextField(
-                              onSubmitted: (value) {},
-                              onChanged: (value) {},
-                              textInputAction: TextInputAction.search,
-                              decoration: InputDecoration(
-                                labelText: "Search Job AD",
-                                hintText: "",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
+                          child: TextField(
+                            onSubmitted: (value) {},
+                            onChanged: (value) {},
+                            textInputAction: TextInputAction.search,
+                            decoration: InputDecoration(
+                              labelText: "Search Job AD",
+                              hintText: "",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                                borderSide: const BorderSide(
+                                    width: 20.0, color: Color(0xff1C4374)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                   borderSide: const BorderSide(
-                                      width: 20.0,
-                                      color: Colors.lightBlueAccent),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    borderSide: const BorderSide(
-                                        color: Colors.lightBlueAccent,
-                                        width: 2)),
-                                // boxShadow:const [BoxShadow(color: Colors.lightBlueAccent)],
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.search_outlined),
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) =>
-                                    //         const JobSeekerProfile()));
-                                  },
-                                ),
+                                      color: Color(0xff1C4374), width: 2)),
+                              // boxShadow:const [BoxShadow(color: Colors.lightBlueAccent)],
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.search_outlined),
+                                onPressed: () {
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) =>
+                                  //         const JobSeekerProfile()));
+                                },
                               ),
                             ),
                           ),
@@ -130,12 +116,23 @@ class HomePage extends StatelessWidget {
                                 child: Text(
                                   'Your Job ADs',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25),
+                                    // decoration: TextDecoration.underline,
+                                    // decorationColor: Color(0xff1C4374), // Optional
+                                    // decorationStyle: TextDecorationStyle.dotted, // Optional
+                                    // decorationThickness: 2,
+                                    shadows: [
+                                      Shadow(
+                                        offset: Offset(1.0, 1.0),
+                                        color: Colors.black54,
+                                        blurRadius: 2.0,
+                                      ),
+                                    ],
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 30,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-
                               JobAdsListView()
                             ])
                       ]))

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/company_pages/ad_mcqs.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 
 import 'company_upload_documents.dart';
@@ -27,7 +28,6 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   List<MCQ> mcqs = List.generate(10, (index) => MCQ());
   final _formKey = GlobalKey<FormState>();
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -52,11 +52,14 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                         child: SizedBox(
                           height: 120,
                           width: 200,
-                          child: Image.asset("assets/job_posting.webp",color: const Color(0xff1C4374),),
+                          child: Image.asset(
+                            "assets/job_posting.webp",
+                            color: const Color(0xff1C4374),
+                          ),
                         ),
                       ),
                       const Padding(
-                          padding: EdgeInsets.only( bottom: 00),
+                          padding: EdgeInsets.only(bottom: 00),
                           child: Text(
                             "JOB POSTING",
                             style: TextStyle(
@@ -257,6 +260,10 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           onChanged: (value) {
                             setState(() {
                               _selectedOption = value!;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const CompanyMCQCreationScreen()),
+                              );
                             });
                           },
                         ),
@@ -271,91 +278,97 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           },
                         ),
                       ]),
-                      _selectedOption == 'Yes'
-                          ? SizedBox(
-                              height: 500,
-                              child: Container(
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(15),
-                                    ),
-                                    gradient: LinearGradient(
-                                        colors: [Colors.blue, Colors.white],
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: ListView.builder(
-                                      itemCount: mcqs.length,
-                                      itemBuilder: (context, index) {
-                                        return MCQCard(
-                                          mcq: mcqs[index],
-                                          onDelete: () {
-                                            setState(() {
-                                              mcqs.removeAt(index);
+                      _selectedOption == 'No'
+                          ?
+                      // SizedBox(
+                      //         height: 500,
+                      //         child: Container(
+                      //             decoration: const BoxDecoration(
+                      //               borderRadius: BorderRadius.all(
+                      //                 Radius.circular(15),
+                      //               ),
+                      //               gradient: LinearGradient(
+                      //                   colors: [Colors.blue, Colors.white],
+                      //                   begin: Alignment.topCenter,
+                      //                   end: Alignment.bottomCenter),
+                      //             ),
+                      //             child: Padding(
+                      //               padding: const EdgeInsets.all(16.0),
+                      //               child: ListView.builder(
+                      //                 itemCount: mcqs.length,
+                      //                 itemBuilder: (context, index) {
+                      //                   return MCQCard(
+                      //                     mcq: mcqs[index],
+                      //                     onDelete: () {
+                      //                       setState(() {
+                      //                         mcqs.removeAt(index);
+                      //                       });
+                      //                     },
+                      //                     onAdd: () {
+                      //                       setState(() {
+                      //                         if (mcqs.length <= 9) {
+                      //                           mcqs.add(MCQ());
+                      //                         }
+                      //                       });
+                      //                     },
+                      //                   );
+                      //                 },
+                      //               ),
+                      //             )))
+                           Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // CupertinoButton(
+                                    //   color:const Color(0xff1C4374),
+                                    //   onPressed: () {},
+                                    //   child: const Text('Preview AD',style: TextStyle(color: Colors.white),),
+                                    // ),
+                                    // SizedBox(height: 10,),
+                                    CupertinoButton(
+                                      color: const Color(0xff1C4374),
+                                      onPressed: () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          //        final uid=FirebaseAuth.instance.currentUser;
+                                          try {
+                                            await FirebaseFirestore.instance
+                                                .collection('Users')
+                                                .doc(uid)
+                                                .collection('Job Ads')
+                                                .doc(dateTime.toString())
+                                                .set({
+                                              'Title': _jobTitle.text,
+                                              'JobCategory': _selectedCategory,
+                                              'JobType': _jobType,
+                                              'RequiredExperience':
+                                                  _requiredExperience,
+                                              'JobLocation': _location,
+                                              'Salary': _salary.text
                                             });
-                                          },
-                                          onAdd: () {
-                                            setState(() {
-                                              if (mcqs.length <= 9) {
-                                                mcqs.add(MCQ());
-                                              }
-                                            });
-                                          },
-                                        );
+                                          } catch (e) {
+                                            print('Error setting document: $e');
+                                          }
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const CompanyVerificationPage(),
+                                            ),
+                                          );
+                                        }
                                       },
-                                    ),
-                                  )))
-                          : Container(),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // CupertinoButton(
-                              //   color:const Color(0xff1C4374),
-                              //   onPressed: () {},
-                              //   child: const Text('Preview AD',style: TextStyle(color: Colors.white),),
-                              // ),
-                              // SizedBox(height: 10,),
-                              CupertinoButton(
-                                color: const Color(0xff1C4374),
-                                onPressed: () async {
-                                  if (_formKey.currentState!.validate()) {
-                            //        final uid=FirebaseAuth.instance.currentUser;
-                                    try {
-                                      await FirebaseFirestore.instance
-                                          .collection('Users').doc(uid)
-                                          .collection('Job Ads').doc(dateTime.toString()).set({
-                                        'Title': _jobTitle.text,
-                                        'JobCategory': _selectedCategory,
-                                        'JobType': _jobType,
-                                        'RequiredExperience': _requiredExperience,
-                                        'JobLocation': _location,
-                                        'Salary': _salary.text
-                                      });
-                                    } catch (e) {
-                                      print('Error setting document: $e');
-                                    }
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const CompanyVerificationPage(),
+                                      child: const Text(
+                                        'Post Job',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w900,
+                                            fontSize: 18),
                                       ),
-                                    );
-                                  }
-                                },
-                                child: const Text(
-                                  'Post Job',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 18),
-                                ),
-                              ),
-                            ]),
-                      )
+                                    ),
+                                  ]),
+                            ):Container()
                     ]),
               ))
         ]));
