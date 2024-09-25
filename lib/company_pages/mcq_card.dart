@@ -5,7 +5,7 @@ import '../Models/mcq_model.dart';
 import '../reusable_widgets/reusable_widget.dart';
 
 class MCQCard extends StatefulWidget {
-  final MCQ mcq;
+  final MCQ? mcq;
   final int questionNumber;
   final VoidCallback onNext;
   final VoidCallback onPrevious;
@@ -43,24 +43,32 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
-    _mcq = widget.mcq;
-    _questionController.text = _mcq.question;
-    _option1Controller.text = _mcq.option1;
-    _option2Controller.text = _mcq.option2;
-    _option3Controller.text = _mcq.option3;
-    _option4Controller.text = _mcq.option4;
+    if (widget.mcq != null) {
+      _mcq = widget.mcq!;
+      _questionController.text = _mcq.question;
+      _option1Controller.text = _mcq.option1;
+      _option2Controller.text = _mcq.option2;
+      _option3Controller.text = _mcq.option3;
+      _option4Controller.text = _mcq.option4;
+    } else {
+      _mcq = MCQ();
+    }
   }
 
   @override
   void didUpdateWidget(MCQCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.mcq != oldWidget.mcq) {
-      _mcq = widget.mcq;
-      _questionController.text = _mcq.question;
-      _option1Controller.text = _mcq.option1;
-      _option2Controller.text = _mcq.option2;
-      _option3Controller.text = _mcq.option3;
-      _option4Controller.text = _mcq.option4;
+      if (widget.mcq != null) {
+        _mcq = widget.mcq!;
+        _questionController.text = _mcq.question;
+        _option1Controller.text = _mcq.option1;
+        _option2Controller.text = _mcq.option2;
+        _option3Controller.text = _mcq.option3;
+        _option4Controller.text = _mcq.option4;
+      } else {
+        _mcq = MCQ();
+      }
     }
   }
 
@@ -167,7 +175,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
                   _mcq.correctAnswer.isEmpty ? 'Option 1' : _mcq.correctAnswer,
               onChanged: (value) {
                 setState(() {
-                  _mcq.correctAnswer = value!;
+                  _mcq.correctAnswer = value as String;
                 });
               },
               items: const <String>[
