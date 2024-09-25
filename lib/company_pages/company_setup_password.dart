@@ -173,7 +173,7 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                               ? const CupertinoActivityIndicator()
                               : cupertinoButtonWidget("Create Account",
                                   () async {
-                                  if (_formKey.currentState!.validate()) {
+                                    if (_formKey.currentState!.validate()) {
                                     setState(() {
                                       _isLoading = true;
                                     });

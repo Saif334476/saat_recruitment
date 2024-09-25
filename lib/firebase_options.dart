@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBHPKGphZOL-i4D3RP70pOxWeSFwyngkwA',
-    appId: '1:568548219637:android:48d7b62f613781c51dc3bc',
+    appId: '1:568548219637:android:2c5858f642c314dc1dc3bc',
     messagingSenderId: '568548219637',
     projectId: 'final-project2000202',
     storageBucket: 'final-project2000202.appspot.com',
@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'final-project2000202.firebaseapp.com',
     storageBucket: 'final-project2000202.appspot.com',
   );
+
 }

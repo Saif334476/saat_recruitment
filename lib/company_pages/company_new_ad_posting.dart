@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/ad_mcqs.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 
+import '../Models/mcq_model.dart';
 import 'company_upload_documents.dart';
 
 class CompanyNewAdPosting extends StatefulWidget {
@@ -27,6 +28,12 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   String? _location;
   List<MCQ> mcqs = List.generate(10, (index) => MCQ());
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _selectedOption = "";
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -244,89 +251,49 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                             controller: _salary,
                             keyboard: TextInputType.text),
                       ),
-                      Column(children: [
-                        const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                            'Do you want to add MCQs for this Ad?',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        RadioListTile(
-                          value: 'Yes',
-                          title: const Text('Yes'),
-                          groupValue: _selectedOption,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: dropDown(
+                          items: [
+                            'Yes',
+                            'No',
+                          ].map((jobExperience) {
+                            return DropdownMenuItem(
+                              value: jobExperience,
+                              child: Text(jobExperience),
+                            );
+                          }).toList(),
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Wanna add MCQs for this ad';
+                            }
+                            return null;
+                          },
                           onChanged: (value) {
                             setState(() {
-                              _selectedOption = value!;
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const CompanyMCQCreationScreen()),
-                              );
+                              _requiredExperience = value;
+                              _selectedOption = value;
+                              if (value == "Yes") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const CompanyMCQCreationScreen()),
+                                );
+                              }
                             });
                           },
+                          text: 'Want to add mcqs for this ad',
+                          icon: Icons.question_answer_outlined,
                         ),
-                        RadioListTile(
-                          value: 'No',
-                          title: const Text('No'),
-                          groupValue: _selectedOption,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedOption = value!;
-                            });
-                          },
-                        ),
-                      ]),
+                      ),
                       _selectedOption == 'No'
-                          ?
-                      // SizedBox(
-                      //         height: 500,
-                      //         child: Container(
-                      //             decoration: const BoxDecoration(
-                      //               borderRadius: BorderRadius.all(
-                      //                 Radius.circular(15),
-                      //               ),
-                      //               gradient: LinearGradient(
-                      //                   colors: [Colors.blue, Colors.white],
-                      //                   begin: Alignment.topCenter,
-                      //                   end: Alignment.bottomCenter),
-                      //             ),
-                      //             child: Padding(
-                      //               padding: const EdgeInsets.all(16.0),
-                      //               child: ListView.builder(
-                      //                 itemCount: mcqs.length,
-                      //                 itemBuilder: (context, index) {
-                      //                   return MCQCard(
-                      //                     mcq: mcqs[index],
-                      //                     onDelete: () {
-                      //                       setState(() {
-                      //                         mcqs.removeAt(index);
-                      //                       });
-                      //                     },
-                      //                     onAdd: () {
-                      //                       setState(() {
-                      //                         if (mcqs.length <= 9) {
-                      //                           mcqs.add(MCQ());
-                      //                         }
-                      //                       });
-                      //                     },
-                      //                   );
-                      //                 },
-                      //               ),
-                      //             )))
-                           Padding(
+                          ? Padding(
                               padding: const EdgeInsets.only(top: 20),
                               child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    // CupertinoButton(
-                                    //   color:const Color(0xff1C4374),
-                                    //   onPressed: () {},
-                                    //   child: const Text('Preview AD',style: TextStyle(color: Colors.white),),
-                                    // ),
-                                    // SizedBox(height: 10,),
                                     CupertinoButton(
                                       color: const Color(0xff1C4374),
                                       onPressed: () async {
@@ -368,139 +335,10 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                       ),
                                     ),
                                   ]),
-                            ):Container()
+                            )
+                          : Container()
                     ]),
               ))
         ]));
-  }
-}
-
-class MCQ {
-  String question = '';
-  String option1 = 'lol';
-  String option2 = '';
-  String option3 = '';
-  String option4 = '';
-  String correctAnswer = '';
-}
-
-class MCQCard extends StatefulWidget {
-  final MCQ mcq;
-  final VoidCallback onDelete;
-  final VoidCallback onAdd;
-  const MCQCard(
-      {super.key,
-      required this.mcq,
-      required this.onDelete,
-      required this.onAdd});
-
-  @override
-  State<MCQCard> createState() => _MCQCardState();
-}
-
-class _MCQCardState extends State<MCQCard> {
-  void showAddMCQModal() {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container();
-        });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      surfaceTintColor: Colors.blueAccent,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 5),
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15))),
-                  labelText: 'Question',
-                ),
-                onChanged: (text) {
-                  widget.mcq.question = text;
-                },
-              ),
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                labelText: 'Option 1',
-              ),
-              onChanged: (text) {
-                widget.mcq.option1 = text;
-              },
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                labelText: 'Option 2',
-              ),
-              onChanged: (text) {
-                widget.mcq.option2 = text;
-              },
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                labelText: 'Option 3',
-              ),
-              onChanged: (text) {
-                widget.mcq.option3 = text;
-              },
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                labelText: 'Option 4',
-              ),
-              onChanged: (text) {
-                widget.mcq.option4 = text;
-              },
-            ),
-            DropdownButton(
-              value: widget.mcq.correctAnswer.isEmpty
-                  ? 'Option 1'
-                  : widget.mcq.correctAnswer,
-              onChanged: (value) {
-                widget.mcq.correctAnswer = value!;
-              },
-              items: <String>['Option 1', 'Option 2', 'Option 3', 'Option 4']
-                  .map((option) {
-                return DropdownMenuItem(
-                  value: option,
-                  child: Text(option),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                OutlinedButton(
-                  onPressed: widget.onAdd,
-                  child: const Text('ADD'),
-                ),
-                OutlinedButton(
-                  onPressed: widget.onDelete,
-                  child: const Text('Delete'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
