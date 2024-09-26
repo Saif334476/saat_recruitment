@@ -363,7 +363,14 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const CompanyMCQCreationScreen(),
+                                                    CompanyMCQCreationScreen( jobTitle: _jobTitle.text,
+                                                      selectedCategory: _selectedCategory,
+                                                      jobType: _jobType,
+                                                      requiredExperience: _requiredExperience,
+                                                      location: _location,
+                                                      salary: _salary.text,
+                                                      selectedOption: _selectedOption,
+                                                      jobId: dateTime.toString(), ),
                                               ),
                                             );
                                           },

@@ -4,7 +4,24 @@ import 'ad_preview_page.dart';
 import 'mcq_card.dart';
 
 class CompanyMCQCreationScreen extends StatefulWidget {
-  const CompanyMCQCreationScreen({super.key});
+  final String jobId;
+  final String selectedOption;
+  final String salary;
+  final String location;
+  final String requiredExperience;
+  final String jobType;
+  final String selectedCategory;
+  final String jobTitle;
+  const CompanyMCQCreationScreen(
+      {super.key,
+      required this.jobId,
+      required this.selectedOption,
+      required this.salary,
+      required this.location,
+      required this.requiredExperience,
+      required this.jobType,
+      required this.selectedCategory,
+      required this.jobTitle});
 
   @override
   CompanyMCQCreationScreenState createState() =>
@@ -85,7 +102,8 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                   option4Controller: _option4Controller,
                   correctAnswer: _correctAnswer,
                   onNext: () {
-                    if (_formKey.currentState!.validate() && _correctAnswer.isNotEmpty) {
+                    if (_formKey.currentState!.validate() &&
+                        _correctAnswer.isNotEmpty) {
                       MCQ newMCQ = MCQ(
                         question: _questionController.text,
                         option1: _option1Controller.text,
@@ -116,10 +134,20 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                     }
                   },
                   onPreview: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => PreviewPage(mcq: mcqs)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviewPage(
+                                  mcq: mcqs,
+                                  jobTitle:widget.jobTitle,
+                                  selectedCategory:widget.selectedCategory,
+                                  jobType:widget.jobType,
+                                  requiredExperience:widget.requiredExperience,
+                                  location:widget.location,
+                                  salary:widget.salary,
+                                  selectedOption:widget.selectedOption,
+                                  jobId: widget.jobId,
+                                )));
                   },
                 ),
               ),
