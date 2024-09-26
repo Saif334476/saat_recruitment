@@ -63,30 +63,79 @@ class _PreviewPageState extends State<PreviewPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Job Title: ${widget.jobTitle}',
-              style: const TextStyle(fontSize: 18),
+            Row(
+              children: [
+                const Text(
+                  'Job Title: ',
+                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  widget.jobTitle,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
             ),
-            Text(
-              'Job Category: ${widget.selectedCategory}',
-              style: const TextStyle(fontSize: 18),
+            Row(
+              children: [
+                const Text(
+                  'Job Category: ',
+                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  widget.selectedCategory,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
             ),
-            Text(
-              'Job Type: ${widget.jobType}',
-              style: const TextStyle(fontSize: 18),
+            Row(
+              children: [
+                const Text(
+                  'Job Type: ',
+                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  widget.jobType,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
             ),
-            Text(
-              'Required Experience: ${widget.requiredExperience}',
-              style: const TextStyle(fontSize: 18),
+            Row(
+              children: [
+                const Text(
+                  'Required Experience: ',
+                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  widget.requiredExperience,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
             ),
-            Text(
-              'Job Location: ${widget.location}',
-              style: const TextStyle(fontSize: 18),
+            Row(
+              children: [
+                const Text(
+                  'Job Location: ',
+                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  widget.location,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
             ),
-            Text(
-              'Salary: ${widget.salary}',
-              style: const TextStyle(fontSize: 18),
+            Row(
+              children: [
+                const Text(
+                  'Salary: ',
+                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  widget.salary,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
             ),
+
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
