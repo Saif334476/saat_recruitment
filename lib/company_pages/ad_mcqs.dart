@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../Models/mcq_model.dart';
 import 'ad_preview_page.dart';
@@ -8,7 +7,8 @@ class CompanyMCQCreationScreen extends StatefulWidget {
   const CompanyMCQCreationScreen({super.key});
 
   @override
-  CompanyMCQCreationScreenState createState() => CompanyMCQCreationScreenState();
+  CompanyMCQCreationScreenState createState() =>
+      CompanyMCQCreationScreenState();
 }
 
 class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
@@ -23,7 +23,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
   int currentQuestion = 1;
   List<MCQ> mcqs = List.generate(
     10,
-        (index) => MCQ(
+    (index) => MCQ(
       question: '',
       option1: '',
       option2: '',
@@ -83,16 +83,9 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                   option2Controller: _option2Controller,
                   option3Controller: _option3Controller,
                   option4Controller: _option4Controller,
-                  correctAnswer:_correctAnswer,
-
+                  correctAnswer: _correctAnswer,
                   onNext: () {
-                    if (_formKey.currentState!.validate()) {
-                      if (_correctAnswer.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please select a correct answer')),
-                        );
-                        return;
-                      }
+                    if (_formKey.currentState!.validate() && _correctAnswer.isNotEmpty) {
                       MCQ newMCQ = MCQ(
                         question: _questionController.text,
                         option1: _option1Controller.text,
@@ -107,14 +100,12 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                           currentQuestion++;
                           _correctAnswer = ("Option 1"); // Reset _correctAnswer
                         });
-                      } else {
-                        // Navigator.pushReplacement(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => PreviewPage(mcq: mcqs),
-                        //   ),
-                        // );
                       }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Please select a correct answer')),
+                      );
                     }
                   },
                   onPrevious: () {
@@ -123,9 +114,13 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                         currentQuestion--;
                       });
                     }
-                  }, onPreview: () {
-                    Navigator.push(context,MaterialPageRoute(builder: (context)=>PreviewPage(mcq: mcqs)));
-                },
+                  },
+                  onPreview: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviewPage(mcq: mcqs)));
+                  },
                 ),
               ),
             ),
