@@ -26,7 +26,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   String _requiredExperience = '';
   final TextEditingController _salary = TextEditingController();
   String? _location;
-  List<MCQ> mcqs = List.generate(10, (index) => MCQ());
+
+  List<MCQ> mcqList = [];
   final _formKey = GlobalKey<FormState>();
 
   @override

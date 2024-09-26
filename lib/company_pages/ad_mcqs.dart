@@ -1,23 +1,41 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 
+import 'package:flutter/material.dart';
 import '../Models/mcq_model.dart';
+import 'ad_preview_page.dart';
 import 'mcq_card.dart';
 
 class CompanyMCQCreationScreen extends StatefulWidget {
   const CompanyMCQCreationScreen({super.key});
 
   @override
-  CompanyMCQCreationScreenState createState() =>
-      CompanyMCQCreationScreenState();
+  CompanyMCQCreationScreenState createState() => CompanyMCQCreationScreenState();
 }
 
 class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
+  final TextEditingController _questionController = TextEditingController();
+  final TextEditingController _option1Controller = TextEditingController();
+  final TextEditingController _option2Controller = TextEditingController();
+  final TextEditingController _option3Controller = TextEditingController();
+  final TextEditingController _option4Controller = TextEditingController();
+
   int questionCount = 10;
   int currentQuestion = 1;
-  MCQ mcq = MCQ();
-  List<MCQ> mcqList = [];
+  List<MCQ> mcqs = List.generate(
+    10,
+        (index) => MCQ(
+      question: '',
+      option1: '',
+      option2: '',
+      option3: '',
+      option4: '',
+      correctAnswer: '',
+    ),
+  );
+
+  void updateMCQ(MCQ newMCQ) {
+    mcqs[currentQuestion - 1] = newMCQ;
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -39,7 +57,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
           const Padding(
             padding: EdgeInsets.only(top: 15.0, right: 10, left: 10),
             child: Text(
-              "Choose number of MCQ's to add for this job Ad",
+              "Please add mcqs carefully for Good",
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
@@ -47,59 +65,52 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
               ),
             ),
           ),
-          Wrap(
-            direction: Axis.horizontal,
-            children: [
-              RadioListTile(
-                title: const Text('10 questions'),
-                value: 10,
-                groupValue: questionCount,
-                onChanged: (value) {
-                  setState(() {
-                    questionCount = value as int;
-                  });
-                },
-              ),
-              RadioListTile(
-                title: const Text('20 questions'),
-                value: 20,
-                groupValue: questionCount,
-                onChanged: (value) {
-                  setState(() {
-                    questionCount = value as int;
-                  });
-                },
-              ),
-            ],
-          ),
           Expanded(
             child: Form(
               key: _formKey,
               child: SingleChildScrollView(
                 child: MCQCard(
-                  mcq: mcq,
+                  mcq: mcqs[currentQuestion - 1],
                   questionNumber: currentQuestion,
+                  questionController: _questionController,
+                  option1Controller: _option1Controller,
+                  option2Controller: _option2Controller,
+                  option3Controller: _option3Controller,
+                  option4Controller: _option4Controller,
                   onNext: () {
                     if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        if (currentQuestion < questionCount) {
-                          mcqList.add(mcq);
+                      MCQ newMCQ = MCQ(
+                        question: _questionController.text,
+                        option1: _option1Controller.text,
+                        option2: _option2Controller.text,
+                        option3: _option3Controller.text,
+                        option4: _option4Controller.text,
+                        correctAnswer: mcqs[currentQuestion - 1].correctAnswer,
+                      );
+                      updateMCQ(newMCQ);
+                      if (currentQuestion < questionCount) {
+                        setState(() {
                           currentQuestion++;
-                          mcq = MCQ();
-                          mcq.reset();
-                        }
-                      });
+                        });
+                      } else {
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => PreviewPage(mcq: mcqs),
+                        //   ),
+                        // );
+                      }
                     }
                   },
                   onPrevious: () {
-                    setState(() {
-                      if (currentQuestion > 1) {
-                        mcqList.removeLast();
+                    if (currentQuestion > 1) {
+                      setState(() {
                         currentQuestion--;
-                        mcq = mcqList.isEmpty ? MCQ() : mcqList.last;
-                      }
-                    });
-                  },
+                      });
+                    }
+                  }, onPreview: () {
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>PreviewPage(mcq: mcqs)));
+                },
                 ),
               ),
             ),
@@ -109,5 +120,3 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
     );
   }
 }
-
-
