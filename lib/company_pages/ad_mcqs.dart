@@ -116,10 +116,10 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                     }
                   },
                   onPreview: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviewPage(mcq: mcqs)));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => PreviewPage(mcq: mcqs)));
                   },
                 ),
               ),
