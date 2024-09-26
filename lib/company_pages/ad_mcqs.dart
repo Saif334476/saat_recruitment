@@ -17,6 +17,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
   final TextEditingController _option2Controller = TextEditingController();
   final TextEditingController _option3Controller = TextEditingController();
   final TextEditingController _option4Controller = TextEditingController();
+  String _correctAnswer = 'Option 1';
 
   int questionCount = 10;
   int currentQuestion = 1;
@@ -28,7 +29,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
       option2: '',
       option3: '',
       option4: '',
-      correctAnswer: '',
+      correctAnswer: null,
     ),
   );
 
@@ -70,6 +71,11 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
               key: _formKey,
               child: SingleChildScrollView(
                 child: MCQCard(
+                  getSelectedAnswer: (answer) {
+                    setState(() {
+                      _correctAnswer = answer; // Update _correctAnswer
+                    });
+                  },
                   mcq: mcqs[currentQuestion - 1],
                   questionNumber: currentQuestion,
                   questionController: _questionController,
@@ -77,20 +83,29 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                   option2Controller: _option2Controller,
                   option3Controller: _option3Controller,
                   option4Controller: _option4Controller,
+                  correctAnswer:_correctAnswer,
+
                   onNext: () {
                     if (_formKey.currentState!.validate()) {
+                      if (_correctAnswer.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please select a correct answer')),
+                        );
+                        return;
+                      }
                       MCQ newMCQ = MCQ(
                         question: _questionController.text,
                         option1: _option1Controller.text,
                         option2: _option2Controller.text,
                         option3: _option3Controller.text,
                         option4: _option4Controller.text,
-                        correctAnswer: mcqs[currentQuestion - 1].correctAnswer,
+                        correctAnswer: _correctAnswer,
                       );
                       updateMCQ(newMCQ);
                       if (currentQuestion < questionCount) {
                         setState(() {
                           currentQuestion++;
+                          _correctAnswer = ("Option 1"); // Reset _correctAnswer
                         });
                       } else {
                         // Navigator.pushReplacement(

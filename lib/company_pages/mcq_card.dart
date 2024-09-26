@@ -11,10 +11,12 @@ class MCQCard extends StatefulWidget {
   final TextEditingController option2Controller;
   final TextEditingController option3Controller;
   final TextEditingController option4Controller;
+  final String correctAnswer;
+  final Function(String) getSelectedAnswer;
   final VoidCallback onNext;
   final VoidCallback onPrevious;
   final VoidCallback onPreview;
-  const MCQCard(
+ const  MCQCard(
       {super.key,
       required this.mcq,
       required this.questionNumber,
@@ -23,9 +25,12 @@ class MCQCard extends StatefulWidget {
       required this.option2Controller,
       required this.option3Controller,
       required this.option4Controller,
+        required this.correctAnswer,
+       required this.getSelectedAnswer,
       required this.onNext,
       required this.onPrevious,
-      required this.onPreview});
+      required this.onPreview,
+      });
 
   @override
   State<MCQCard> createState() => _MCQCardState();
@@ -33,6 +38,7 @@ class MCQCard extends StatefulWidget {
 
 class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
   late MCQ _mcq;
+  String _selectedAnswer = 'Option 1';
 
   @override
   void initState() {
@@ -44,6 +50,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
       widget.option2Controller.text = _mcq.option2;
       widget.option3Controller.text = _mcq.option3;
       widget.option4Controller.text = _mcq.option4;
+
     } else {
       _mcq = MCQ(
         question: '',
@@ -51,9 +58,9 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
         option2: '',
         option3: '',
         option4: '',
-        correctAnswer: '',
+        correctAnswer: null,
       );
-    }
+    }_selectedAnswer = widget.correctAnswer;
   }
 
   @override
@@ -66,7 +73,8 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
       widget.option2Controller.text = _mcq.option2;
       widget.option3Controller.text = _mcq.option3;
       widget.option4Controller.text = _mcq.option4;
-    }
+
+    }_selectedAnswer = widget.correctAnswer;
   }
 
   @override
@@ -173,10 +181,11 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
             padding: const EdgeInsets.only(top: 10.0),
             child: DropdownButton(
               value:
-                  _mcq.correctAnswer.isEmpty ? 'Option 1' : _mcq.correctAnswer,
+              _selectedAnswer,
               onChanged: (value) {
                 setState(() {
-                  _mcq.correctAnswer = value as String;
+                  _selectedAnswer = value as String;
+                  widget.getSelectedAnswer(_selectedAnswer);
                 });
               },
               items: const <String>[
@@ -197,20 +206,6 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: CupertinoButton(
-                    color: const Color(0xff1C4374),
-                    onPressed: widget.onPrevious,
-                    child: const Text(
-                      'Previous',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
                 (widget.questionNumber == 10)
                     ? CupertinoButton(
                         color: const Color(0xff1C4374),
@@ -233,6 +228,20 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
                           ),
                         ),
                       ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: CupertinoButton(
+                    color: const Color(0xff1C4374),
+                    onPressed: widget.onPrevious,
+                    child: const Text(
+                      'Previous',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

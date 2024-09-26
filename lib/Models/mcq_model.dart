@@ -4,7 +4,7 @@ class MCQ {
   String option2;
   String option3;
   String option4;
-  String correctAnswer;
+  String? correctAnswer;
 
   MCQ(
       {required this.question,
