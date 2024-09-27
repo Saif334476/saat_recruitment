@@ -237,7 +237,7 @@ class _PreviewPageState extends State<PreviewPage> {
               _saveMCQs();
               // final jobService = JobService();
               // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);
-              Navigator.pop(context);
+            //  Navigator.pop(context);
             },
           ),
         ],

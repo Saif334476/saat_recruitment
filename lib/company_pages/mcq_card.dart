@@ -111,7 +111,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
+            padding: const EdgeInsets.only(bottom: 10.0,right: 50),
             child: textFormField(
               "Option 1",
               Icons.question_answer_outlined,
@@ -128,7 +128,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
+            padding: const EdgeInsets.only(bottom: 10.0,right: 50),
             child: textFormField(
               "Option 2",
               Icons.question_answer_outlined,
@@ -145,7 +145,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
+            padding: const EdgeInsets.only(bottom: 10.0,right: 50),
             child: textFormField(
               "Option 3",
               Icons.question_answer_outlined,
@@ -162,7 +162,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
+            padding: const EdgeInsets.only(bottom: 10.0,right: 50),
             child: textFormField(
               "Option 4",
               Icons.question_answer_outlined,
