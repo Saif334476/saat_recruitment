@@ -49,224 +49,165 @@ class _PreviewPageState extends State<PreviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: const Text('Preview Job Posting'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            const Text(
-              'Job Posting Preview',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            Column(children: [
+              const Text(
+                'Job Post Preview',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                const Text(
-                  'Job Title: ',
-                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  widget.jobTitle,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Job Category: ',
-                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  widget.selectedCategory,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Job Type: ',
-                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  widget.jobType,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Required Experience: ',
-                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  widget.requiredExperience,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Job Location: ',
-                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  widget.location,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Salary: ',
-                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  widget.salary,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CupertinoButton(
-                  color: const Color(0xff1C4374),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'Edit',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18,
-                    ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  const Text(
+                    'Job Title: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                ),
-                CupertinoButton(
-                  color: const Color(0xff1C4374),
-                  onPressed: () async {
-                    if (widget.selectedOption == 'No') {
-                      // Post job without MCQs logic
-                      await FirebaseFirestore.instance
-                          .collection('Users')
-                          .doc(uid)
-                          .collection('Job Ads')
-                          .doc(widget.jobId)
-                          .set({
-                        'Title': widget.jobTitle,
-                        'JobCategory': widget.selectedCategory,
-                        'JobType': widget.jobType,
-                        'RequiredExperience': widget.requiredExperience,
-                        'JobLocation': widget.location,
-                        'Salary': widget.salary,
-                      });
-                    } else {
-                      // Post job with MCQs logic
-                      await _saveMCQs();
-                      await _linkMCQs();
-                    }
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CompanyNewAdPosting()));
-                  },
-                  child: const Text(
-                    'Post Job',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18,
-                    ),
+                  Text(
+                    widget.jobTitle,
+                    style: const TextStyle(fontSize: 18),
                   ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Job Category: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    widget.selectedCategory,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Job Type: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    widget.jobType,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Required Experience: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    widget.requiredExperience,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Job Location: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    widget.location,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Salary: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    widget.salary,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ]),
+            const SizedBox(height: 20),
+            const Divider(),
+            const Text("MCQs",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 30),),
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0, right: 20, left: 20),
+              child: SizedBox(
+                height: 400,
+                child: ListView.builder(
+                  itemCount: widget.mcq.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Text(
+                          'Question ${index + 1}: ${widget.mcq[index].question}',
+                        ),
+                        const SizedBox(height: 10),
+                        Text('Option 1: ${widget.mcq[index].option1}'),
+                        Text('Option 2: ${widget.mcq[index].option2}'),
+                        Text('Option 3: ${widget.mcq[index].option3}'),
+                        Text('Option 4: ${widget.mcq[index].option4}'),
+                        const SizedBox(height: 15),
+                        Text(
+                          'Correct Answer: ${widget.mcq[index].correctAnswer}',
+                        ),
+                        const SizedBox(height: 25),
+                        const Divider(
+                          thickness: 2,
+                        ),
+                      ],
+                    );
+                  },
                 ),
-              ],
+              ),
             ),
           ],
         ),
       ),
+      bottomNavigationBar: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          CupertinoButton(
+            color: Colors.blueGrey,
+            child: const Text(
+              "Back",
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoButton(
+            color: Colors.blueGrey,
+            child: const Text(
+              "Save",
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () async {
+              // final jobService = JobService();
+              // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
     );
-
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     backgroundColor: const Color(0xff1C4374),
-    //     title: const Text(
-    //       "Preview Job AD",
-    //       style: TextStyle(color: Colors.white),
-    //     ),
-    //   ),
-    //   body: Padding(
-    //     padding: const EdgeInsets.only(top: 20.0, right: 20, left: 20),
-    //     child: ListView.builder(
-    //       itemCount: widget.mcq.length,
-    //       itemBuilder: (context, index) {
-    //         return Column(
-    //           children: [
-    //             Text(
-    //               'Question ${index + 1}: ${widget.mcq[index].question}',
-    //             ),
-    //             const SizedBox(height: 10),
-    //             Text('Option 1: ${widget.mcq[index].option1}'),
-    //             Text('Option 2: ${widget.mcq[index].option2}'),
-    //             Text('Option 3: ${widget.mcq[index].option3}'),
-    //             Text('Option 4: ${widget.mcq[index].option4}'),
-    //             const SizedBox(height: 15),
-    //             Text(
-    //               'Correct Answer: ${widget.mcq[index].correctAnswer}',
-    //             ),
-    //             const SizedBox(height: 25),
-    //             const Divider(
-    //               thickness: 2,
-    //             ),
-    //           ],
-    //         );
-    //       },
-    //     ),
-    //   ),
-    //   bottomNavigationBar: Row(
-    //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //     children: [
-    //       CupertinoButton(
-    //         color: Colors.blueGrey,
-    //         child: const Text(
-    //           "Back",
-    //           style: TextStyle(
-    //             fontWeight: FontWeight.w900,
-    //             color: Colors.white,
-    //           ),
-    //         ),
-    //         onPressed: () {
-    //           Navigator.pop(context);
-    //         },
-    //       ),
-    //       CupertinoButton(
-    //         color: Colors.blueGrey,
-    //         child: const Text(
-    //           "Save",
-    //           style: TextStyle(
-    //             fontWeight: FontWeight.w900,
-    //             color: Colors.white,
-    //           ),
-    //         ),
-    //         onPressed: () async {
-    //           // final jobService = JobService();
-    //           // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);
-    //           Navigator.pop(context);
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }
