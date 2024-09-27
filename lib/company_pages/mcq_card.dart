@@ -38,7 +38,7 @@ class MCQCard extends StatefulWidget {
 
 class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
   late MCQ _mcq;
-  String _selectedAnswer = 'Option 1';
+  String? _selectedAnswer = 'Option 1';
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
       widget.option2Controller.text = _mcq.option2;
       widget.option3Controller.text = _mcq.option3;
       widget.option4Controller.text = _mcq.option4;
-
+      _selectedAnswer = _mcq.correctAnswer ?? 'Option 1';
     } else {
       _mcq = MCQ(
         question: '',
@@ -73,8 +73,9 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
       widget.option2Controller.text = _mcq.option2;
       widget.option3Controller.text = _mcq.option3;
       widget.option4Controller.text = _mcq.option4;
-
-    }_selectedAnswer = widget.correctAnswer;
+      _selectedAnswer = _mcq.correctAnswer ?? 'Option 1';
+    }
+   // _selectedAnswer = widget.correctAnswer.isEmpty ? 'Option 1' : widget.correctAnswer;
   }
 
   @override
@@ -183,10 +184,8 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               value:
               _selectedAnswer,
               onChanged: (value) {
-                setState(() {
-                  _selectedAnswer = value as String;
-                  widget.getSelectedAnswer(_selectedAnswer);
-                });
+                _selectedAnswer = value;
+                widget.getSelectedAnswer(_selectedAnswer ?? 'Option 1');
               },
               items: const <String>[
                 'Option 1',

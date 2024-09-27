@@ -26,7 +26,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   String _jobType = '';
   String _requiredExperience = '';
   final TextEditingController _salary = TextEditingController();
-   String _location='';
+  String _location = '';
 
   List<MCQ> mcqList = [];
   final _formKey = GlobalKey<FormState>();
@@ -297,19 +297,21 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                     color: const Color(0xff1C4374),
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-      
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => PreviewPage(
                                               jobTitle: _jobTitle.text,
-                                              selectedCategory: _selectedCategory,
+                                              selectedCategory:
+                                                  _selectedCategory,
                                               jobType: _jobType,
-                                              requiredExperience: _requiredExperience,
+                                              requiredExperience:
+                                                  _requiredExperience,
                                               location: _location,
                                               salary: _salary.text,
                                               selectedOption: _selectedOption,
-                                              jobId: dateTime.toString(), mcq: const [],
+                                              jobId: dateTime.toString(),
+                                              mcq: const [],
                                             ),
                                           ),
                                         );
@@ -359,20 +361,28 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                           onPressed: () async {
                                             // Post job with MCQs logic
                                             // Navigate to MCQ creation screen
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CompanyMCQCreationScreen( jobTitle: _jobTitle.text,
-                                                      selectedCategory: _selectedCategory,
-                                                      jobType: _jobType,
-                                                      requiredExperience: _requiredExperience,
-                                                      location: _location,
-                                                      salary: _salary.text,
-                                                      selectedOption: _selectedOption,
-                                                      jobId: dateTime.toString(), ),
-                                              ),
-                                            );
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CompanyMCQCreationScreen(
+                                                    jobTitle: _jobTitle.text,
+                                                    selectedCategory:
+                                                        _selectedCategory,
+                                                    jobType: _jobType,
+                                                    requiredExperience:
+                                                        _requiredExperience,
+                                                    location: _location,
+                                                    salary: _salary.text,
+                                                    selectedOption:
+                                                        _selectedOption,
+                                                    jobId: dateTime.toString(),
+                                                  ),
+                                                ),
+                                              );
+                                            }
                                           },
                                           child: const Text(
                                             'Post Job with MCQs',

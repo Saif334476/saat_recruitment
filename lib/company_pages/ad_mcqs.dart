@@ -52,6 +52,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
 
   void updateMCQ(MCQ newMCQ) {
     mcqs[currentQuestion - 1] = newMCQ;
+    mcqs[currentQuestion - 1].correctAnswer = _correctAnswer;
   }
 
   final _formKey = GlobalKey<FormState>();
