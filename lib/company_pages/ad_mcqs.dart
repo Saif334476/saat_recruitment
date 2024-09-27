@@ -135,6 +135,29 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                     }
                   },
                   onPreview: () {
+                    if (_formKey.currentState!.validate() &&
+                        _correctAnswer.isNotEmpty) {
+                      MCQ newMCQ = MCQ(
+                        question: _questionController.text,
+                        option1: _option1Controller.text,
+                        option2: _option2Controller.text,
+                        option3: _option3Controller.text,
+                        option4: _option4Controller.text,
+                        correctAnswer: _correctAnswer,
+                      );
+                      updateMCQ(newMCQ);
+                      if (currentQuestion < questionCount) {
+                        setState(() {
+                          currentQuestion++;
+                          _correctAnswer = ("Option 1"); // Reset _correctAnswer
+                        });
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Please select a correct answer')),
+                      );
+                    }
                     Navigator.push(
                         context,
                         MaterialPageRoute(

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_new_ad_posting.dart';
 import '../Models/mcq_model.dart';
+import 'company_upload_documents.dart';
 
 class PreviewPage extends StatefulWidget {
   final List<MCQ> mcq;
@@ -163,40 +164,46 @@ class _PreviewPageState extends State<PreviewPage> {
             ]),
             const SizedBox(height: 20),
             const Divider(),
-            const Text(
-              "MCQs",
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, right: 20, left: 20),
-              child: SizedBox(
-                height: 400,
-                child: ListView.builder(
-                  itemCount: widget.mcq.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Text(
-                          'Question ${index + 1}: ${widget.mcq[index].question}',
-                        ),
-                        const SizedBox(height: 10),
-                        Text('Option 1: ${widget.mcq[index].option1}'),
-                        Text('Option 2: ${widget.mcq[index].option2}'),
-                        Text('Option 3: ${widget.mcq[index].option3}'),
-                        Text('Option 4: ${widget.mcq[index].option4}'),
-                        const SizedBox(height: 15),
-                        Text(
-                          'Correct Answer: ${widget.mcq[index].correctAnswer}',
-                        ),
-                        const SizedBox(height: 25),
-                        const Divider(
-                          thickness: 2,
-                        ),
-                      ],
-                    );
-                  },
+           widget.selectedOption=='No'?
+               Container():
+           Column(
+              children: [
+                const Text(
+                  "MCQs",
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, right: 20, left: 20),
+                  child: SizedBox(
+                    height: 400,
+                    child: ListView.builder(
+                      itemCount: widget.mcq.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            Text(
+                              'Question ${index + 1}: ${widget.mcq[index].question}',
+                            ),
+                            const SizedBox(height: 10),
+                            Text('Option 1: ${widget.mcq[index].option1}'),
+                            Text('Option 2: ${widget.mcq[index].option2}'),
+                            Text('Option 3: ${widget.mcq[index].option3}'),
+                            Text('Option 4: ${widget.mcq[index].option4}'),
+                            const SizedBox(height: 15),
+                            Text(
+                              'Correct Answer: ${widget.mcq[index].correctAnswer}',
+                            ),
+                            const SizedBox(height: 25),
+                            const Divider(
+                              thickness: 2,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

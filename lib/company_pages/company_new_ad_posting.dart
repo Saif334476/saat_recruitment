@@ -315,31 +315,24 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                             ),
                                           ),
                                         );
-                                        try {
-                                          await FirebaseFirestore.instance
-                                              .collection('Users')
-                                              .doc(uid)
-                                              .collection('Job Ads')
-                                              .doc(dateTime.toString())
-                                              .set({
-                                            'Title': _jobTitle.text,
-                                            'JobCategory': _selectedCategory,
-                                            'JobType': _jobType,
-                                            'RequiredExperience':
-                                                _requiredExperience,
-                                            'JobLocation': _location,
-                                            'Salary': _salary.text
-                                          });
-                                        } catch (e) {
-                                          print('Error setting document: $e');
-                                        }
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const CompanyVerificationPage(),
-                                          ),
-                                        );
+                                        // try {
+                                        //   await FirebaseFirestore.instance
+                                        //       .collection('Users')
+                                        //       .doc(uid)
+                                        //       .collection('Job Ads')
+                                        //       .doc(dateTime.toString())
+                                        //       .set({
+                                        //     'Title': _jobTitle.text,
+                                        //     'JobCategory': _selectedCategory,
+                                        //     'JobType': _jobType,
+                                        //     'RequiredExperience':
+                                        //         _requiredExperience,
+                                        //     'JobLocation': _location,
+                                        //     'Salary': _salary.text
+                                        //   });
+                                        // } catch (e) {
+                                        //   print('Error setting document: $e');
+                                        // }
                                       }
                                     },
                                     child: const Text(
