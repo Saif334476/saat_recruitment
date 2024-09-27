@@ -10,7 +10,8 @@ import 'ad_preview_page.dart';
 import 'company_upload_documents.dart';
 
 class CompanyNewAdPosting extends StatefulWidget {
-  const CompanyNewAdPosting({super.key});
+
+  const CompanyNewAdPosting({super.key, Map<String, dynamic>? jobAdData, required jobAdId});
 
   @override
   CompanyNewAdPostingState createState() => CompanyNewAdPostingState();

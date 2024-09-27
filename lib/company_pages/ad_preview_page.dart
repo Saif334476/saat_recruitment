@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_new_ad_posting.dart';
+import 'package:saat_recruitment/job_seeker_pages/job_seeker_dashboard.dart';
 import '../Models/mcq_model.dart';
 
 class PreviewPage extends StatefulWidget {
@@ -66,7 +67,7 @@ class _PreviewPageState extends State<PreviewPage> {
     }
 
     Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const CompanyNewAdPosting()));
+        MaterialPageRoute(builder: (context) => const NHomePage()));
   }
 
   @override
