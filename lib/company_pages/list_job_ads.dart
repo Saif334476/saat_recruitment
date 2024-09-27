@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-Future<List<Map<String, dynamic>>> fetchCompanyInfo(String uid) async {
-  final doc = await FirebaseFirestore.instance
-      .collection('Users')
-      .doc(uid)
-      .collection('Job Ads')
+// Function to fetch job ads from the 'jobs' collection
+Future<List<Map<String, dynamic>>> fetchJobAds(String uid) async {
+  final query = await FirebaseFirestore.instance
+      .collection('jobs')
+      .where('postedBy', isEqualTo: uid)
       .get();
 
-  return doc.docs.map((doc) => doc.data()).toList();
+  return query.docs.map((doc) => doc.data()).toList();
 }
 
 class JobAdsListView extends StatefulWidget {
@@ -25,15 +25,23 @@ class _JobAdsListViewState extends State<JobAdsListView> {
   List<Map<String, dynamic>>? _jobAds;
   bool _isLoading = true;
   final uid = FirebaseAuth.instance.currentUser?.uid;
+
   @override
   void initState() {
     super.initState();
-    fetchCompanyInfo(uid.toString()).then((value) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      fetchJobAds(uid).then((value) {
+        setState(() {
+          _jobAds = value;
+          _isLoading = false;
+        });
+      });
+    } else {
       setState(() {
-        _jobAds = value;
         _isLoading = false;
       });
-    });
+    }
   }
 
   @override
@@ -41,75 +49,83 @@ class _JobAdsListViewState extends State<JobAdsListView> {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-
+    if (_jobAds == null) {
+      return const Center(
+          child: Text('No job ads found or user not signed in'));
+    }
     return Container(
       height: 500,
       color: Colors.transparent,
       child: Expanded(
-        child: ListView.separated(
-          itemCount: _jobAds!.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(
-                _jobAds?[index]['Title'],
-                style: const TextStyle(fontWeight: FontWeight.w900),
+        child: _jobAds!.isEmpty
+            ? const Center(child: Text('No job ads found'))
+            : ListView.separated(
+                itemCount: _jobAds!.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(
+                      _jobAds![index]['jobTitle'],
+                      style: const TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                    subtitle: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  "Job Type: ",
+                                  style: TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                                Text(_jobAds![index]['jobType']),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  "Location: ",
+                                  style: TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                                Text(_jobAds![index]['location']),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  "Req. Experience: ",
+                                  style: TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                                Text(_jobAds![index]["requiredExperience"]),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  "Salary: ",
+                                  style: TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                                Text(_jobAds![index]["salary"]),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 2,
+                    color: Colors.grey,
+                  );
+                },
               ),
-              subtitle: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            "Job Type: ",
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          Text(_jobAds?[index]['JobType']),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Location: ",
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          Text(_jobAds?[index]['JobLocation'])
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            "Req. Experience: ",
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          Text(_jobAds?[index]["RequiredExperience"]),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("Salary: ",style: TextStyle(fontWeight: FontWeight.w700),),
-                          Text(_jobAds?[index]["Salary"])
-                        ],
-                      )
-                    ],
-                  )
-                ],
-              ),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return Container(
-              height: 2,
-              color: Colors.grey,
-            );
-          },
-        ),
       ),
     );
   }

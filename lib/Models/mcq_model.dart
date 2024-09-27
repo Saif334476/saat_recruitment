@@ -13,5 +13,4 @@ class MCQ {
       required this.option3,
       required this.option4,
       required this.correctAnswer});
-
 }
