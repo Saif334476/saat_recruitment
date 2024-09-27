@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_new_ad_posting.dart';
 import '../Models/mcq_model.dart';
-import 'company_upload_documents.dart';
 
 class PreviewPage extends StatefulWidget {
   final List<MCQ> mcq;
@@ -38,18 +37,42 @@ class _PreviewPageState extends State<PreviewPage> {
   final date = DateTime.now().millisecondsSinceEpoch.toString();
 
   Future<void> _saveMCQs() async {
-    // Save MCQs to Firestore logic
-  }
+    final jobRef = FirebaseFirestore.instance.collection('jobs').doc();
+    try {
+      await jobRef.set({
+        'jobId': widget.jobId,
+        'jobTitle': widget.jobTitle,
+        'selectedCategory': widget.selectedCategory,
+        'jobType': widget.jobType,
+        'requiredExperience': widget.requiredExperience,
+        'location': widget.location,
+        'salary': widget.salary,
+        'selectedOption': widget.selectedOption,
+        'mcq': widget.mcq
+            .map((mcq) => {
+                  'question': mcq.question,
+                  'option1': mcq.option1,
+                  'option2': mcq.option2,
+                  'option3': mcq.option3,
+                  'option4': mcq.option4,
+                  'correctAnswer': mcq.correctAnswer,
+                })
+            .toList(),
+        'postedBy': uid,
+        'postedAt': DateTime.now(),
+      });
+    } catch (e) {
+      print('Error saving job posting: $e');
+    }
 
-  Future<void> _linkMCQs() async {
-    // Link MCQs to job posting logic
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => const CompanyNewAdPosting()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         title: const Text('Preview Job Posting'),
       ),
       body: Padding(
@@ -140,7 +163,10 @@ class _PreviewPageState extends State<PreviewPage> {
             ]),
             const SizedBox(height: 20),
             const Divider(),
-            const Text("MCQs",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 30),),
+            const Text(
+              "MCQs",
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30),
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 20.0, right: 20, left: 20),
               child: SizedBox(
@@ -179,7 +205,7 @@ class _PreviewPageState extends State<PreviewPage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           CupertinoButton(
-            color: Colors.blueGrey,
+            color: const Color(0xff1C4374),
             child: const Text(
               "Back",
               style: TextStyle(
@@ -192,15 +218,16 @@ class _PreviewPageState extends State<PreviewPage> {
             },
           ),
           CupertinoButton(
-            color: Colors.blueGrey,
+            color: const Color(0xff1C4374),
             child: const Text(
-              "Save",
+              "Post",
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
               ),
             ),
             onPressed: () async {
+              _saveMCQs();
               // final jobService = JobService();
               // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);
               Navigator.pop(context);

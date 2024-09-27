@@ -68,7 +68,6 @@ class ReviewAndSubmitPage extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => const SplashScreen()));
                       } catch (e) {
-                        // Handle error
                         print('Error: $e');
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
