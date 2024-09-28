@@ -22,7 +22,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
   final dateTime = DateTime.now();
   final date = DateTime.now().millisecondsSinceEpoch.toString();
-  String _selectedOption = '';
+  String _selectedOption = 'No';
   String _selectedCategory = '';
   final TextEditingController _jobTitle = TextEditingController();
   String _jobType = '';
@@ -43,15 +43,14 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   void initState() {
     super.initState();
     if (widget.jobAdData != null) {
-      _jobTitle.text=widget.jobAdData!['jobTitle'];
+      _jobTitle.text = widget.jobAdData!['jobTitle'];
       _selectedCategory = widget.jobAdData!['selectedCategory'];
-      _location=widget.jobAdData!['location'];
+      _location = widget.jobAdData!['location'];
       _jobType = widget.jobAdData!['jobType'];
       _selectedOption = widget.jobAdData!['selectedOption'];
-      _requiredExperience=widget.jobAdData!['requiredExperience'];
-      _salary.text=widget.jobAdData!['salary'];
+      _requiredExperience = widget.jobAdData!['requiredExperience'];
+      _salary.text = widget.jobAdData!['salary'];
     }
-
   }
 
   @override
@@ -296,16 +295,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                               },
                               onChanged: (value) {
                                 setState(() {
-                                  _requiredExperience = value;
+                                  //               _requiredExperience = value;
                                   _selectedOption = value;
-                                  // if (value == "Yes") {
-                                  //   Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) =>
-                                  //             const CompanyMCQCreationScreen()),
-                                  //   );
-                                  // }
                                 });
                               },
                               text: 'Want to add mcqs for this ad',
@@ -319,7 +310,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                     color: const Color(0xff1C4374),
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                       Navigator.push(
+                                        Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => PreviewPage(
@@ -339,46 +330,58 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                         );
                                       }
                                     },
-                                    child: const Text(
-                                      'Post Job',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 18),
-                                    ),
+                                    child: (widget.jobAdData != null)
+                                        ? const Text(
+                                            'Update Job Ad',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w900,
+                                                fontSize: 18),
+                                          )
+                                        : const Text(
+                                            'Post Job',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w900,
+                                                fontSize: 18),
+                                          ),
                                   ))
                               : Padding(
                                   padding: const EdgeInsets.only(top: 20),
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        CupertinoButton(
-                                          color: const Color(0xff1C4374),
-                                          onPressed: () async {
-                                            if (_formKey.currentState!.validate()) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CompanyMCQCreationScreen(
-                                                    jobTitle: _jobTitle.text,
-                                                    selectedCategory:
-                                                        _selectedCategory,
-                                                    jobType: _jobType,
-                                                    requiredExperience:
-                                                        _requiredExperience,
-                                                    location: _location,
-                                                    salary: _salary.text,
-                                                    selectedOption:
-                                                        _selectedOption,
-                                                    jobId: dateTime.toString(),
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          },
-                                          child: const Text(
+                                  child: CupertinoButton(
+                                    color: const Color(0xff1C4374),
+                                    onPressed: () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CompanyMCQCreationScreen(
+                                              jobTitle: _jobTitle.text,
+                                              selectedCategory:
+                                                  _selectedCategory,
+                                              jobType: _jobType,
+                                              requiredExperience:
+                                                  _requiredExperience,
+                                              location: _location,
+                                              salary: _salary.text,
+                                              selectedOption: _selectedOption,
+                                              jobId: dateTime.toString(),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: (widget.jobAdData != null)
+                                        ? const Text(
+                                            'Proceed to MCQs',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w900,
+                                              fontSize: 18,
+                                            ),
+                                          )
+                                        : const Text(
                                             'Post Job with MCQs',
                                             style: TextStyle(
                                               color: Colors.white,
@@ -386,8 +389,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                               fontSize: 18,
                                             ),
                                           ),
-                                        ),
-                                      ]),
+                                  ),
                                 )
                         ])))
           ])),
