@@ -1,13 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/ad_mcqs.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
-
 import '../Models/mcq_model.dart';
 import 'ad_preview_page.dart';
-import 'company_upload_documents.dart';
 
 class CompanyNewAdPosting extends StatefulWidget {
   final String? jobAdId;
@@ -35,7 +32,6 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
 
   @override
   void dispose() {
-    _selectedOption = "";
     super.dispose();
   }
 
@@ -43,6 +39,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   void initState() {
     super.initState();
     if (widget.jobAdData != null) {
+      _selectedOption = widget.jobAdData!['selectedOption'] ?? 'No';
       _jobTitle.text = widget.jobAdData!['jobTitle'];
       _selectedCategory = widget.jobAdData!['selectedCategory'];
       _location = widget.jobAdData!['location'];
@@ -55,6 +52,9 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
 
   @override
   Widget build(BuildContext context) {
+
+    print('_selectedOption: $_selectedOption');
+
     return Scaffold(
       body: Container(
           decoration: const BoxDecoration(
@@ -281,10 +281,10 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                               items: [
                                 'Yes',
                                 'No',
-                              ].map((jobExperience) {
+                              ].map((valued) {
                                 return DropdownMenuItem(
-                                  value: jobExperience,
-                                  child: Text(jobExperience),
+                                  value: valued,
+                                  child: Text(valued),
                                 );
                               }).toList(),
                               validator: (value) {
@@ -293,10 +293,9 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 }
                                 return null;
                               },
-                              onChanged: (value) {
+                              onChanged: (valued) {
                                 setState(() {
-                                  //               _requiredExperience = value;
-                                  _selectedOption = value;
+                                  _selectedOption = valued;
                                 });
                               },
                               text: 'Want to add mcqs for this ad',

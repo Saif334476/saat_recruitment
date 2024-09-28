@@ -85,22 +85,22 @@ SizedBox elevatedButton(String text, Function onPressed,
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23),
           )));
 }
-
-DropdownButtonFormField dropDown(
-    {required String text,
-      required String? value,
-    required IconData icon,
-    Function(dynamic)? onSaved,
-    required String? Function(dynamic) validator,
-    required Function(dynamic) onChanged,
-    required List<DropdownMenuItem<dynamic>>? items}) {
+DropdownButtonFormField dropDown({
+  required String text,
+  required String? value,
+  required IconData icon,
+  Function(dynamic)? onSaved,
+  required String? Function(dynamic?)? validator, // Update here
+  required Function(dynamic?)? onChanged, // Update here
+  required List<DropdownMenuItem<dynamic>>? items,
+}) {
   return DropdownButtonFormField(
-    value:value ,
     decoration: InputDecoration(
       errorStyle: const TextStyle(color: Colors.red),
       errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
-          borderRadius: BorderRadius.circular(15)),
+        borderSide: const BorderSide(color: Colors.red),
+        borderRadius: BorderRadius.circular(15),
+      ),
       border: OutlineInputBorder(
         borderSide: const BorderSide(color: Colors.black12),
         borderRadius: BorderRadius.circular(15),
@@ -111,7 +111,7 @@ DropdownButtonFormField dropDown(
     items: items,
     onSaved: onSaved,
     dropdownColor: const Color(0xFF97C5FF),
-    validator: validator,
+    validator: validator, // No need for null check
     onChanged: onChanged,
   );
 }

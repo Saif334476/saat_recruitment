@@ -20,7 +20,7 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
 
   final List<Widget> _children = [
     HomePage(),
-    const CompanyNewAdPosting(jobAdId: null,),
+    const CompanyNewAdPosting(jobAdData: null,jobAdId: null,),
     const CompanyProfilePage(),
   ];
 
