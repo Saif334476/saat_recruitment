@@ -57,7 +57,7 @@ class ReviewAndSubmitPage extends StatelessWidget {
                         await FirebaseFirestore.instance
                             .collection('Users')
                             .doc(FirebaseAuth.instance.currentUser?.uid)
-                            .set({
+                            .update({
                           'resumeUrl': downloadUrl,
                           'resumeFileName':
                               uploadedDocument.path.split('/').last,

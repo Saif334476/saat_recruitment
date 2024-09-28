@@ -16,7 +16,10 @@ class _JobAdsListViewState extends State<JobAdsListView> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('jobs').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('jobs')
+          .where('postedBy', isEqualTo: widget.uid)
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
