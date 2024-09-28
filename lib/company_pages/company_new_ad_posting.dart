@@ -34,7 +34,6 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   void dispose() {
     super.dispose();
   }
-
   @override
   void initState() {
     super.initState();
