@@ -63,7 +63,7 @@ class ReviewAndSubmitPage extends StatelessWidget {
                               uploadedDocument.path.split('/').last,
                         });
 
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const SplashScreen()));
