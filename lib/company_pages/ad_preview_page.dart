@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/company_pages/company_dashboard.dart';
 import 'package:saat_recruitment/company_pages/company_new_ad_posting.dart';
 import 'package:saat_recruitment/job_seeker_pages/job_seeker_dashboard.dart';
 import '../Models/mcq_model.dart';
@@ -67,7 +68,7 @@ class _PreviewPageState extends State<PreviewPage> {
     }
 
     Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const NHomePage()));
+        MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
   }
 
   @override
