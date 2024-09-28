@@ -10,8 +10,9 @@ import 'ad_preview_page.dart';
 import 'company_upload_documents.dart';
 
 class CompanyNewAdPosting extends StatefulWidget {
-
-  const CompanyNewAdPosting({super.key, Map<String, dynamic>? jobAdData, required jobAdId});
+  final String? jobAdId;
+  final Map<String, dynamic>? jobAdData;
+  const CompanyNewAdPosting({super.key, this.jobAdData, required this.jobAdId});
 
   @override
   CompanyNewAdPostingState createState() => CompanyNewAdPostingState();
@@ -36,6 +37,14 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   void dispose() {
     _selectedOption = "";
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.jobAdData != null) {
+      _jobTitle.text = widget.jobAdData!['jobTitle'];
+    }
   }
 
   @override
@@ -97,6 +106,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: dropDown(
+                              value: _selectedCategory,
                               items: [
                                 'IT & Technology',
                                 'Healthcare',
@@ -132,6 +142,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: dropDown(
+                              value: _jobType,
                               items: [
                                 'Remote',
                                 'Full-time',
@@ -161,6 +172,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: dropDown(
+                              value: _requiredExperience,
                               items: [
                                 'No',
                                 'One Year',
@@ -189,6 +201,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: dropDown(
+                              value: _location,
                               items: [
                                 'Karachi',
                                 'Lahore',
@@ -258,6 +271,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: dropDown(
+                              value: _selectedOption,
                               items: [
                                 'Yes',
                                 'No',

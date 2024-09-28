@@ -88,12 +88,14 @@ SizedBox elevatedButton(String text, Function onPressed,
 
 DropdownButtonFormField dropDown(
     {required String text,
+      required String? value,
     required IconData icon,
     Function(dynamic)? onSaved,
     required String? Function(dynamic) validator,
     required Function(dynamic) onChanged,
     required List<DropdownMenuItem<dynamic>>? items}) {
   return DropdownButtonFormField(
+    value:value ,
     decoration: InputDecoration(
       errorStyle: const TextStyle(color: Colors.red),
       errorBorder: OutlineInputBorder(

@@ -201,6 +201,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                             Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: dropDown(
+                                  value: _gender,
                                   icon: Icons.person_add,
                                   validator: (value) {
                                     if (value == null) {
@@ -260,6 +261,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                             Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: dropDown(
+                                  value: _city,
                                   icon: Icons.location_on_outlined,
                                   validator: (value) {
                                     if (value == null) {

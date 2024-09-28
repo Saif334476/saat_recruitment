@@ -21,7 +21,6 @@ class _JobAdsListViewState extends State<JobAdsListView> {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-
         return Container(
           height: 500,
           color: Colors.transparent,

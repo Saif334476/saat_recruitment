@@ -114,6 +114,7 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                 Padding(
                     padding: const EdgeInsets.only(top: 15),
                     child: dropDown(
+                      value: _selectedIndustry,
                       text: "Industry",
                       icon: Icons.category_outlined,
                       items: [
@@ -149,6 +150,7 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                 Padding(
                     padding: const EdgeInsets.only(top: 15),
                     child: dropDown(
+                      value: _selectedCompanySize,
                       text: "Company Size",
                       icon: Icons.business_sharp,
                       items: [
