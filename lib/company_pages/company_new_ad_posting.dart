@@ -43,8 +43,15 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   void initState() {
     super.initState();
     if (widget.jobAdData != null) {
-      _jobTitle.text = widget.jobAdData!['jobTitle'];
+      _jobTitle.text=widget.jobAdData!['jobTitle'];
+      _selectedCategory = widget.jobAdData!['selectedCategory'];
+      _location=widget.jobAdData!['location'];
+      _jobType = widget.jobAdData!['jobType'];
+      _selectedOption = widget.jobAdData!['selectedOption'];
+      _requiredExperience=widget.jobAdData!['requiredExperience'];
+      _salary.text=widget.jobAdData!['salary'];
     }
+
   }
 
   @override
@@ -312,7 +319,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                     color: const Color(0xff1C4374),
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        Navigator.push(
+                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => PreviewPage(
@@ -330,24 +337,6 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                             ),
                                           ),
                                         );
-                                        // try {
-                                        //   await FirebaseFirestore.instance
-                                        //       .collection('Users')
-                                        //       .doc(uid)
-                                        //       .collection('Job Ads')
-                                        //       .doc(dateTime.toString())
-                                        //       .set({
-                                        //     'Title': _jobTitle.text,
-                                        //     'JobCategory': _selectedCategory,
-                                        //     'JobType': _jobType,
-                                        //     'RequiredExperience':
-                                        //         _requiredExperience,
-                                        //     'JobLocation': _location,
-                                        //     'Salary': _salary.text
-                                        //   });
-                                        // } catch (e) {
-                                        //   print('Error setting document: $e');
-                                        // }
                                       }
                                     },
                                     child: const Text(
@@ -367,10 +356,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                         CupertinoButton(
                                           color: const Color(0xff1C4374),
                                           onPressed: () async {
-                                            // Post job with MCQs logic
-                                            // Navigate to MCQ creation screen
-                                            if (_formKey.currentState!
-                                                .validate()) {
+                                            if (_formKey.currentState!.validate()) {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
