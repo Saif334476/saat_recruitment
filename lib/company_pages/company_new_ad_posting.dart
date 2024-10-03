@@ -19,14 +19,13 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
   final dateTime = DateTime.now();
   final date = DateTime.now().millisecondsSinceEpoch.toString();
-  String _selectedOption = 'No';
+  String _selectedOption="";
   String _selectedCategory = '';
   final TextEditingController _jobTitle = TextEditingController();
   String _jobType = '';
   String _requiredExperience = '';
   final TextEditingController _salary = TextEditingController();
   String _location = '';
-
   List<MCQ> mcqList = [];
   final _formKey = GlobalKey<FormState>();
 
@@ -38,7 +37,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   void initState() {
     super.initState();
     if (widget.jobAdData != null) {
-      _selectedOption = widget.jobAdData!['selectedOption'] ?? 'No';
+      _selectedOption = widget.jobAdData!['selectedOption'];
       _jobTitle.text = widget.jobAdData!['jobTitle'];
       _selectedCategory = widget.jobAdData!['selectedCategory'];
       _location = widget.jobAdData!['location'];
@@ -46,6 +45,15 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
       _selectedOption = widget.jobAdData!['selectedOption'];
       _requiredExperience = widget.jobAdData!['requiredExperience'];
       _salary.text = widget.jobAdData!['salary'];
+    }
+    else{
+      _selectedOption = '';
+      _selectedCategory = '';
+      _location = '';
+      _jobType = '';
+      _requiredExperience = '';
+      _jobTitle.clear();
+      _salary.clear();
     }
   }
 
@@ -122,7 +130,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 'Engineering & Manufacturing',
                                 'Creative & Design',
                                 'Hospitality & Tourism',
-                                'Education & Training'
+                                'Education & Training',""
                               ].map((category) {
                                 return DropdownMenuItem(
                                   value: category,
@@ -154,7 +162,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 'Part-time',
                                 'Contract',
                                 'Freelance',
-                                'Internship',
+                                'Internship',""
                               ].map((jobType) {
                                 return DropdownMenuItem(
                                   value: jobType,
@@ -183,7 +191,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 'One Year',
                                 'Two Years',
                                 'Three Years',
-                                'Five Years',
+                                'Five Years',""
                               ].map((jobExperience) {
                                 return DropdownMenuItem(
                                   value: jobExperience,
@@ -233,7 +241,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 'Kohat',
                                 'Bawalnagar',
                                 'Chakwal',
-                                'Mianwali',
+                                'Mianwali',""
                               ].map((location) {
                                 return DropdownMenuItem(
                                   value: location,
@@ -279,7 +287,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                               value: _selectedOption,
                               items: [
                                 'Yes',
-                                'No',
+                                'No',""
                               ].map((valued) {
                                 return DropdownMenuItem(
                                   value: valued,

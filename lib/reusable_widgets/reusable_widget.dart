@@ -87,11 +87,11 @@ SizedBox elevatedButton(String text, Function onPressed,
 }
 DropdownButtonFormField dropDown({
   required String text,
-  required String? value,
+  required dynamic value,
   required IconData icon,
   Function(dynamic)? onSaved,
-  required String? Function(dynamic?)? validator, // Update here
-  required Function(dynamic?)? onChanged, // Update here
+  required String? Function(dynamic)? validator, // Update here
+  required Function(dynamic)? onChanged, // Update here
   required List<DropdownMenuItem<dynamic>>? items,
 }) {
   return DropdownButtonFormField(
@@ -108,6 +108,7 @@ DropdownButtonFormField dropDown({
       labelText: text,
       prefixIcon: Icon(icon),
     ),
+    value: value,
     items: items,
     onSaved: onSaved,
     dropdownColor: const Color(0xFF97C5FF),
