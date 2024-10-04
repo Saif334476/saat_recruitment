@@ -31,8 +31,8 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _phoneNumber = TextEditingController();
-  String _city = "";
-  String _gender = "";
+  String _city = "Lahore";
+  String _gender = "Male";
   String? _selectedFileName;
   bool _isFileSelected = false;
 
