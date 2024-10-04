@@ -15,7 +15,8 @@ class PreviewPage extends StatefulWidget {
   final String location;
   final String salary;
   final String selectedOption;
-  final String jobId;
+  final String? jobId;
+  final String? jobAdId;
    const PreviewPage(
       {super.key,
       required this.mcq,
@@ -26,7 +27,7 @@ class PreviewPage extends StatefulWidget {
       required this.location,
       required this.salary,
       required this.selectedOption,
-      required this.jobId, this.jobAdData});
+       this.jobId, this.jobAdData, this.jobAdId});
 
   @override
   State<PreviewPage> createState() => _PreviewPageState();
@@ -70,7 +71,7 @@ class _PreviewPageState extends State<PreviewPage> {
         MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
   }
   Future<void> _updateJobAd() async {
-    final jobRef = FirebaseFirestore.instance.collection('jobs').doc(widget.jobId.toString());
+    final jobRef = FirebaseFirestore.instance.collection('jobs').doc(widget.jobAdId);
     try {
       await jobRef.update({
         'jobId': widget.jobId,
@@ -272,10 +273,10 @@ class _PreviewPageState extends State<PreviewPage> {
               ),
             ),
             onPressed: () async {
-              if(widget.jobAdData==null){
-              _saveJobAd();
+              if(widget.jobAdData!.isNotEmpty){
+              _updateJobAd();
               }else{
-                _updateJobAd();
+                _saveJobAd();
               }
               // final jobService = JobService();
               // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);

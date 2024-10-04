@@ -335,6 +335,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                                         _selectedOption,
                                                     jobId: dateTime.toString(),
                                                     mcq: const [],
+                                                        jobAdId:widget.jobAdId,
+                                                        jobAdData: widget.jobAdData,
                                                   ),
                                                 ),
                                               );
@@ -371,6 +373,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                                         _selectedOption,
                                                     jobId: dateTime.toString(),
                                                     mcq: const [],
+                                                        jobAdData: widget.jobAdData,
+                                                        jobAdId: widget.jobAdId,
                                                   ),
                                                 ),
                                               );
