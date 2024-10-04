@@ -4,10 +4,8 @@ import 'package:saat_recruitment/job_seeker_pages/js_my_jobs_page.dart';
 import 'package:saat_recruitment/job_seeker_pages/js_profile_page.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 
-import '../Models/job_seeker_model.dart';
-
 class NHomePage extends StatefulWidget {
-  const NHomePage( {super.key});
+  const NHomePage({super.key});
 
   @override
   HomePageState createState() => HomePageState();
@@ -30,7 +28,42 @@ class HomePageState extends State<NHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xff2597F1),
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              children: [
+                SizedBox(
+                  height: 200,
+                  width: constraints.maxWidth * 0.2, // 20% of screen width
+                  child: Image.asset("assets/sirf_logo.png"),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 10.0, right: 20, top: 20, bottom: 20),
+                    child: SizedBox(
+                      height: 50,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          prefixIcon: const Icon(Icons.search),
+                          hintText: 'Search',
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.share))
+              ],
+            );
+          },
+        ),
+      ),
       body: _children[_currentIndex],
       bottomNavigationBar: Container(
         clipBehavior: Clip.hardEdge,
@@ -42,7 +75,7 @@ class HomePageState extends State<NHomePage> {
         ),
         child: BottomNavigationBar(
           unselectedItemColor: Colors.white70,
-          backgroundColor:  const Color(0xFF4F94CA),
+          backgroundColor: const Color(0xFF2597F1),
           currentIndex: _currentIndex,
           iconSize: 30,
           onTap: navigateTo,
@@ -59,13 +92,27 @@ class HomePageState extends State<NHomePage> {
           selectedLabelStyle: const TextStyle(color: Colors.grey),
         ),
       ),
-    );
+    ));
   }
 }
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final TextEditingController searchController = TextEditingController();
+
+  final List<JobCategory> jobCategories = [
+    JobCategory(icon: Icons.computer, name: 'IT & Technology'),
+    JobCategory(icon: Icons.local_hospital, name: 'Healthcare'),
+    JobCategory(icon: Icons.shopping_cart, name: 'Sales & Marketing'),
+    JobCategory(icon: Icons.account_balance, name: 'Finance & Accounting'),
+    JobCategory(icon: Icons.headset_mic, name: 'Customer Service'),
+    JobCategory(icon: Icons.people, name: 'Administration & HR'),
+    JobCategory(icon: Icons.construction, name: 'Engineering & Manufacturing'),
+    JobCategory(icon: Icons.brush, name: 'Creative & Design'),
+    JobCategory(icon: Icons.hotel, name: 'Hospitality & Tourism'),
+    JobCategory(icon: Icons.school, name: 'Education & Training'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -78,61 +125,62 @@ class HomePage extends StatelessWidget {
             ),
             // color: Colors.white,
             child: ListView(children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.blue,
-                            blurRadius: 7,
-                            blurStyle: BlurStyle.outer),
-                      ],
-                    ),
-                    child: textFieldWidget(
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.search_outlined),
-                        onPressed: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //         const JobSeekerProfile()));
-                        },
-                      ),
-                      text: 'Search by Job title',
-                      icon: Icons.abc_outlined,
-                      isPasswordType: false,
-                      controller: searchController,
-                      onComplete: () {},
-                      onChange: (String) {},
-                    ),
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 20),
+              //   child: Padding(
+              //     padding: const EdgeInsets.only(left: 8, right: 8),
+              //     child: Container(
+              //       decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(20),
+              //         boxShadow: const [
+              //           BoxShadow(
+              //               color: Colors.blue,
+              //               blurRadius: 7,
+              //               blurStyle: BlurStyle.outer),
+              //         ],
+              //       ),
+              //       child: textFieldWidget(
+              //         suffixIcon: IconButton(
+              //           icon: const Icon(Icons.search_outlined),
+              //           onPressed: () {
+              //             // Navigator.push(
+              //             //     context,
+              //             //     MaterialPageRoute(
+              //             //         builder: (context) =>
+              //             //         const JobSeekerProfile()));
+              //           },
+              //         ),
+              //         text: 'Search by Job title',
+              //         icon: Icons.abc_outlined,
+              //         isPasswordType: false,
+              //         controller: searchController,
+              //         onComplete: () {},
+              //         onChange: (String) {},
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.only(top: 15.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Job Categories",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
-                    ),
+                    // const Text(
+                    //   "Job Categories",
+                    //   style:
+                    //       TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+                    // ),
                     Padding(
                         padding: const EdgeInsets.only(
                             bottom: 10, top: 0, right: 10, left: 10),
                         child: Container(
                           decoration: BoxDecoration(
-                              border: Border.all(color: const Color(0xff1C4374)),
+                              border:
+                                  Border.all(color: const Color(0xff1C4374)),
                               gradient: const LinearGradient(
                                   colors: [Color(0xff57a9f3), Colors.white],
-                                  begin: Alignment(0,5.2),
-                                  end: Alignment(4,2.8)),
+                                  begin: Alignment(0, 5.2),
+                                  end: Alignment(4, 2.8)),
                               boxShadow: const [
                                 BoxShadow(
                                     color: Color(0xff1C4374),
@@ -147,18 +195,22 @@ class HomePage extends StatelessWidget {
                           width: MediaQuery.of(context).size.width,
                           child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: 8,
+                              itemCount: jobCategories.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Container(
                                     margin: const EdgeInsets.only(
                                         top: 10, bottom: 10, left: 6, right: 6),
-                                    decoration:  BoxDecoration(
-                                      border: Border.all(color: const Color(0xff1C4374)),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: const Color(0xff1C4374)),
                                         // color: const Color(0xff6ab0ec),
                                         gradient: const LinearGradient(
-                                            colors: [Color(0xff57a9f3), Colors.white],
-                                            begin: Alignment(0,5.2),
-                                            end: Alignment(4,2.8)),
+                                            colors: [
+                                              Color(0xff57a9f3),
+                                              Colors.white
+                                            ],
+                                            begin: Alignment(0, 5.2),
+                                            end: Alignment(4, 2.8)),
                                         boxShadow: const [
                                           BoxShadow(
                                               color: Colors.black54,
@@ -166,10 +218,8 @@ class HomePage extends StatelessWidget {
                                               blurStyle: BlurStyle.outer),
                                         ],
                                         borderRadius: const BorderRadius.all(
-                                            Radius.circular(10))
-
-                                    ),
-                                    child: const Column(
+                                            Radius.circular(10))),
+                                    child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
@@ -180,19 +230,24 @@ class HomePage extends StatelessWidget {
                                                 leading: SizedBox(
                                               width: 10,
                                               child: Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 10),
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
                                                 child: Icon(
-                                                    Icons.person_2_outlined),
+                                                    jobCategories[index].icon),
                                               ),
                                             ))),
                                         Flexible(
                                           flex: 1,
                                           fit: FlexFit.tight,
-                                          child: Text(
-                                            "Manager",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, right: 8),
+                                            child: Text(
+                                              jobCategories[index].name,
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w700),
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -212,7 +267,7 @@ class HomePage extends StatelessWidget {
                           const EdgeInsets.only(bottom: 8, right: 10, left: 10),
                       child: Container(
                           decoration: BoxDecoration(
-                            border: Border.all(color:const Color(0xff1C4374)),
+                            border: Border.all(color: const Color(0xff1C4374)),
                             boxShadow: const [
                               BoxShadow(
                                   color: Color(0xff1C4374),
@@ -270,4 +325,11 @@ class HomePage extends StatelessWidget {
               ),
             ])));
   }
+}
+
+class JobCategory {
+  final IconData icon;
+  final String name;
+
+  JobCategory({required this.icon, required this.name});
 }
