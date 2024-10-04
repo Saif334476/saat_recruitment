@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:saat_recruitment/job_seeker_pages/job_seeker_dashboard.dart';
+import 'package:saat_recruitment/job_seeker_pages/dashboard/job_seeker_dashboard.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:intl/intl.dart';
 

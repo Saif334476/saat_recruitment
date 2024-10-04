@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:saat_recruitment/job_seeker_pages/job_seeker_dashboard.dart';
+import 'package:saat_recruitment/job_seeker_pages/dashboard/job_seeker_dashboard.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
