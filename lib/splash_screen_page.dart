@@ -9,7 +9,7 @@ import 'package:saat_recruitment/login_page.dart';
 
 import 'company_pages/company_dashboard.dart';
 import 'company_pages/company_form_page.dart';
-import 'job_seeker_pages/job_seeker_dashboard.dart';
+import 'job_seeker_pages/dashboard/job_seeker_dashboard.dart';
 
 class SplashScreenPage extends StatefulWidget {
   const SplashScreenPage({super.key});

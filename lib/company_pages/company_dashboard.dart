@@ -4,9 +4,7 @@ import 'package:saat_recruitment/company_pages/company_new_ad_posting.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_profile_page.dart';
 import 'package:saat_recruitment/company_pages/list_job_ads.dart';
-import 'package:saat_recruitment/job_seeker_pages/job_seeker_profile.dart';
-import 'package:saat_recruitment/job_seeker_pages/js_profile_page.dart';
-import '../Models/job_seeker_model.dart';
+
 
 class CompanyDashBoard extends StatefulWidget {
   const CompanyDashBoard({super.key});
