@@ -9,10 +9,10 @@ class JobAdsListView extends StatefulWidget {
   JobAdsListView({super.key});
 
   @override
-  _JobAdsListViewState createState() => _JobAdsListViewState();
+  JobAdsListViewState createState() => JobAdsListViewState();
 }
 
-class _JobAdsListViewState extends State<JobAdsListView> {
+class JobAdsListViewState extends State<JobAdsListView> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
