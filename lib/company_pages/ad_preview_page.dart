@@ -3,12 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_dashboard.dart';
-import 'package:saat_recruitment/company_pages/company_new_ad_posting.dart';
-import 'package:saat_recruitment/job_seeker_pages/job_seeker_dashboard.dart';
 import '../Models/mcq_model.dart';
 
 class PreviewPage extends StatefulWidget {
-  Map<String, dynamic>? jobAdData;
+ final  Map<String, dynamic>? jobAdData;
   final List<MCQ> mcq;
   final String jobTitle;
   final String selectedCategory;
@@ -18,7 +16,7 @@ class PreviewPage extends StatefulWidget {
   final String salary;
   final String selectedOption;
   final String jobId;
-   PreviewPage(
+   const PreviewPage(
       {super.key,
       required this.mcq,
       required this.jobTitle,
@@ -72,7 +70,7 @@ class _PreviewPageState extends State<PreviewPage> {
         MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
   }
   Future<void> _updateJobAd() async {
-    final jobRef = FirebaseFirestore.instance.collection('jobs').doc();
+    final jobRef = FirebaseFirestore.instance.collection('jobs').doc(widget.jobId.toString());
     try {
       await jobRef.update({
         'jobId': widget.jobId,
