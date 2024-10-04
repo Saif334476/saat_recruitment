@@ -19,7 +19,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
   final dateTime = DateTime.now();
   final date = DateTime.now().millisecondsSinceEpoch.toString();
-  String _selectedOption="";
+  String _selectedOption = "";
   String _selectedCategory = '';
   final TextEditingController _jobTitle = TextEditingController();
   String _jobType = '';
@@ -33,6 +33,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   void dispose() {
     super.dispose();
   }
+
   @override
   void initState() {
     super.initState();
@@ -45,8 +46,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
       _selectedOption = widget.jobAdData!['selectedOption'];
       _requiredExperience = widget.jobAdData!['requiredExperience'];
       _salary.text = widget.jobAdData!['salary'];
-    }
-    else{
+    } else {
       _selectedOption = '';
       _selectedCategory = '';
       _location = '';
@@ -59,7 +59,6 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
 
   @override
   Widget build(BuildContext context) {
-
     print('_selectedOption: $_selectedOption');
 
     return Scaffold(
@@ -130,7 +129,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 'Engineering & Manufacturing',
                                 'Creative & Design',
                                 'Hospitality & Tourism',
-                                'Education & Training',""
+                                'Education & Training',
+                                ""
                               ].map((category) {
                                 return DropdownMenuItem(
                                   value: category,
@@ -162,7 +162,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 'Part-time',
                                 'Contract',
                                 'Freelance',
-                                'Internship',""
+                                'Internship',
+                                ""
                               ].map((jobType) {
                                 return DropdownMenuItem(
                                   value: jobType,
@@ -191,7 +192,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 'One Year',
                                 'Two Years',
                                 'Three Years',
-                                'Five Years',""
+                                'Five Years',
+                                ""
                               ].map((jobExperience) {
                                 return DropdownMenuItem(
                                   value: jobExperience,
@@ -241,7 +243,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                 'Kohat',
                                 'Bawalnagar',
                                 'Chakwal',
-                                'Mianwali',""
+                                'Mianwali',
+                                ""
                               ].map((location) {
                                 return DropdownMenuItem(
                                   value: location,
@@ -285,10 +288,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                             padding: const EdgeInsets.only(top: 10),
                             child: dropDown(
                               value: _selectedOption,
-                              items: [
-                                'Yes',
-                                'No',""
-                              ].map((valued) {
+                              items: ['Yes', 'No', ""].map((valued) {
                                 return DropdownMenuItem(
                                   value: valued,
                                   child: Text(valued),
@@ -310,93 +310,156 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                             ),
                           ),
                           _selectedOption == 'No'
-                              ? Padding(
-                                  padding: const EdgeInsets.only(top: 20),
-                                  child: CupertinoButton(
-                                    color: const Color(0xff1C4374),
-                                    onPressed: () async {
-                                      if (_formKey.currentState!.validate()) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => PreviewPage(
-                                              jobTitle: _jobTitle.text,
-                                              selectedCategory:
-                                                  _selectedCategory,
-                                              jobType: _jobType,
-                                              requiredExperience:
-                                                  _requiredExperience,
-                                              location: _location,
-                                              salary: _salary.text,
-                                              selectedOption: _selectedOption,
-                                              jobId: dateTime.toString(),
-                                              mcq: const [],
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    child: (widget.jobAdData != null)
-                                        ? const Text(
+                              ? (widget.jobAdData != null)
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: CupertinoButton(
+                                          color: const Color(0xff1C4374),
+                                          onPressed: () async {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PreviewPage(
+                                                    jobTitle: _jobTitle.text,
+                                                    selectedCategory:
+                                                        _selectedCategory,
+                                                    jobType: _jobType,
+                                                    requiredExperience:
+                                                        _requiredExperience,
+                                                    location: _location,
+                                                    salary: _salary.text,
+                                                    selectedOption:
+                                                        _selectedOption,
+                                                    jobId: dateTime.toString(),
+                                                    mcq: const [],
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: const Text(
                                             'Update Job Ad',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w900,
                                                 fontSize: 18),
-                                          )
-                                        : const Text(
+                                          )))
+                                  : Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: CupertinoButton(
+                                          color: const Color(0xff1C4374),
+                                          onPressed: () async {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PreviewPage(
+                                                    jobTitle: _jobTitle.text,
+                                                    selectedCategory:
+                                                        _selectedCategory,
+                                                    jobType: _jobType,
+                                                    requiredExperience:
+                                                        _requiredExperience,
+                                                    location: _location,
+                                                    salary: _salary.text,
+                                                    selectedOption:
+                                                        _selectedOption,
+                                                    jobId: dateTime.toString(),
+                                                    mcq: const [],
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: const Text(
                                             'Post Job',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w900,
                                                 fontSize: 18),
-                                          ),
-                                  ))
-                              : Padding(
-                                  padding: const EdgeInsets.only(top: 20),
-                                  child: CupertinoButton(
-                                    color: const Color(0xff1C4374),
-                                    onPressed: () async {
-                                      if (_formKey.currentState!.validate()) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                CompanyMCQCreationScreen(
-                                              jobTitle: _jobTitle.text,
-                                              selectedCategory:
-                                                  _selectedCategory,
-                                              jobType: _jobType,
-                                              requiredExperience:
-                                                  _requiredExperience,
-                                              location: _location,
-                                              salary: _salary.text,
-                                              selectedOption: _selectedOption,
-                                              jobId: dateTime.toString(),
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    child: (widget.jobAdData != null)
-                                        ? const Text(
+                                          )))
+                              : (widget.jobAdData != null)
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: CupertinoButton(
+                                          color: const Color(0xff1C4374),
+                                          onPressed: () async {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CompanyMCQCreationScreen(
+                                                    jobAdData: widget.jobAdData,
+                                                    jobTitle: _jobTitle.text,
+                                                    selectedCategory:
+                                                        _selectedCategory,
+                                                    jobType: _jobType,
+                                                    requiredExperience:
+                                                        _requiredExperience,
+                                                    location: _location,
+                                                    salary: _salary.text,
+                                                    selectedOption:
+                                                        _selectedOption,
+                                                    jobId: dateTime.toString(),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: const Text(
                                             'Proceed to MCQs',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w900,
                                               fontSize: 18,
                                             ),
-                                          )
-                                        : const Text(
-                                            'Post Job with MCQs',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: 18,
-                                            ),
+                                          )))
+                                  : Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: CupertinoButton(
+                                        color: const Color(0xff1C4374),
+                                        onPressed: () async {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CompanyMCQCreationScreen(
+                                                  jobAdData: widget.jobAdData,
+                                                  jobTitle: _jobTitle.text,
+                                                  selectedCategory:
+                                                      _selectedCategory,
+                                                  jobType: _jobType,
+                                                  requiredExperience:
+                                                      _requiredExperience,
+                                                  location: _location,
+                                                  salary: _salary.text,
+                                                  selectedOption:
+                                                      _selectedOption,
+                                                  jobId: dateTime.toString(),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: const Text(
+                                          'Post Job with MCQs',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w900,
+                                            fontSize: 18,
                                           ),
-                                  ),
-                                )
+                                        ),
+                                      ),
+                                    )
                         ])))
           ])),
     );

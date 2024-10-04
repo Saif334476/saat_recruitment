@@ -8,6 +8,7 @@ import 'package:saat_recruitment/job_seeker_pages/job_seeker_dashboard.dart';
 import '../Models/mcq_model.dart';
 
 class PreviewPage extends StatefulWidget {
+  Map<String, dynamic>? jobAdData;
   final List<MCQ> mcq;
   final String jobTitle;
   final String selectedCategory;
@@ -17,7 +18,7 @@ class PreviewPage extends StatefulWidget {
   final String salary;
   final String selectedOption;
   final String jobId;
-  const PreviewPage(
+   PreviewPage(
       {super.key,
       required this.mcq,
       required this.jobTitle,
@@ -27,7 +28,7 @@ class PreviewPage extends StatefulWidget {
       required this.location,
       required this.salary,
       required this.selectedOption,
-      required this.jobId});
+      required this.jobId, this.jobAdData});
 
   @override
   State<PreviewPage> createState() => _PreviewPageState();
@@ -38,7 +39,7 @@ class _PreviewPageState extends State<PreviewPage> {
   final dateTime = DateTime.now();
   final date = DateTime.now().millisecondsSinceEpoch.toString();
 
-  Future<void> _saveMCQs() async {
+  Future<void> _saveJobAd() async {
     final jobRef = FirebaseFirestore.instance.collection('jobs').doc();
     try {
       await jobRef.set({
@@ -59,6 +60,38 @@ class _PreviewPageState extends State<PreviewPage> {
                   'option4': mcq.option4,
                   'correctAnswer': mcq.correctAnswer,
                 })
+            .toList(),
+        'postedBy': uid,
+        'postedAt': DateTime.now(),
+      });
+    } catch (e) {
+      print('Error saving job posting: $e');
+    }
+
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
+  }
+  Future<void> _updateJobAd() async {
+    final jobRef = FirebaseFirestore.instance.collection('jobs').doc();
+    try {
+      await jobRef.update({
+        'jobId': widget.jobId,
+        'jobTitle': widget.jobTitle,
+        'selectedCategory': widget.selectedCategory,
+        'jobType': widget.jobType,
+        'requiredExperience': widget.requiredExperience,
+        'location': widget.location,
+        'salary': widget.salary,
+        'selectedOption': widget.selectedOption,
+        'mcq': widget.mcq
+            .map((mcq) => {
+          'question': mcq.question,
+          'option1': mcq.option1,
+          'option2': mcq.option2,
+          'option3': mcq.option3,
+          'option4': mcq.option4,
+          'correctAnswer': mcq.correctAnswer,
+        })
             .toList(),
         'postedBy': uid,
         'postedAt': DateTime.now(),
@@ -241,7 +274,11 @@ class _PreviewPageState extends State<PreviewPage> {
               ),
             ),
             onPressed: () async {
-              _saveMCQs();
+              if(widget.jobAdData==null){
+              _saveJobAd();
+              }else{
+                _updateJobAd();
+              }
               // final jobService = JobService();
               // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);
               //  Navigator.pop(context);

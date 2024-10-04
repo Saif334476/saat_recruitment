@@ -25,7 +25,7 @@ class _JobAdsListViewState extends State<JobAdsListView> {
           return const Center(child: CircularProgressIndicator());
         }
         return Container(
-          height: 500,
+          height: 600,
           color: Colors.transparent,
           child: Expanded(
             child: snapshot.data!.docs.isEmpty
@@ -38,8 +38,7 @@ class _JobAdsListViewState extends State<JobAdsListView> {
                       return ListTile(
                         onTap: () async {
                           final jobAdId = (jobAdDoc.id);
-                          final jobAdData =
-                              jobAdDoc.data() as Map<String, dynamic>;
+                          final jobAdData = jobAdDoc.data() as Map<String, dynamic>;
 
                           Navigator.push(
                             context,

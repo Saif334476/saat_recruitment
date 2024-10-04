@@ -4,6 +4,7 @@ import 'ad_preview_page.dart';
 import 'mcq_card.dart';
 
 class CompanyMCQCreationScreen extends StatefulWidget {
+  final Map<String, dynamic>? jobAdData;
   final String jobId;
   final String selectedOption;
   final String salary;
@@ -14,14 +15,15 @@ class CompanyMCQCreationScreen extends StatefulWidget {
   final String jobTitle;
   const CompanyMCQCreationScreen(
       {super.key,
-      required this.jobId,
       required this.selectedOption,
       required this.salary,
       required this.location,
       required this.requiredExperience,
       required this.jobType,
       required this.selectedCategory,
-      required this.jobTitle});
+      required this.jobTitle,
+      this.jobAdData,
+      required this.jobId});
 
   @override
   CompanyMCQCreationScreenState createState() =>
@@ -162,14 +164,15 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => PreviewPage(
+                                  jobAdData: widget.jobAdData,
                                   mcq: mcqs,
-                                  jobTitle:widget.jobTitle,
-                                  selectedCategory:widget.selectedCategory,
-                                  jobType:widget.jobType,
-                                  requiredExperience:widget.requiredExperience,
-                                  location:widget.location,
-                                  salary:widget.salary,
-                                  selectedOption:widget.selectedOption,
+                                  jobTitle: widget.jobTitle,
+                                  selectedCategory: widget.selectedCategory,
+                                  jobType: widget.jobType,
+                                  requiredExperience: widget.requiredExperience,
+                                  location: widget.location,
+                                  salary: widget.salary,
+                                  selectedOption: widget.selectedOption,
                                   jobId: widget.jobId,
                                 )));
                   },
