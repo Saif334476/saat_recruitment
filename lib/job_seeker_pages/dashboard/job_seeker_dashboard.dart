@@ -13,7 +13,7 @@ class HomePageState extends State<NHomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _children = [
-    JobSeekerHomePage(),
+    const JobSeekerHomePage(),
     const MyJobsPage(),
     const JsProfilePage(),
   ];
