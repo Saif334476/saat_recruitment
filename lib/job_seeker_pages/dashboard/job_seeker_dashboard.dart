@@ -30,7 +30,7 @@ class HomePageState extends State<NHomePage> {
         child: Scaffold(
       appBar: AppBar(
         backgroundColor:
-        const Color(0xff2597F1),
+        Colors.white,
 
         title: LayoutBuilder(
           builder: (context, constraints) {
@@ -74,7 +74,7 @@ class HomePageState extends State<NHomePage> {
           ),
         ),
         child: BottomNavigationBar(
-          unselectedItemColor: Colors.white70,
+          unselectedItemColor: Colors.white,
           backgroundColor: const Color(0xff1C4374),
           currentIndex: _currentIndex,
           iconSize: 30,
@@ -86,7 +86,7 @@ class HomePageState extends State<NHomePage> {
                 label: 'My Applications'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
           ],
-          selectedItemColor: const Color(0xFF2597F1),
+          selectedItemColor: const Color(0xff97C5FF),
           unselectedLabelStyle:
               TextStyle(color: Colors.white10.withOpacity(0.5)),
           selectedLabelStyle: const TextStyle(color: Colors.grey),
