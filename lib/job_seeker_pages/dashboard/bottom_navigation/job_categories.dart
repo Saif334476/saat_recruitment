@@ -50,7 +50,7 @@ class _JobCategoriesState extends State<JobCategories> {
                     },
                     child: SizedBox(
                       height: 100,
-                      width: 110,
+                      width: 115,
                       child: Container(
                           margin: const EdgeInsets.only(
                               top: 10, bottom: 10, left: 6, right: 6),

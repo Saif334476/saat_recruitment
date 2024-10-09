@@ -16,21 +16,21 @@ class MCQCard extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrevious;
   final VoidCallback onPreview;
- const  MCQCard(
-      {super.key,
-      required this.mcq,
-      required this.questionNumber,
-      required this.questionController,
-      required this.option1Controller,
-      required this.option2Controller,
-      required this.option3Controller,
-      required this.option4Controller,
-        required this.correctAnswer,
-       required this.getSelectedAnswer,
-      required this.onNext,
-      required this.onPrevious,
-      required this.onPreview,
-      });
+  const MCQCard({
+    super.key,
+    required this.mcq,
+    required this.questionNumber,
+    required this.questionController,
+    required this.option1Controller,
+    required this.option2Controller,
+    required this.option3Controller,
+    required this.option4Controller,
+    required this.correctAnswer,
+    required this.getSelectedAnswer,
+    required this.onNext,
+    required this.onPrevious,
+    required this.onPreview,
+  });
 
   @override
   State<MCQCard> createState() => _MCQCardState();
@@ -38,7 +38,40 @@ class MCQCard extends StatefulWidget {
 
 class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
   late MCQ _mcq;
-  String? _selectedAnswer = 'Option 1';
+  int _selectedAnswer = 0;
+
+  String? validateOption(TextEditingController controller) {
+    List<TextEditingController> options = [
+      widget.option1Controller,
+      widget.option2Controller,
+      widget.option3Controller,
+      widget.option4Controller,
+    ];
+
+    for (var option in options) {
+      if (option.text == controller.text && option != controller) {
+        return 'Duplicate option';
+      }
+    }
+
+    if (controller.text.isEmpty) {
+      return 'Please enter an option';
+    }
+
+    return null;
+  }
+
+  bool areOptionsUnique() {
+    List<String> options = [
+      widget.option1Controller.text,
+      widget.option2Controller.text,
+      widget.option3Controller.text,
+      widget.option4Controller.text,
+    ];
+
+    return options.toSet().length == options.length &&
+        options.every((element) => element.isNotEmpty);
+  }
 
   @override
   void initState() {
@@ -50,7 +83,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
       widget.option2Controller.text = _mcq.option2;
       widget.option3Controller.text = _mcq.option3;
       widget.option4Controller.text = _mcq.option4;
-      _selectedAnswer = _mcq.correctAnswer ?? 'Option 1';
+      _selectedAnswer = getAnswerIndex(_mcq.correctAnswer);
     } else {
       _mcq = MCQ(
         question: '',
@@ -60,7 +93,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
         option4: '',
         correctAnswer: null,
       );
-    }_selectedAnswer = widget.correctAnswer;
+    }
   }
 
   @override
@@ -73,9 +106,24 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
       widget.option2Controller.text = _mcq.option2;
       widget.option3Controller.text = _mcq.option3;
       widget.option4Controller.text = _mcq.option4;
-      _selectedAnswer = _mcq.correctAnswer ?? 'Option 1';
+      _selectedAnswer = getAnswerIndex(_mcq.correctAnswer);
     }
-   // _selectedAnswer = widget.correctAnswer.isEmpty ? 'Option 1' : widget.correctAnswer;
+    // _selectedAnswer = widget.correctAnswer.isEmpty ? 'Option 1' : widget.correctAnswer;
+  }
+
+  int getAnswerIndex(String? answer) {
+    switch (answer) {
+      case 'Option 1':
+        return 1;
+      case 'Option 2':
+        return 2;
+      case 'Option 3':
+        return 3;
+      case 'Option 4':
+        return 4;
+      default:
+        return 0;
+    }
   }
 
   @override
@@ -111,7 +159,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10.0,right: 50),
+            padding: const EdgeInsets.only(bottom: 10.0, right: 50),
             child: textFormField(
               "Option 1",
               Icons.question_answer_outlined,
@@ -119,16 +167,11 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               keyboard: TextInputType.text,
               controller: widget.option1Controller,
               onChanged: () {},
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter option 1';
-                }
-                return null;
-              },
+              validator: (value) => validateOption(widget.option1Controller),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10.0,right: 50),
+            padding: const EdgeInsets.only(bottom: 10.0, right: 50),
             child: textFormField(
               "Option 2",
               Icons.question_answer_outlined,
@@ -136,16 +179,11 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               keyboard: TextInputType.text,
               controller: widget.option2Controller,
               onChanged: () {},
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter option 2';
-                }
-                return null;
-              },
+              validator: (value) => validateOption(widget.option2Controller),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10.0,right: 50),
+            padding: const EdgeInsets.only(bottom: 10.0, right: 50),
             child: textFormField(
               "Option 3",
               Icons.question_answer_outlined,
@@ -153,16 +191,11 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               keyboard: TextInputType.text,
               controller: widget.option3Controller,
               onChanged: () {},
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter option 3';
-                }
-                return null;
-              },
+              validator: (value) => validateOption(widget.option3Controller),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10.0,right: 50),
+            padding: const EdgeInsets.only(bottom: 10.0, right: 50),
             child: textFormField(
               "Option 4",
               Icons.question_answer_outlined,
@@ -170,35 +203,80 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               keyboard: TextInputType.text,
               controller: widget.option4Controller,
               onChanged: () {},
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter option 4';
-                }
-                return null;
-              },
+              validator: (value) => validateOption(widget.option4Controller),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: DropdownButton(
-              value:
-              _selectedAnswer,
-              onChanged: (value) {
-                _selectedAnswer = value;
-                widget.getSelectedAnswer(_selectedAnswer ?? 'Option 1');
-              },
-              items: const <String>[
-                'Option 1',
-                'Option 2',
-                'Option 3',
-                'Option 4'
-              ].map((value) {
-                return DropdownMenuItem(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
+          const Text(
+            'Select Correct Answer',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  title: Text(widget.option1Controller.text.isEmpty ? 'Option 1' : widget.option1Controller.text),
+                  leading: Radio(
+                    value: 1,
+                    groupValue: _selectedAnswer,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedAnswer = value as int;
+                        widget.getSelectedAnswer(widget.option1Controller.text);
+                      });
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListTile(
+                  title: Text(widget.option2Controller.text.isEmpty ? 'Option 2' : widget.option2Controller.text),
+                  leading: Radio(
+                    value: 2,
+                    groupValue: _selectedAnswer,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedAnswer = value as int;
+                        widget.getSelectedAnswer(widget.option2Controller.text);
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  title: Text(widget.option3Controller.text.isEmpty ? 'Option 3' : widget.option3Controller.text),
+                  leading: Radio(
+                    value: 3,
+                    groupValue: _selectedAnswer,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedAnswer = value as int;
+                        widget.getSelectedAnswer(widget.option3Controller.text);
+                      });
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListTile(
+                  title: Text(widget.option4Controller.text.isEmpty ? 'Option 4' : widget.option4Controller.text),
+                  leading: Radio(
+                    value: 4,
+                    groupValue: _selectedAnswer,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedAnswer = value as int;
+                        widget.getSelectedAnswer(widget.option4Controller.text);
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
@@ -218,7 +296,16 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
                         ))
                     : CupertinoButton(
                         color: const Color(0xff1C4374),
-                        onPressed: widget.onNext,
+                        onPressed: _selectedAnswer != 0
+                            ? widget.onNext
+                            : () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Please select a correct answer'),
+                                  ),
+                                );
+                              },
                         child: const Text(
                           'Next',
                           style: TextStyle(

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/job_seeker_pages/dashboard/job_info.dart';
 import '../../../company_pages/company_new_ad_posting.dart';
 import 'job_categories.dart';
 
@@ -179,21 +180,23 @@ class JobsWidget extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(10)),
                           ),
                           child: ListTile(
-                            selectedTileColor: Colors.yellow,
-                            selectedColor: Colors.white12,
                             onTap: () async {
                               final jobAdId = (jobAdDoc.id);
                               final jobAdData =
                                   jobAdDoc.data() as Map<String, dynamic>;
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CompanyNewAdPosting(
+                              showGeneralDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                barrierLabel: 'Dismiss',
+                                barrierColor: Colors.black.withOpacity(0.5),
+                                transitionDuration:
+                                    const Duration(milliseconds: 400),
+                                pageBuilder: (context, anim1, anim2) {
+                                  return JobInfo(
                                     jobAdData: jobAdData,
                                     jobAdId: jobAdId,
-                                  ),
-                                ),
+                                  ); // Your full-page modal widget
+                                },
                               );
                             },
                             title: Row(
@@ -210,12 +213,12 @@ class JobsWidget extends StatelessWidget {
                                     FutureBuilder(
                                       future: companyName(jobAdDoc['postedBy']),
                                       builder: (context, snapshot) {
-
-                                          return Text(
-                                            snapshot.data?['Name']??"---", // assuming 'companyName' is the field in Firestore
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w600),
-                                          );
+                                        return Text(
+                                          snapshot.data?['Name'] ??
+                                              "---", // assuming 'companyName' is the field in Firestore
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        );
                                       },
                                     )
                                   ],

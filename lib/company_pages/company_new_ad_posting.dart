@@ -412,6 +412,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                                     selectedOption:
                                                         _selectedOption,
                                                     jobId: dateTime.toString(),
+                                                        jobAdId: widget.jobAdId,
                                                   ),
                                                 ),
                                               );

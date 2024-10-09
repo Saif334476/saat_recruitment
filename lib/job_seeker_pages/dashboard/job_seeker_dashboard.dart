@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/bottom_navigation/js_my_jobs_page.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/bottom_navigation/js_profile_page.dart';
 import 'bottom_navigation/home.dart';
+
 class NHomePage extends StatefulWidget {
   const NHomePage({super.key});
 
@@ -29,9 +30,21 @@ class HomePageState extends State<NHomePage> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        backgroundColor:
-        Colors.white,
-
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        // clipBehavior: Clip.antiAlias,
+        // shape: const RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.only(
+        //     topLeft: Radius.circular(20) ,
+        //     topRight:  Radius.circular(20),
+        //     bottomLeft: Radius.circular(20),
+        //     bottomRight: Radius.circular(20),
+        //   ),
+        //   side: BorderSide(
+        //     color: Color(0xff1C4374),
+        //     width: 2,
+        //   ),
+        // ),
         title: LayoutBuilder(
           builder: (context, constraints) {
             return Row(
@@ -39,26 +52,36 @@ class HomePageState extends State<NHomePage> {
                 SizedBox(
                   height: 200,
                   width: constraints.maxWidth * 0.2, // 20% of screen width
-                  child: Image.asset("assets/sirf_logo.png",),
+                  child: Image.asset(
+                    "assets/sirf_logo.png",
+                  ),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10.0, right: 20, top: 20, bottom: 20),
-                    child: SizedBox(
-                      height: 50,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          prefixIcon: const Icon(Icons.search),
-                          hintText: 'Search',
+                SizedBox(
+                  height: 50,
+                  width: 230,
+                  child: Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 10.0, right: 20, top: 5, bottom: 5),
+                      child: SizedBox(
+                        height: 50,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            prefixIcon: const Icon(Icons.search),
+                            hintText: 'Search',
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.share))
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.share_outlined,
+                    ))
               ],
             );
           },

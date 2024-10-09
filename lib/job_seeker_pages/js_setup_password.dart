@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import '../Models/job_seeker_model.dart';
 
+
 class JsSetupPassword extends StatefulWidget {
   const JsSetupPassword({super.key});
   @override

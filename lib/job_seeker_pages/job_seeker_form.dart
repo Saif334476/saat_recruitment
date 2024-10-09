@@ -10,6 +10,8 @@ import 'package:saat_recruitment/job_seeker_pages/dashboard/job_seeker_dashboard
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:intl/intl.dart';
 
+//import 'dashboard/bottom_navigation/bottom_navigation.dart';
+
 class JobSeekerProfile extends StatefulWidget {
   final String? email;
   final String? credentials;

@@ -13,6 +13,8 @@ class CompanyMCQCreationScreen extends StatefulWidget {
   final String jobType;
   final String selectedCategory;
   final String jobTitle;
+
+  final String? jobAdId;
   const CompanyMCQCreationScreen(
       {super.key,
       required this.selectedOption,
@@ -23,6 +25,7 @@ class CompanyMCQCreationScreen extends StatefulWidget {
       required this.selectedCategory,
       required this.jobTitle,
       this.jobAdData,
+        this.jobAdId,
       required this.jobId});
 
   @override
@@ -36,7 +39,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
   final TextEditingController _option2Controller = TextEditingController();
   final TextEditingController _option3Controller = TextEditingController();
   final TextEditingController _option4Controller = TextEditingController();
-  String _correctAnswer = 'Option 1';
+  String _correctAnswer = '';
 
   int questionCount = 10;
   int currentQuestion = 1;
@@ -48,7 +51,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
       option2: '',
       option3: '',
       option4: '',
-      correctAnswer: null,
+      correctAnswer: '',
     ),
   );
 
@@ -78,7 +81,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
           const Padding(
             padding: EdgeInsets.only(top: 15.0, right: 10, left: 10),
             child: Text(
-              "Please add mcqs carefully for Good",
+              "Please add mcqs carefully for better filtration",
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
@@ -151,7 +154,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                       if (currentQuestion < questionCount) {
                         setState(() {
                           currentQuestion++;
-                          _correctAnswer = ("Option 1"); // Reset _correctAnswer
+                         // _correctAnswer = ("Option 1"); // Reset _correctAnswer
                         });
                       }
                     } else {
@@ -174,6 +177,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                                   salary: widget.salary,
                                   selectedOption: widget.selectedOption,
                                   jobId: widget.jobId,
+                              jobAdId: widget.jobAdId,
                                 )));
                   },
                 ),
