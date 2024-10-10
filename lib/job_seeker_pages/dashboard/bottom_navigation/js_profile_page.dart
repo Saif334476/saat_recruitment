@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/login_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,46 +23,92 @@ Future<Map<String, dynamic>?> fetchCompanyInfo(String uid) async {
 }
 
 class _JsProfilePageState extends State<JsProfilePage> {
+  FilePickerResult? result;
+  double _uploadProgress = 0;
   final uid = FirebaseAuth.instance.currentUser?.uid;
   Map<String, dynamic>? companyInfo;
   String? selectedFileName;
   File? selectedFile;
 
   void selectFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+    result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'doc', 'docx'],
     );
-
-    if (result != null && result.files.isNotEmpty) {
+    if (result != null && result!.files.isNotEmpty) {
+      PlatformFile file = result!.files.first;
       setState(() {
-        selectedFile = File(result.files.first.path!);
+        selectedFileName = file.name;
+        selectedFile = File(file.path!);
       });
-      showPreviewModal();
+      showPreviewModal(selectedFile);
     }
   }
 
-  void updateFileOnFirestoreAndStorage() async {
-    if (selectedFile != null) {
-      await FirebaseFirestore.instance
-          .collection('JobProviders')
-          .doc(uid)
-          .update({
-        'resumeFileUrl': await _uploadFileToStorage(selectedFile!),
-        'resumeFileName': selectedFileName,
-      });
+  void _showUploadDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Uploading...'),
+              LinearProgressIndicator(
+                value: _uploadProgress,
+              ),
+              Text('Uploaded: (${(_uploadProgress * 100).toInt()}%)'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void updateFileOnFirestoreAndStorage(selectedFile) async {
+    final users = FirebaseFirestore.instance.collection('Users');
+    final docSnapshot = await users.doc(uid).get();
+
+    if (docSnapshot.exists) {
+      final existingResumeUrl = docSnapshot.get('resumeUrl');
+
+      if (existingResumeUrl != null) {
+        await FirebaseStorage.instance.refFromURL(existingResumeUrl).delete();
+      }
+
+      if (selectedFile != null) {
+        _showUploadDialog();
+        final newResumeUrl = await _uploadFileToStorage(selectedFile!);
+
+        await users.doc(uid).update({
+          'resumeUrl': newResumeUrl,
+          'resumeFileName': selectedFileName,
+        });
+        Navigator.pop(context); // Close the dialog
+      }
     }
   }
 
-  Future<String> _uploadFileToStorage(File file) async {
+  Future<String?> _uploadFileToStorage(File file) async {
     final storageRef = FirebaseStorage.instance.ref();
-    final fileRef = storageRef.child('resumes/$selectedFileName');
+    final fileRef = storageRef
+        .child('resumes/${DateTime.now().millisecondsSinceEpoch}.jpeg');
+    String? downloadUrl;
     final uploadTask = fileRef.putFile(file);
-    final downloadUrl = await (await uploadTask).ref.getDownloadURL();
+    downloadUrl = await (await uploadTask).ref.getDownloadURL();
+    // await for (final snapshot in uploadTask.snapshotEvents) {
+    //   final progress = snapshot.bytesTransferred / snapshot.totalBytes;
+    //   setState(() {
+    //     _uploadProgress = progress;
+    //   });
+    //   downloadUrl = await snapshot.ref.getDownloadURL();
+    // }
     return downloadUrl;
   }
 
-  void showPreviewModal() {
+  void showPreviewModal(selectedFile) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -81,17 +129,26 @@ class _JsProfilePageState extends State<JsProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
+                  CupertinoButton(
+                    color: const Color(0xff1C4374),
                     onPressed: () {
                       Navigator.pop(context); // Close the modal
                     },
-                    child: const Text('Cancel'),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                  ElevatedButton(
+                  CupertinoButton(
+                    color: const Color(0xff1C4374),
                     onPressed: () {
-                      updateFileOnFirestoreAndStorage();
+                      updateFileOnFirestoreAndStorage(selectedFile);
+                      Navigator.pop(context);
                     },
-                    child: const Text('OK'),
+                    child: const Text(
+                      'OK',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -128,23 +185,33 @@ class _JsProfilePageState extends State<JsProfilePage> {
                   //   },
                   // ),
                   ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context); // Close the modal
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      selectFile();
-                      //  showPreviewModal();
-                    },
-                    child: const Text('Update'),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CupertinoButton(
+                      color: const Color(0xff1C4374),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the modal
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    CupertinoButton(
+                      color: const Color(0xff1C4374),
+                      onPressed: () {
+                        selectFile();
+                      },
+                      child: const Text(
+                        'Update',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -269,7 +336,7 @@ Widget displayCompanyInfo(
               ),
               InkWell(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 5.0,bottom: 5),
+                  padding: const EdgeInsets.only(top: 5.0, bottom: 5),
                   child: Row(
                     children: [
                       const Text(
@@ -296,7 +363,7 @@ Widget displayCompanyInfo(
               ),
               InkWell(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 5.0,bottom: 5),
+                  padding: const EdgeInsets.only(top: 5.0, bottom: 5),
                   child: Row(
                     children: [
                       const Text(
@@ -323,7 +390,7 @@ Widget displayCompanyInfo(
               ),
               InkWell(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 5.0,bottom: 5),
+                  padding: const EdgeInsets.only(top: 5.0, bottom: 5),
                   child: Row(
                     children: [
                       const Text(
@@ -409,12 +476,16 @@ Widget displayCompanyInfo(
               ),
               InkWell(
                 child: const Padding(
-                  padding: EdgeInsets.only(top: 5.0,bottom: 5),
+                  padding: EdgeInsets.only(top: 5.0, bottom: 5),
                   child: Row(
                     children: [
                       Text(
                         'Privacy & Security',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,),textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
                     ],
                   ),
@@ -451,12 +522,12 @@ Widget displayCompanyInfo(
                             showPreviewModals(companyInfo['resumeUrl']);
                           },
                         ),
-                        IconButton(
-                          onPressed: () {
-                            selectFile();
-                          },
-                          icon: const Icon(Icons.edit),
-                        )
+                        // IconButton(
+                        //   onPressed: () {
+                        //     selectFile(companyInfo['resumeUrl']);
+                        //   },
+                        //   icon: const Icon(Icons.edit),
+                        // )
                       ],
                     ),
                   ],
@@ -467,7 +538,7 @@ Widget displayCompanyInfo(
               ),
               InkWell(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 5.0,bottom: 5),
+                  padding: const EdgeInsets.only(top: 5.0, bottom: 5),
                   child: Row(
                     children: [
                       IconButton(
@@ -478,8 +549,8 @@ Widget displayCompanyInfo(
                           )),
                       const Text(
                         'Logout',
-                        style:
-                            TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w700),
                       ),
                     ],
                   ),
