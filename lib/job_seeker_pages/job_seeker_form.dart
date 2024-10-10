@@ -454,7 +454,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
         'Dob': _dateController.text,
         'Location': _city,
         'isComplete': true,
-        'resumeUrl': resumeUrl,
+        'resumeUrl': resumeUrl??"",
         'resumeFileName': _selectedFileName ?? "",
       });
     } catch (e) {
