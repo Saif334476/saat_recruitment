@@ -59,29 +59,9 @@ class _LoginPageState extends State<LoginPage> {
                       borderSide: const BorderSide(color: Color(0xff1C4374)),
                       borderRadius: BorderRadius.circular(15)),
                   labelText: "Enter E-mail or Phone",
-                  prefixIcon: const SizedBox(
-                    height: 20,
-                    width: 60,
-                    child: Row(
-                      children: [
-                        Divider(
-                          height: 50,
-                          thickness: 5,
-                          indent: 2,
-                        ),
-                        Icon(
-                          Icons.email_outlined,
-                          color: Colors.black,
-                        ),
-                        Divider(
-                          height: 20,
-                          thickness: 20,
-                          color: Colors.blue,
-                          indent: 2,
-                        ),
-                        Icon(Icons.phone_android_outlined, color: Colors.black)
-                      ],
-                    ),
+                  prefixIcon: const Icon(
+                    Icons.email_outlined,
+                    color: Colors.black,
                   ),
                 ),
                 validator: (value) {
