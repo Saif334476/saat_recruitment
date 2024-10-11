@@ -22,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   bool obscuredText = true;
+  bool _isLoading = false;
   final TextEditingController _phoneTextController = TextEditingController();
   final TextEditingController _passwordTextController = TextEditingController();
 
@@ -34,10 +35,10 @@ class _LoginPageState extends State<LoginPage> {
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           color: Colors.white,
-          gradient: LinearGradient(
-              colors: [Colors.white, Colors.blue],
-              begin: Alignment(2.5, 0.33),
-              end: Alignment(0.2, 1.75)),
+          // gradient: LinearGradient(
+          //     colors: [Colors.white, Colors.blue],
+          //     begin: Alignment(2.5, 0.33),
+          //     end: Alignment(0.2, 1.75)),
         ),
         child: Form(
           key: _formKey,
@@ -157,6 +158,9 @@ class _LoginPageState extends State<LoginPage> {
                       child: CupertinoButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              _isLoading = true;
+                            });
                             try {
                               final user = await FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
@@ -229,12 +233,7 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                               });
                             } on FirebaseAuthException catch (e) {
-                              print('Login error: ${e.message}');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                        Text('Login failed: ${e.message}')),
-                              );
+                              Dialog(child: Text('Login failed: ${e.message}'));
                             }
                           }
                         },
@@ -242,11 +241,14 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(15)),
                         pressedOpacity: 0.3,
-                        child: const Text(
-                          'LOG IN',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
+                        child: _isLoading
+                            ? const SizedBox(height:20,width:25,child: CircularProgressIndicator(color: Colors.white,))
+                            : const Text(
+                                'LOG IN',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
                       ),
                     ),
                   ),
