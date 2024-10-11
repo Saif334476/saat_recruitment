@@ -39,7 +39,6 @@ class _PreviewCvState extends State<PreviewCv> {
         'numberOfApplicants': FieldValue.increment(1),
       });
 
-      // Show success dialog
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

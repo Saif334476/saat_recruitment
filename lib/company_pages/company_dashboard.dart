@@ -33,18 +33,20 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
+        unselectedItemColor: Colors.white,
+        backgroundColor: const Color(0xff1C4374),
         currentIndex: _currentIndex,
         iconSize: 30,
         onTap: navigateTo,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home,), label: 'Home',),
           BottomNavigationBarItem(
-              icon: Icon(Icons.ad_units_outlined), label: 'Post New Ad'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
+              icon: Icon(Icons.ad_units_outlined,), label: 'Post New Ad'),
+          BottomNavigationBarItem(icon: Icon(Icons.person,), label: 'Profile')
         ],
-        selectedItemColor: Colors.blueAccent,
-        unselectedLabelStyle: TextStyle(color: Colors.white10.withOpacity(0.5)),
+        selectedItemColor: const Color(0xff97C5FF),
+        unselectedLabelStyle:
+        TextStyle(color: Colors.white10.withOpacity(0.5)),
         selectedLabelStyle: const TextStyle(color: Colors.grey),
       ),
     );

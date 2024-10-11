@@ -1,15 +1,11 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/preview_cv.dart';
-import 'package:saat_recruitment/job_seeker_pages/dashboard/update_data.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/upload_cv_resume.dart';
-import '../../Models/mcq_model.dart';
 import '../application_submission.dart';
 import '../conduct_mcqs.dart';
 
@@ -34,7 +30,6 @@ class _JobInfoState extends State<JobInfo> {
   final TextEditingController _salary = TextEditingController();
   String _location = '';
   List<Map<String, dynamic>> mcqList = [];
-
 
   @override
   void initState() {
@@ -83,7 +78,6 @@ class _JobInfoState extends State<JobInfo> {
 
   String? selectedFileName;
   File? selectedFile;
-
 
   // Widget _getFilePreview(String fileUrl) {
   //   Uri parsedUrl = Uri.parse(fileUrl);
@@ -291,7 +285,9 @@ class _JobInfoState extends State<JobInfo> {
                               child: Text(
                                 "Requirements",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 20,),
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
                           ],
@@ -366,8 +362,7 @@ class _JobInfoState extends State<JobInfo> {
                                   builder: (context) =>
                                       ConductMcqs(mcqList: mcqList)));
                         } else {
-
-                          if (companyInfo?['resumeUrl'] == ""){
+                          if (companyInfo?['resumeUrl'] == "") {
                             Navigator.pop(context);
                             Navigator.push(
                                 context,
@@ -379,8 +374,12 @@ class _JobInfoState extends State<JobInfo> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                    PreviewCv(uid,widget.jobAdId,existingResumeUrl: companyInfo?["resumeUrl"],)));
+                                    builder: (context) => PreviewCv(
+                                          uid,
+                                          widget.jobAdId,
+                                          existingResumeUrl:
+                                              companyInfo?["resumeUrl"],
+                                        )));
                             // showPreviewModals(companyInfo?["resumeUrl"]);
                           }
                         }
