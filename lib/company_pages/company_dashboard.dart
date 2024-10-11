@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_profile_page.dart';
 import 'package:saat_recruitment/company_pages/list_job_ads.dart';
 
-
 class CompanyDashBoard extends StatefulWidget {
   const CompanyDashBoard({super.key});
 
@@ -18,7 +17,10 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
 
   final List<Widget> _children = [
     HomePage(),
-    const CompanyNewAdPosting(jobAdData: null,jobAdId: null,),
+    const CompanyNewAdPosting(
+      jobAdData: null,
+      jobAdId: null,
+    ),
     const CompanyProfilePage(),
   ];
 
@@ -39,14 +41,25 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
         iconSize: 30,
         onTap: navigateTo,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home,), label: 'Home',),
           BottomNavigationBarItem(
-              icon: Icon(Icons.ad_units_outlined,), label: 'Post New Ad'),
-          BottomNavigationBarItem(icon: Icon(Icons.person,), label: 'Profile')
+            icon: Icon(
+              Icons.home,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.ad_units_outlined,
+              ),
+              label: 'Post New Ad'),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person,
+              ),
+              label: 'Profile')
         ],
         selectedItemColor: const Color(0xff97C5FF),
-        unselectedLabelStyle:
-        TextStyle(color: Colors.white10.withOpacity(0.5)),
+        unselectedLabelStyle: TextStyle(color: Colors.white10.withOpacity(0.5)),
         selectedLabelStyle: const TextStyle(color: Colors.grey),
       ),
     );
@@ -59,83 +72,86 @@ class HomePage extends StatelessWidget {
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.white],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter),
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xff1C4374),
+          automaticallyImplyLeading: false,
+          title: const Text(
+            "Home Page",
+            style: TextStyle(fontSize: 25,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
             ),
-            // color: Colors.white,
-            child: ListView(children: [
-              Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: TextField(
-                            onSubmitted: (value) {},
-                            onChanged: (value) {},
-                            textInputAction: TextInputAction.search,
-                            decoration: InputDecoration(
-                              labelText: "Search Job AD",
-                              hintText: "",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                                borderSide: const BorderSide(
-                                    width: 20.0, color: Color(0xff1C4374)),
+          ),
+        ),
+        body: ListView(children: [
+          Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 8, right: 8),
+                    //   child: TextField(
+                    //     onSubmitted: (value) {},
+                    //     onChanged: (value) {},
+                    //     textInputAction: TextInputAction.search,
+                    //     decoration: InputDecoration(
+                    //       labelText: "Search Job AD",
+                    //       hintText: "",
+                    //       border: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(20.0),
+                    //         borderSide: const BorderSide(
+                    //             width: 20.0, color: Color(0xff1C4374)),
+                    //       ),
+                    //       focusedBorder: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(20),
+                    //           borderSide: const BorderSide(
+                    //               color: Color(0xff1C4374), width: 2)),
+                    //       // boxShadow:const [BoxShadow(color: Colors.lightBlueAccent)],
+                    //       suffixIcon: IconButton(
+                    //         icon: const Icon(Icons.search_outlined),
+                    //         onPressed: () {
+                    //           // Navigator.push(
+                    //           //     context,
+                    //           //     MaterialPageRoute(
+                    //           //         builder: (context) =>
+                    //           //         const JobSeekerProfile()));
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 5),
+                            child: Text(
+                              'Posted Jobs',
+                              style: TextStyle(
+                                // decoration: TextDecoration.underline,
+                                // decorationColor: Color(0xff1C4374), // Optional
+                                // decorationStyle: TextDecorationStyle.dotted, // Optional
+                                // decorationThickness: 2,
+                                shadows: [
+                                  Shadow(
+                                    offset: Offset(1.0, 1.0),
+                                    color: Colors.black54,
+                                    blurRadius: 2.0,
+                                  ),
+                                ],
+                                fontWeight: FontWeight.w900,
+                                fontSize: 30,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xff1C4374), width: 2)),
-                              // boxShadow:const [BoxShadow(color: Colors.lightBlueAccent)],
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.search_outlined),
-                                onPressed: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) =>
-                                  //         const JobSeekerProfile()));
-                                },
-                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        ),
-                        Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(top: 5, bottom: 5),
-                                child: Text(
-                                  'Your Job ADs',
-                                  style: TextStyle(
-                                    // decoration: TextDecoration.underline,
-                                    // decorationColor: Color(0xff1C4374), // Optional
-                                    // decorationStyle: TextDecorationStyle.dotted, // Optional
-                                    // decorationThickness: 2,
-                                    shadows: [
-                                      Shadow(
-                                        offset: Offset(1.0, 1.0),
-                                        color: Colors.black54,
-                                        blurRadius: 2.0,
-                                      ),
-                                    ],
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 30,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              JobAdsListView()
-                            ])
-                      ]))
-            ])));
+                          JobAdsListView()
+                        ])
+                  ]))
+        ]));
   }
 }

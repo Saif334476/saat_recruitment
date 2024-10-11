@@ -25,7 +25,7 @@ class JobAdsListViewState extends State<JobAdsListView> {
           return const Center(child: CircularProgressIndicator());
         }
         return Container(
-          height: 600,
+         height: MediaQuery.of(context).size.height*0.75,
           color: Colors.transparent,
           child: Expanded(
             child: snapshot.data!.docs.isEmpty

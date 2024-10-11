@@ -38,7 +38,7 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> {
         automaticallyImplyLeading: false,
         title: const Text(
           "Profile Page",
-          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white,fontSize: 25),
         ),
         backgroundColor: const Color(0xff1C4374),
       ),
