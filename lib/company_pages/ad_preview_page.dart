@@ -50,6 +50,7 @@ class _PreviewPageState extends State<PreviewPage> {
                 'location': widget.location,
                 'salary': widget.salary,
                 'selectedOption': widget.selectedOption,
+                'numberOfApplicants':0,
                 'mcq': widget.mcq
             .map((mcq) => {
                   'question': mcq.question,

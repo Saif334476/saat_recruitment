@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/job_info.dart';
-import '../../../company_pages/company_new_ad_posting.dart';
 import 'job_categories.dart';
 
 class JobSeekerHomePage extends StatefulWidget {
@@ -53,79 +52,6 @@ class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
                   },
                 ),
                 JobsWidget(selectedCategory: _selectedCategory),
-
-                // Expanded(
-                //   child: ListView.builder(
-                //     physics: const ScrollPhysics(),
-                //     shrinkWrap: true,
-                //     itemCount: 15,
-                //     itemBuilder: (BuildContext context, int index) {
-                //       return Padding(
-                //           padding: const EdgeInsets.only(
-                //               bottom: 8, right: 10, left: 10),
-                //           child: Container(
-                //               decoration: BoxDecoration(
-                //                 border: Border.all(
-                //                     color: const Color(0xff1C4374)),
-                //                 boxShadow: const [
-                //                   BoxShadow(
-                //                       color: Color(0xff1C4374),
-                //                       blurRadius: 6.5,
-                //                       blurStyle: BlurStyle.outer),
-                //                 ],
-                //                 borderRadius: const BorderRadius.all(
-                //                     Radius.circular(10)),
-                //               ),
-                //               child: const ListTile(
-                //                 leading: Icon(Icons.computer_outlined),
-                //                 title: Text(
-                //                   "Flutter Developer",
-                //                   style: TextStyle(
-                //                       fontWeight: FontWeight.bold,
-                //                       fontSize: 18),
-                //                 ),
-                //                 subtitle: Column(
-                //                   //      mainAxisAlignment: MainAxisAlignment.start,
-                //                   children: [
-                //                     Align(
-                //                         alignment: Alignment.centerLeft,
-                //                         child: Padding(
-                //                           padding:
-                //                               EdgeInsets.only(left: 6),
-                //                           child: Text(
-                //                             'SAAT Softs',
-                //                             textAlign: TextAlign.start,
-                //                             style: TextStyle(
-                //                                 fontWeight:
-                //                                     FontWeight.bold),
-                //                           ),
-                //                         )),
-                //                     Row(children: [
-                //                       Icon(Icons.location_on_outlined),
-                //                       Align(
-                //                         alignment: Alignment.centerLeft,
-                //                         child: Text(
-                //                           'Jhang,Satellite Town',
-                //                           textAlign: TextAlign.left,
-                //                         ),
-                //                       ),
-                //                     ]),
-                //                     Align(
-                //                       alignment: Alignment.centerLeft,
-                //                       child: Padding(
-                //                         padding: EdgeInsets.only(left: 6),
-                //                         child: Text(
-                //                           '40,000-50000 PKR',
-                //                           textAlign: TextAlign.left,
-                //                         ),
-                //                       ),
-                //                     )
-                //                   ],
-                //                 ),
-                //               )));
-                //     },
-                //   ),
-                // )
               ])))
     ]));
   }
@@ -144,6 +70,7 @@ class JobsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('jobs')
@@ -164,7 +91,6 @@ class JobsWidget extends StatelessWidget {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       DocumentSnapshot jobAdDoc = snapshot.data!.docs[index];
-
                       return Padding(
                         padding: const EdgeInsets.only(right: 15.0, left: 15),
                         child: Container(
@@ -181,9 +107,8 @@ class JobsWidget extends StatelessWidget {
                           ),
                           child: ListTile(
                             onTap: () async {
-                              final jobAdId = (jobAdDoc.id);
-                              final jobAdData =
-                                  jobAdDoc.data() as Map<String, dynamic>;
+                              final jobAdData = jobAdDoc.data() as Map<String, dynamic>;
+                              final jobAdId = snapshot.data!.docs[index].id;
                               showGeneralDialog(
                                 context: context,
                                 barrierDismissible: true,

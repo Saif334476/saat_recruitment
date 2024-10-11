@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/job_seeker_pages/dashboard/preview_cv.dart';
+import 'package:saat_recruitment/job_seeker_pages/dashboard/update_data.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/upload_cv_resume.dart';
 import '../../Models/mcq_model.dart';
 import '../application_submission.dart';
@@ -31,7 +33,8 @@ class _JobInfoState extends State<JobInfo> {
   String _requiredExperience = '';
   final TextEditingController _salary = TextEditingController();
   String _location = '';
-  List<Map<String,dynamic>> mcqList = [] ;
+  List<Map<String, dynamic>> mcqList = [];
+
 
   @override
   void initState() {
@@ -45,8 +48,13 @@ class _JobInfoState extends State<JobInfo> {
       _selectedOption = widget.jobAdData!['selectedOption'];
       _requiredExperience = widget.jobAdData!['requiredExperience'];
       _salary.text = widget.jobAdData!['salary'];
-       mcqList = List<Map<String, dynamic>>.from(widget.jobAdData!['mcq']);
+      mcqList = List<Map<String, dynamic>>.from(widget.jobAdData!['mcq']);
 
+      fetchCompanyInfo(uid!).then((info) {
+        setState(() {
+          companyInfo = info;
+        });
+      });
     } else {
       _selectedOption = '';
       _selectedCategory = '';
@@ -63,255 +71,77 @@ class _JobInfoState extends State<JobInfo> {
         await FirebaseFirestore.instance.collection('Users').doc(name).get();
     return named;
   }
+
   Future<Map<String, dynamic>?> fetchJobSeekerInfo(String uid) async {
     final doc =
-    await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+        await FirebaseFirestore.instance.collection('Users').doc(uid).get();
     return doc.data();
   }
+
   Map<String, dynamic>? companyInfo;
   FilePickerResult? result;
-  double _uploadProgress = 0;
+
   String? selectedFileName;
   File? selectedFile;
 
-  void selectFile() async {
-    result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx'],
-    );
-    if (result != null && result!.files.isNotEmpty) {
-      PlatformFile file = result!.files.first;
-      setState(() {
-        selectedFileName = file.name;
-        selectedFile = File(file.path!);
-      });
-      showPreviewModal(selectedFile);
-    }
-  }
 
-  void _showUploadDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Dialog(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Uploading...'),
-              LinearProgressIndicator(
-                value: _uploadProgress,
-              ),
-              Text('Uploaded: (${(_uploadProgress * 100).toInt()}%)'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void updateFileOnFirestoreAndStorage(selectedFile) async {
-    final users = FirebaseFirestore.instance.collection('Users');
-    final docSnapshot = await users.doc(uid).get();
-
-    if (docSnapshot.exists) {
-      final existingResumeUrl = docSnapshot.get('resumeUrl');
-
-      if (existingResumeUrl != null) {
-        await FirebaseStorage.instance.refFromURL(existingResumeUrl).delete();
-      }
-
-      if (selectedFile != null) {
-        _showUploadDialog();
-        final newResumeUrl = await _uploadFileToStorage(selectedFile!);
-
-        await users.doc(uid).update({
-          'resumeUrl': newResumeUrl,
-          'resumeFileName': selectedFileName,
-        });
-        Navigator.pop(context); // Close the dialog
-      }
-    }
-  }
-
-  Future<String?> _uploadFileToStorage(File file) async {
-    final storageRef = FirebaseStorage.instance.ref();
-    final fileRef = storageRef
-        .child('resumes/${DateTime.now().millisecondsSinceEpoch}.jpeg');
-    String? downloadUrl;
-    final uploadTask = fileRef.putFile(file);
-    downloadUrl = await (await uploadTask).ref.getDownloadURL();
-    await for (final snapshot in uploadTask.snapshotEvents) {
-      final progress = snapshot.bytesTransferred / snapshot.totalBytes;
-      setState(() {
-        _uploadProgress = progress;
-      });
-      // downloadUrl = await snapshot.ref.getDownloadURL();
-    }
-    return downloadUrl;
-  }
-
-  void showPreviewModal(selectedFile) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 200,
-          child: Column(
-            children: [
-              const Text(
-                'Resume Preview',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                selectedFileName!,
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CupertinoButton(
-                    color: const Color(0xff1C4374),
-                    onPressed: () {
-                      Navigator.pop(context); // Close the modal
-                    },
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  CupertinoButton(
-                    color: const Color(0xff1C4374),
-                    onPressed: () {
-                      updateFileOnFirestoreAndStorage(selectedFile);
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'OK',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void showPreviewModals(String fileUrl) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: MediaQuery.of(context).size.height - 20,
-          child: Column(
-            children: [
-              const Text(
-                'Resume/CV',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              Expanded(child: _getFilePreview(fileUrl)
-
-                // FutureBuilder(
-                //   future: FirebaseFirestore.instance.collection('JobProviders').doc(uid).get(),
-                //   builder: (context, snapshot) {
-                //     if (snapshot.hasData) {
-                //       return _getFilePreview(snapshot.data!['resumeUrl']);
-                //     } else {
-                //       return const Center(child: CircularProgressIndicator());
-                //     }
-                //   },
-                // ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CupertinoButton(
-                      color: const Color(0xff1C4374),
-                      onPressed: () {
-                        Navigator.pop(context); // Close the modal
-                      },
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    CupertinoButton(
-                      color: const Color(0xff1C4374),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        selectFile();
-                      },
-                      child: const Text(
-                        'Update',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _getFilePreview(String fileUrl) {
-    Uri parsedUrl = Uri.parse(fileUrl);
-    String fileExtension = parsedUrl.path.split('.').last.toLowerCase();
-
-    if (fileExtension == 'pdf') {
-      return const Text('PDF Preview not supported');
-    } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
-      return Image.network(fileUrl);
-    } else if (['doc', 'docx'].contains(fileExtension)) {
-      return const Text(
-        'Microsoft Word Document',
-        style: TextStyle(fontSize: 18),
-      );
-    } else if (['xls', 'xlsx'].contains(fileExtension)) {
-      return const Text(
-        'Microsoft Excel Spreadsheet',
-        style: TextStyle(fontSize: 18),
-      );
-    } else {
-      return const Text(
-        'Unsupported file type',
-        style: TextStyle(fontSize: 18),
-      );
-    }
-  }
-
+  // Widget _getFilePreview(String fileUrl) {
+  //   Uri parsedUrl = Uri.parse(fileUrl);
+  //   String fileExtension = parsedUrl.path.split('.').last.toLowerCase();
+  //
+  //   if (fileExtension == 'pdf') {
+  //     return const Text('PDF Preview not supported');
+  //   } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
+  //     return Image.network(fileUrl);
+  //   } else if (['doc', 'docx'].contains(fileExtension)) {
+  //     return const Text(
+  //       'Microsoft Word Document',
+  //       style: TextStyle(fontSize: 18),
+  //     );
+  //   } else if (['xls', 'xlsx'].contains(fileExtension)) {
+  //     return const Text(
+  //       'Microsoft Excel Spreadsheet',
+  //       style: TextStyle(fontSize: 18),
+  //     );
+  //   } else {
+  //     return const Text(
+  //       'Unsupported file type',
+  //       style: TextStyle(fontSize: 18),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 80.0),
-      child: Dialog(
-        clipBehavior: Clip.hardEdge,
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          widget.jobAdData?['jobType'],
+          style:
+              const TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+        ),
+        backgroundColor: const Color(0xff1C4374),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 30.0),
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: SingleChildScrollView(
             child: Padding(
-              padding:
-                  const EdgeInsets.only(left: 8.0, right: 8, top: 8, bottom: 8),
+              padding: const EdgeInsets.only(
+                  left: 20, right: 20, top: 10, bottom: 10),
               child: Column(
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                        color: const Color(0xff97C5FF),
+                        border: Border.all(
+                            style: BorderStyle.solid,
+                            width: 2,
+                            color: const Color(0xff1C4374)),
                         borderRadius: BorderRadius.circular(20)),
-                    height: 200,
+                    height: 220,
                     width: MediaQuery.of(context).size.width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -321,14 +151,16 @@ class _JobInfoState extends State<JobInfo> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                  widget.jobAdData!['jobTitle'].toUpperCase(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 30),
-                                  textAlign: TextAlign.left,
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    widget.jobAdData!['jobTitle'].toUpperCase(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 30),
+                                    textAlign: TextAlign.left,
+                                  ),
                                 ),
                               ),
                               IconButton(
@@ -338,7 +170,7 @@ class _JobInfoState extends State<JobInfo> {
                                   icon: const Icon(
                                     Icons.close_outlined,
                                     size: 40,
-                                    color: Colors.black,
+                                    color: Color(0xff1C4374),
                                   ))
                             ],
                           ),
@@ -443,7 +275,10 @@ class _JobInfoState extends State<JobInfo> {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                        color: const Color(0xff97C5FF),
+                        border: Border.all(
+                            style: BorderStyle.solid,
+                            width: 2,
+                            color: const Color(0xff1C4374)),
                         borderRadius: BorderRadius.circular(20)),
                     height: 100,
                     child: Column(
@@ -454,9 +289,9 @@ class _JobInfoState extends State<JobInfo> {
                             Padding(
                               padding: EdgeInsets.only(left: 8.0),
                               child: Text(
-                                "Requirements:",
+                                "Requirements",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 20),
+                                    fontWeight: FontWeight.w700, fontSize: 20,),
                               ),
                             ),
                           ],
@@ -495,7 +330,10 @@ class _JobInfoState extends State<JobInfo> {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                        color: const Color(0xff97C5FF),
+                        border: Border.all(
+                            style: BorderStyle.solid,
+                            width: 2,
+                            color: const Color(0xff1C4374)),
                         borderRadius: BorderRadius.circular(20)),
                     height: 320,
                     child: const Padding(
@@ -528,15 +366,22 @@ class _JobInfoState extends State<JobInfo> {
                                   builder: (context) =>
                                       ConductMcqs(mcqList: mcqList)));
                         } else {
-                          if(companyInfo?['resumeUrl']==""){
 
-                                       showPreviewModals(companyInfo?["resumeUrl"]);
-                        }else{
+                          if (companyInfo?['resumeUrl'] == ""){
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         const UploadCvResume()));
+                          } else {
+                            Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                    PreviewCv(uid,widget.jobAdId,existingResumeUrl: companyInfo?["resumeUrl"],)));
+                            // showPreviewModals(companyInfo?["resumeUrl"]);
                           }
                         }
                       },

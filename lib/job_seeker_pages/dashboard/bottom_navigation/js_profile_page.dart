@@ -2,12 +2,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/login_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 
 class JsProfilePage extends StatefulWidget {
   const JsProfilePage({super.key});
@@ -33,7 +32,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
   void selectFile() async {
     result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx'],
+      allowedExtensions: ['pdf', 'doc', 'docx', 'jpeg','jpg'],
     );
     if (result != null && result!.files.isNotEmpty) {
       PlatformFile file = result!.files.first;
@@ -72,23 +71,19 @@ class _JsProfilePageState extends State<JsProfilePage> {
     final docSnapshot = await users.doc(uid).get();
 
     if (docSnapshot.exists) {
-      final existingResumeUrl = docSnapshot.get('resumeUrl');
-
-      if (existingResumeUrl != null) {
+      final existingResumeUrl = await docSnapshot.get('resumeUrl');
+      if (existingResumeUrl !="") {
         await FirebaseStorage.instance.refFromURL(existingResumeUrl).delete();
       }
-
-      if (selectedFile != null) {
         _showUploadDialog();
-        final newResumeUrl = await _uploadFileToStorage(selectedFile!);
-
+        final newResumeUrl = await _uploadFileToStorage(selectedFile);
         await users.doc(uid).update({
           'resumeUrl': newResumeUrl,
           'resumeFileName': selectedFileName,
-        });
-        Navigator.pop(context); // Close the dialog
-      }
+        });// Close the dialog
     }
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   Future<String?> _uploadFileToStorage(File file) async {
@@ -103,7 +98,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
       setState(() {
         _uploadProgress = progress;
       });
-      // downloadUrl = await snapshot.ref.getDownloadURL();
+      downloadUrl = await snapshot.ref.getDownloadURL();
     }
     return downloadUrl;
   }
@@ -143,7 +138,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                     color: const Color(0xff1C4374),
                     onPressed: () {
                       updateFileOnFirestoreAndStorage(selectedFile);
-                      Navigator.pop(context);
+
                     },
                     child: const Text(
                       'OK',
@@ -205,6 +200,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                       onPressed: () {
                         Navigator.pop(context);
                         selectFile();
+
                       },
                       child: const Text(
                         'Update',
@@ -313,7 +309,11 @@ Widget displayCompanyInfo(
                           color: const Color(0xff1C4374),
                           width: 2.5),
                       boxShadow: const [
-                        BoxShadow(blurRadius: 5,blurStyle: BlurStyle.outer,color:  Color(0xff1C4374), )
+                        BoxShadow(
+                          blurRadius: 5,
+                          blurStyle: BlurStyle.outer,
+                          color: Color(0xff1C4374),
+                        )
                       ]),
                   child: InkWell(
                     child: Padding(
@@ -356,7 +356,11 @@ Widget displayCompanyInfo(
                           color: const Color(0xff1C4374),
                           width: 2.5),
                       boxShadow: const [
-                        BoxShadow(blurRadius: 5,blurStyle: BlurStyle.outer,color:  Color(0xff1C4374), )
+                        BoxShadow(
+                          blurRadius: 5,
+                          blurStyle: BlurStyle.outer,
+                          color: Color(0xff1C4374),
+                        )
                       ]),
                   child: InkWell(
                     child: Padding(
@@ -397,7 +401,11 @@ Widget displayCompanyInfo(
                           color: const Color(0xff1C4374),
                           width: 2.5),
                       boxShadow: const [
-                        BoxShadow(blurRadius: 5,blurStyle: BlurStyle.outer,color:  Color(0xff1C4374), )
+                        BoxShadow(
+                          blurRadius: 5,
+                          blurStyle: BlurStyle.outer,
+                          color: Color(0xff1C4374),
+                        )
                       ]),
                   child: InkWell(
                     child: Padding(
@@ -446,7 +454,11 @@ Widget displayCompanyInfo(
                           color: const Color(0xff1C4374),
                           width: 2.5),
                       boxShadow: const [
-                        BoxShadow(blurRadius: 5,blurStyle: BlurStyle.outer,color:  Color(0xff1C4374), )
+                        BoxShadow(
+                          blurRadius: 5,
+                          blurStyle: BlurStyle.outer,
+                          color: Color(0xff1C4374),
+                        )
                       ]),
                   child: InkWell(
                     child: Padding(
@@ -487,7 +499,11 @@ Widget displayCompanyInfo(
                           color: const Color(0xff1C4374),
                           width: 2.5),
                       boxShadow: const [
-                        BoxShadow(blurRadius: 5,blurStyle: BlurStyle.outer,color:  Color(0xff1C4374), )
+                        BoxShadow(
+                          blurRadius: 5,
+                          blurStyle: BlurStyle.outer,
+                          color: Color(0xff1C4374),
+                        )
                       ]),
                   child: InkWell(
                     child: Padding(
@@ -533,7 +549,11 @@ Widget displayCompanyInfo(
                           color: const Color(0xff1C4374),
                           width: 2.5),
                       boxShadow: const [
-                        BoxShadow(blurRadius: 5,blurStyle: BlurStyle.outer,color:  Color(0xff1C4374), )
+                        BoxShadow(
+                          blurRadius: 5,
+                          blurStyle: BlurStyle.outer,
+                          color: Color(0xff1C4374),
+                        )
                       ]),
                   child: InkWell(
                     child: Padding(
@@ -577,7 +597,11 @@ Widget displayCompanyInfo(
                           color: const Color(0xff1C4374),
                           width: 2.5),
                       boxShadow: const [
-                        BoxShadow(blurRadius: 5,blurStyle: BlurStyle.outer,color:  Color(0xff1C4374), )
+                        BoxShadow(
+                          blurRadius: 5,
+                          blurStyle: BlurStyle.outer,
+                          color: Color(0xff1C4374),
+                        )
                       ]),
                   child: InkWell(
                     child: const Padding(
@@ -613,7 +637,11 @@ Widget displayCompanyInfo(
                           color: const Color(0xff1C4374),
                           width: 2.5),
                       boxShadow: const [
-                        BoxShadow(blurRadius: 5,blurStyle: BlurStyle.outer,color:  Color(0xff1C4374), )
+                        BoxShadow(
+                          blurRadius: 5,
+                          blurStyle: BlurStyle.outer,
+                          color: Color(0xff1C4374),
+                        )
                       ]),
                   child: InkWell(
                     child: Column(
@@ -634,18 +662,26 @@ Widget displayCompanyInfo(
                               InkWell(
                                 child: SizedBox(
                                   width: 200,
-                                  child:
-                                 companyInfo['resumeFileName']==""?const Text("TAP TO UPLOAD YOUR CV",style: TextStyle(color: Colors.red,fontWeight: FontWeight.w900),):
-                                  Text(
-                                    companyInfo['resumeFileName'],
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700),
-                                  ),
+                                  child: companyInfo['resumeFileName'] == ""
+                                      ? const Text(
+                                          "TAP TO UPLOAD YOUR CV",
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.w900),
+                                        )
+                                      : Text(
+                                          companyInfo['resumeFileName'],
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700),
+                                        ),
                                 ),
                                 onTap: () async {
-                                  showPreviewModals(companyInfo['resumeUrl']);
+                                  companyInfo['resumeFileName'] == ""
+                                      ? selectFile()
+                                      : showPreviewModals(
+                                          companyInfo['resumeUrl']);
                                 },
                               ),
                               // IconButton(
@@ -672,7 +708,11 @@ Widget displayCompanyInfo(
                         color: const Color(0xff1C4374),
                         width: 2.5),
                     boxShadow: const [
-                      BoxShadow(blurRadius: 5,blurStyle: BlurStyle.outer,color:  Color(0xff1C4374), )
+                      BoxShadow(
+                        blurRadius: 5,
+                        blurStyle: BlurStyle.outer,
+                        color: Color(0xff1C4374),
+                      )
                     ]),
                 child: InkWell(
                   child: Padding(
