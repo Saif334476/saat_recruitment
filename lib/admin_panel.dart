@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'login_page.dart';
 
 class AdminPanel extends StatefulWidget {
   const AdminPanel({super.key});
@@ -32,93 +35,123 @@ class AdminPanelState extends State<AdminPanel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(color: Colors.white,
-          gradient: LinearGradient(
-              colors: [Colors.white, Colors.blue],
-              begin: Alignment(2.5,0.33),
-              end: Alignment(0.2,1.75)),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Icon color
         ),
-
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 50.0),
-                child: SizedBox(
-                    height: 150,
-                    child: Image.asset("assets/admin.webp")),
+        backgroundColor: const Color(0xff1C4374),
+        title: const Text(
+          "Admin Panel",
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+        ),
+      ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 50.0),
+              child: Text(
+                'Admin Panel',
+                style: TextStyle(
+                    color: Color(0xff1C4374),
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 15.0),
-                child: Text(
-                  'List of job providers awaiting verification',
-                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
-                ),
+            ),
+            const Divider(
+              height: 10,
+            ),
+            ListTile(
+              title: const Row(
+                children: [
+                  Icon(Icons.logout_outlined),
+                  Text(
+                    'Logout',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ],
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _jobProviders.length,
-                  itemBuilder: (context, index) {
-                    final jobProvider = _jobProviders[index];
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                );
+              },
+            ),
+            const Divider(
+              height: 10,
+            )
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(top: 15.0),
+            child: Text(
+              'List of job providers awaiting verification',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _jobProviders.length,
+              itemBuilder: (context, index) {
+                final jobProvider = _jobProviders[index];
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Name: ${jobProvider.name}',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Text(
+                          'Document Type: ${jobProvider.documentType}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        Text(
+                          'Document Status: ${jobProvider.documentStatus}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
                           children: [
-                            Text(
-                              'Name: ${jobProvider.name}',
-                              style: TextStyle(fontSize: 16),
+                            ElevatedButton(
+                              onPressed: () {
+                                // Call API to verify job provider
+                                // ...
+                                setState(() {
+                                  jobProvider.documentStatus = 'Verified';
+                                });
+                              },
+                              child: const Text('Verify'),
                             ),
-                            Text(
-                              'Document Type: ${jobProvider.documentType}',
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              'Document Status: ${jobProvider.documentStatus}',
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    // Call API to verify job provider
-                                    // ...
-                                    setState(() {
-                                      jobProvider.documentStatus = 'Verified';
-                                    });
-                                  },
-                                  child: const Text('Verify'),
-                                ),
-                                const SizedBox(width: 10),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    // Call API to reject job provider
-                                    // ...
-                                    setState(() {
-                                      jobProvider.documentStatus = 'Rejected';
-                                    });
-                                  },
-                                  child: const Text('Reject'),
-                                ),
-                              ],
+                            const SizedBox(width: 10),
+                            ElevatedButton(
+                              onPressed: () {
+                                // Call API to reject job provider
+                                // ...
+                                setState(() {
+                                  jobProvider.documentStatus = 'Rejected';
+                                });
+                              },
+                              child: const Text('Reject'),
                             ),
                           ],
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -130,5 +163,9 @@ class JobProvider {
   String documentType;
   String documentStatus;
 
-  JobProvider({required this.id, required this.name, required this.documentType, required this.documentStatus});
+  JobProvider(
+      {required this.id,
+      required this.name,
+      required this.documentType,
+      required this.documentStatus});
 }

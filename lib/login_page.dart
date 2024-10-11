@@ -223,12 +223,11 @@ class _LoginPageState extends State<LoginPage> {
                                             uId)),
                                   );
                                 } else if (role == 'Admin') {
-                                  Navigator.pushAndRemoveUntil(
+                                  Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             const AdminPanel()),
-                                    (route) => false,
                                   );
                                 }
                               });
