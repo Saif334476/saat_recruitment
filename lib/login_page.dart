@@ -139,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 15.0),
+              padding: const EdgeInsets.only(top: 10.0),
               child: Column(
                 children: [
                   Padding(
@@ -227,7 +227,7 @@ class _LoginPageState extends State<LoginPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const NHomePage()),
+                                            const AdminPanel()),
                                     (route) => false,
                                   );
                                 }
@@ -256,7 +256,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 25),
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
@@ -285,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 15),
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
