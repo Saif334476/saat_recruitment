@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:saat_recruitment/admin_panel.dart';
 import 'package:saat_recruitment/company_pages/company_dashboard.dart';
 import 'package:saat_recruitment/company_pages/company_form_page.dart';
+import 'package:saat_recruitment/company_pages/validation_loader.dart';
 import 'package:saat_recruitment/job_seeker_pages/job_seeker_profile.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -170,6 +171,11 @@ class _LoginPageState extends State<LoginPage> {
                                     .doc(user.user?.uid)
                                     .get()
                                     .then((doc) => doc.data()?['role']);
+                                final status = await FirebaseFirestore.instance
+                                    .collection('Users')
+                                    .doc(user.user?.uid)
+                                    .get()
+                                    .then((doc) => doc.data()?['isActive']);
                                 final uId =
                                     FirebaseAuth.instance.currentUser?.uid;
 
@@ -200,13 +206,22 @@ class _LoginPageState extends State<LoginPage> {
                                             uId)),
                                   );
                                 } else if (role == 'JobProvider' &&
-                                    profileStatus == true) {
+                                    profileStatus == true && status==true) {
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             const CompanyDashBoard()),
                                     (route) => false,
+                                  );
+                                }else if (role == 'JobProvider' &&
+                                    profileStatus == true && status==false) {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                        const SplashScreen()),
+                                        (route) => false,
                                   );
                                 } else if (role == 'JobProvider' &&
                                     profileStatus == false) {
