@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'login_page.dart';
 
 class AdminPanel extends StatefulWidget {
@@ -11,34 +11,42 @@ class AdminPanel extends StatefulWidget {
 }
 
 class AdminPanelState extends State<AdminPanel> {
-  final List<JobProvider> _jobProviders = [
-    JobProvider(
-      id: 1,
-      name: 'Job Provider 1',
-      documentType: 'Tax Certificate',
-      documentStatus: 'Pending',
-    ),
-    JobProvider(
-      id: 2,
-      name: 'Job Provider 2',
-      documentType: 'Registration Form',
-      documentStatus: 'Pending',
-    ),
-    JobProvider(
-      id: 3,
-      name: 'Job Provider 3',
-      documentType: 'Other',
-      documentStatus: 'Pending',
-    ),
-  ];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<JobProvider> _jobProviders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchJobProviders();
+  }
+
+  _fetchJobProviders() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('Users')
+          .where('role', isEqualTo: 'JobProvider')
+          .where('isActive', isEqualTo: false)
+          .where('isComplete', isEqualTo: true)
+          .get();
+
+      setState(() {
+        _jobProviders = querySnapshot.docs.map((doc) {
+          return JobProvider(
+            id: doc.id,
+            name: doc.get('Name'),
+          );
+        }).toList();
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white, // Icon color
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xff1C4374),
         title: const Text(
           "Admin Panel",
@@ -58,9 +66,7 @@ class AdminPanelState extends State<AdminPanel> {
                     fontWeight: FontWeight.w900),
               ),
             ),
-            const Divider(
-              height: 10,
-            ),
+            const Divider(height: 10),
             ListTile(
               title: const Row(
                 children: [
@@ -74,15 +80,11 @@ class AdminPanelState extends State<AdminPanel> {
               onTap: () {
                 FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               },
             ),
-            const Divider(
-              height: 10,
-            )
+            const Divider(height: 10),
           ],
         ),
       ),
@@ -96,7 +98,9 @@ class AdminPanelState extends State<AdminPanel> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: _jobProviders.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
               itemCount: _jobProviders.length,
               itemBuilder: (context, index) {
                 final jobProvider = _jobProviders[index];
@@ -106,27 +110,18 @@ class AdminPanelState extends State<AdminPanel> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Name: ${jobProvider.name}',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Text(
-                          'Document Type: ${jobProvider.documentType}',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                        Text(
-                          'Document Status: ${jobProvider.documentStatus}',
-                          style: const TextStyle(fontSize: 16),
-                        ),
+                        Text('Name: ${jobProvider.name}'),
                         const SizedBox(height: 10),
                         Row(
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                // Call API to verify job provider
-                                // ...
+                                _firestore
+                                    .collection('Users')
+                                    .doc(jobProvider.id)
+                                    .update({'isActive': true});
                                 setState(() {
-                                  jobProvider.documentStatus = 'Verified';
+                                  _jobProviders.remove(jobProvider);
                                 });
                               },
                               child: const Text('Verify'),
@@ -134,11 +129,13 @@ class AdminPanelState extends State<AdminPanel> {
                             const SizedBox(width: 10),
                             ElevatedButton(
                               onPressed: () {
-                                // Call API to reject job provider
-                                // ...
-                                setState(() {
-                                  jobProvider.documentStatus = 'Rejected';
-                                });
+                                // _firestore
+                                //     // .collection('Users')
+                                //     // .doc(doc.id)
+                                //     // .update({'isComplete': false});
+                                // setState(() {
+                                //   _jobProviders.remove(jobProvider);
+                                // });
                               },
                               child: const Text('Reject'),
                             ),
@@ -158,14 +155,11 @@ class AdminPanelState extends State<AdminPanel> {
 }
 
 class JobProvider {
-  int id;
+  String id;
   String name;
-  String documentType;
-  String documentStatus;
 
-  JobProvider(
-      {required this.id,
-      required this.name,
-      required this.documentType,
-      required this.documentStatus});
+  JobProvider({
+    required this.id,
+    required this.name,
+  });
 }
