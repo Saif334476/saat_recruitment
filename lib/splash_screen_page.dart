@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import "package:gap/gap.dart";
 import 'package:saat_recruitment/job_seeker_pages/job_seeker_form.dart';
 import 'package:saat_recruitment/login_page.dart';
-import 'admin_panel.dart';
+import 'Admin_Panel/admin_panel.dart';
 import 'company_pages/company_dashboard.dart';
 import 'company_pages/company_form_page.dart';
 

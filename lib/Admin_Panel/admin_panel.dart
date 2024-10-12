@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import 'package:saat_recruitment/Admin_Panel/preview_doc.dart';
+import '../login_page.dart';
 
 class AdminPanel extends StatefulWidget {
   const AdminPanel({super.key});
@@ -107,49 +108,68 @@ class AdminPanelState extends State<AdminPanel> {
                     itemCount: _jobProviders.length,
                     itemBuilder: (context, index) {
                       final jobProvider = _jobProviders[index];
-                      return Card(
-                        color: Colors.white12,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'Name: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w700),
-                                      ),
-                                      Text(jobProvider.name.toUpperCase())
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        "Location: ",
-                                        style:
-                                            TextStyle(fontWeight: FontWeight.w700),
-                                      ),
-                                      Text(jobProvider.location.toUpperCase())
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  const Text(
-                                    'Email: ',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w700),
-                                  ),
-                                  Text(jobProvider.email)
-                                ],
-                              )
-                            ],
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PreviewDoc()));
+                        },
+                        child: Card(
+                          color: Colors.white12,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          'Name: ',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                        Text(jobProvider.name.toUpperCase())
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          "Location: ",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                        Text(jobProvider.location.toUpperCase())
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Email: ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    Text(jobProvider.email)
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      "Industry: ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    Text(jobProvider.industry.toUpperCase())
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       );

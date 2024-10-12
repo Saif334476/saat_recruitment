@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:saat_recruitment/admin_panel.dart';
+import 'package:saat_recruitment/Admin_Panel/admin_panel.dart';
 import 'package:saat_recruitment/company_pages/company_dashboard.dart';
 import 'package:saat_recruitment/company_pages/company_form_page.dart';
 import 'package:saat_recruitment/job_seeker_pages/job_seeker_profile.dart';
