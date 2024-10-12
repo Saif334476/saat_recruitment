@@ -32,9 +32,12 @@ class AdminPanelState extends State<AdminPanel> {
       setState(() {
         _jobProviders = querySnapshot.docs.map((doc) {
           return JobProvider(
-            id: doc.id,
-            name: doc.get('Name'),
-          );
+              id: doc.id,
+              name: doc.get('Name'),
+              industry: doc.get('Industry'),
+              location: doc.get('Location'),
+              docs: doc.get('legalDocs'),
+              email: doc.get('Email'));
         }).toList();
       });
     } catch (e) {
@@ -101,52 +104,57 @@ class AdminPanelState extends State<AdminPanel> {
             child: _jobProviders.isEmpty
                 ? const Center(child: CircularProgressIndicator())
                 : ListView.builder(
-              itemCount: _jobProviders.length,
-              itemBuilder: (context, index) {
-                final jobProvider = _jobProviders[index];
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Name: ${jobProvider.name}'),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _firestore
-                                    .collection('Users')
-                                    .doc(jobProvider.id)
-                                    .update({'isActive': true});
-                                setState(() {
-                                  _jobProviders.remove(jobProvider);
-                                });
-                              },
-                              child: const Text('Verify'),
-                            ),
-                            const SizedBox(width: 10),
-                            ElevatedButton(
-                              onPressed: () {
-                                // _firestore
-                                //     // .collection('Users')
-                                //     // .doc(doc.id)
-                                //     // .update({'isComplete': false});
-                                // setState(() {
-                                //   _jobProviders.remove(jobProvider);
-                                // });
-                              },
-                              child: const Text('Reject'),
-                            ),
-                          ],
+                    itemCount: _jobProviders.length,
+                    itemBuilder: (context, index) {
+                      final jobProvider = _jobProviders[index];
+                      return Card(
+                        color: Colors.white12,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Name: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Text(jobProvider.name.toUpperCase())
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        "Location: ",
+                                        style:
+                                            TextStyle(fontWeight: FontWeight.w700),
+                                      ),
+                                      Text(jobProvider.location.toUpperCase())
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'Email: ',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w700),
+                                  ),
+                                  Text(jobProvider.email)
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
@@ -157,9 +165,16 @@ class AdminPanelState extends State<AdminPanel> {
 class JobProvider {
   String id;
   String name;
+  String industry;
+  String location;
+  String docs;
+  String email;
 
-  JobProvider({
-    required this.id,
-    required this.name,
-  });
+  JobProvider(
+      {required this.id,
+      required this.name,
+      required this.industry,
+      required this.docs,
+      required this.location,
+      required this.email});
 }
