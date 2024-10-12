@@ -158,9 +158,6 @@ class _LoginPageState extends State<LoginPage> {
                       child: CupertinoButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            setState(() {
-                              _isLoading = true;
-                            });
                             try {
                               final user = await FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
@@ -232,7 +229,19 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                               });
                             } on FirebaseAuthException catch (e) {
-                              Dialog(child: Text('Login failed: ${e.message}'));
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Login Failed'),
+                                  content: Text('Login failed: ${e.message}'),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text('OK'),
+                                      onPressed: () => Navigator.of(context).pop(),
+                                    ),
+                                  ],
+                                ),
+                              );
                             }
                           }
                         },
@@ -241,7 +250,12 @@ class _LoginPageState extends State<LoginPage> {
                             const BorderRadius.all(Radius.circular(15)),
                         pressedOpacity: 0.3,
                         child: _isLoading
-                            ? const SizedBox(height:20,width:25,child: CircularProgressIndicator(color: Colors.white,))
+                            ? const SizedBox(
+                                height: 20,
+                                width: 25,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ))
                             : const Text(
                                 'LOG IN',
                                 style: TextStyle(

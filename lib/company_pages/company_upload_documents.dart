@@ -1,15 +1,26 @@
 import 'dart:io';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/services.dart';
 import 'package:saat_recruitment/company_pages/company_verification_page.dart';
 
 class CompanyVerificationPage extends StatefulWidget {
-  const CompanyVerificationPage({super.key});
+  final String name;
+  final String location;
+  final String? industry;
+  final String email;
+  final String? companySize;
+
+  const CompanyVerificationPage(
+      {super.key,
+      required this.name,
+      required this.location,
+      required this.industry,
+      required this.email,
+      required this.companySize});
 
   @override
   CompanyVerificationPageState createState() => CompanyVerificationPageState();
@@ -118,6 +129,11 @@ class CompanyVerificationPageState extends State<CompanyVerificationPage> {
                             MaterialPageRoute(
                               builder: (context) => ReviewAndSubmitPage(
                                 uploadedDocument: _uploadedDocument,
+                                name: widget.name,
+                                location: widget.location,
+                                industry: widget.industry,
+                                email: widget.email,
+                                companySize: widget.companySize,
                               ),
                             ),
                           );
@@ -145,13 +161,17 @@ class CompanyVerificationPageState extends State<CompanyVerificationPage> {
 class FileUploadButton extends StatefulWidget {
   final Function(File) onFileSelected;
 
-  const FileUploadButton({super.key, required this.onFileSelected});
+  const FileUploadButton({
+    super.key,
+    required this.onFileSelected,
+  });
 
   @override
   State<FileUploadButton> createState() => _FileUploadButtonState();
 }
 
 class _FileUploadButtonState extends State<FileUploadButton> {
+  final uid = FirebaseAuth.instance.currentUser?.uid;
   File? _uploadedDocument;
   bool _isFileSelected = false;
   String? _selectedFileName;
@@ -166,7 +186,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
             final FilePickerResult? result =
                 await FilePicker.platform.pickFiles(
               type: FileType.custom,
-              allowedExtensions: ['pdf', 'jpg', 'png'],
+              allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg'],
             );
             if (result != null && result.files.isNotEmpty) {
               final PlatformFile file = result.files.first;
@@ -185,19 +205,20 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                 _selectedFileName = file.name;
                 _isFileSelected = true;
               });
-               widget.onFileSelected(convertedFile);
+              widget.onFileSelected(convertedFile);
 
-              // final storageRef = FirebaseStorage.instance
-              //     .ref('LegalDocs/${DateTime.now().millisecondsSinceEpoch}.jpeg');
-              // final uploadTask = storageRef.putFile(_uploadedDocument!);
-              // final downloadUrl = await (await uploadTask).ref.getDownloadURL();
-              // await FirebaseFirestore.instance
-              //     .collection('JobProviders')
-              //     .doc(FirebaseAuth.instance.currentUser?.uid)
-              //     .set({
-              //   'resumeUrl': downloadUrl,
-              //   'resumeFileName': file.name,
-              // });
+              final storageRef = FirebaseStorage.instance.ref(
+                  'LegalDocs/${DateTime.now().millisecondsSinceEpoch}.jpeg');
+              final uploadTask = storageRef.putFile(_uploadedDocument!);
+              final downloadUrl = await (await uploadTask).ref.getDownloadURL();
+              await FirebaseFirestore.instance
+                  .collection('JobProviders')
+                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                  .set({
+                'documents': downloadUrl,
+                'documentFileName': file.name,
+              });
+
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(

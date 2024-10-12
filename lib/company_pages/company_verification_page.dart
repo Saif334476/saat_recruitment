@@ -8,11 +8,46 @@ import 'package:saat_recruitment/company_pages/validation_loader.dart';
 
 class ReviewAndSubmitPage extends StatelessWidget {
   final File uploadedDocument;
-
-  const ReviewAndSubmitPage({super.key, required this.uploadedDocument});
+  final String name;
+  final String location;
+  final String? industry;
+  final String email;
+  final String? companySize;
+  const ReviewAndSubmitPage(
+      {super.key,
+      required this.uploadedDocument,
+      required this.name,
+      required this.location,
+      this.industry,
+      required this.email,
+      this.companySize});
 
   @override
   Widget build(BuildContext context) {
+    final uid=FirebaseAuth.instance.currentUser?.uid;
+    double uploadProgress = 0;
+    void _showUploadDialog() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Uploading...'),
+                LinearProgressIndicator(
+                  value: uploadProgress,
+                ),
+                Text('Uploaded: (${(uploadProgress * 100).toInt()}%)'),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -43,23 +78,35 @@ class ReviewAndSubmitPage extends StatelessWidget {
                   CupertinoButton(
                     color: const Color(0xff1C4374),
                     onPressed: () async {
-                      if (FirebaseAuth.instance.currentUser?.uid == null) {
-                        // Handle user not logged in
-                        return;
+                      try {
+                        await FirebaseFirestore.instance
+                            .collection('Users')
+                            .doc(uid)
+                            .update({
+                          'Name': name,
+                          'Location': location,
+                          'CompanySize': companySize,
+                          'Industry': industry,
+                          'Email': email,
+                          'isComplete': true,
+                          'isActive':false
+                        });
+                      } catch (e) {
+                        print('Error setting document: $e');
                       }
-
                       try {
                         final storageRef = FirebaseStorage.instance.ref(
                             'LegalDocs/${DateTime.now().millisecondsSinceEpoch}.jpeg');
-                        final uploadTask = storageRef.putFile(uploadedDocument);
+                        _showUploadDialog();
+                        final uploadTask = await storageRef.putFile(uploadedDocument);
                         final downloadUrl =
-                            await (await uploadTask).ref.getDownloadURL();
+                            await (uploadTask).ref.getDownloadURL();
                         await FirebaseFirestore.instance
                             .collection('Users')
                             .doc(FirebaseAuth.instance.currentUser?.uid)
                             .update({
-                          'resumeUrl': downloadUrl,
-                          'resumeFileName':
+                          'legalDocs': downloadUrl,
+                          'legalDocsFileName':
                               uploadedDocument.path.split('/').last,
                         });
 
@@ -68,7 +115,6 @@ class ReviewAndSubmitPage extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => const SplashScreen()));
                       } catch (e) {
-                        print('Error: $e');
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Failed to submit document'),

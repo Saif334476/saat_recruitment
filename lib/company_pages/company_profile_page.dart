@@ -259,7 +259,7 @@ Widget displayCompanyInfo(
                     const Text(
                       'Company Size: ',
                       style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Color(0xff1C4374)),
                     ),
@@ -267,8 +267,8 @@ Widget displayCompanyInfo(
                       companyInfo['CompanySize'],
                       style: const TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 20,
-                          color: Colors.white),
+                          fontSize: 18,
+                          color: Color(0xff1C4374)),
                     ),
                     IconButton(
                         onPressed: () {},
