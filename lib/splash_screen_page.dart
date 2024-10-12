@@ -3,12 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import "package:gap/gap.dart";
-import 'package:saat_recruitment/company_pages/validation_loader.dart';
 import 'package:saat_recruitment/job_seeker_pages/job_seeker_form.dart';
 import 'package:saat_recruitment/login_page.dart';
 import 'admin_panel.dart';
 import 'company_pages/company_dashboard.dart';
 import 'company_pages/company_form_page.dart';
+
 import 'job_seeker_pages/dashboard/job_seeker_dashboard.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -32,7 +32,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         if (doc.exists) {
           final data = doc.data();
           final role = data?['role'];
-          final status = data?['isActive'];
           final profileStatus = data?['isComplete'];
           final userEmail = data?['Email'];
 
@@ -49,16 +48,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                   builder: (context) =>
                       JobSeekerProfile(userEmail, "email", userEmail, uId)),
             );
-          } else if (role == 'JobProvider' &&
-              profileStatus == true &&
-              status == false) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const SplashScreen()),
-            );
-          } else if (role == 'JobProvider' &&
-              profileStatus == true &&
-              status == true){
+          } else if (role == 'JobProvider' && profileStatus == true) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const CompanyDashBoard()),
@@ -77,9 +67,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
             );
           }
         }
-      } else {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const LoginPage()));
+      }else{
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginPage()));
       }
     });
   }

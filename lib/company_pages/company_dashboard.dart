@@ -4,6 +4,7 @@ import 'package:saat_recruitment/company_pages/company_new_ad_posting.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_profile_page.dart';
 import 'package:saat_recruitment/company_pages/list_job_ads.dart';
+import 'package:saat_recruitment/company_pages/validation_loader.dart';
 
 class CompanyDashBoard extends StatefulWidget {
   const CompanyDashBoard({super.key});
@@ -15,6 +16,23 @@ class CompanyDashBoard extends StatefulWidget {
 class CompanyDashBoardState extends State<CompanyDashBoard> {
   int _currentIndex = 0;
 
+  bool? isActive;
+  final uid = FirebaseAuth.instance.currentUser?.uid;
+
+  void navigateTo(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  _checkUserStatus() async {
+    final doc =
+        await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+    setState(() {
+      isActive = doc.get('isActive');
+    });
+  }
+
   final List<Widget> _children = [
     HomePage(),
     const CompanyNewAdPosting(
@@ -24,16 +42,19 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
     const CompanyProfilePage(),
   ];
 
-  void navigateTo(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _children[_currentIndex],
+      body: [
+        HomePage(),
+        isActive == true
+            ? const CompanyNewAdPosting(
+                jobAdId: null,
+                jobAdData: null,
+              )
+            : const SplashScreen(),
+        const CompanyProfilePage()
+      ][_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.white,
         backgroundColor: const Color(0xff1C4374),
@@ -78,7 +99,8 @@ class HomePage extends StatelessWidget {
           automaticallyImplyLeading: false,
           title: const Text(
             "Home Page",
-            style: TextStyle(fontSize: 25,
+            style: TextStyle(
+              fontSize: 25,
               fontWeight: FontWeight.w900,
               color: Colors.white,
             ),

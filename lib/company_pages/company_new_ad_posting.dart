@@ -28,6 +28,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   String _location = '';
   List<MCQ> mcqList = [];
   final _formKey = GlobalKey<FormState>();
+  bool? isActive;
 
   @override
   void dispose() {
