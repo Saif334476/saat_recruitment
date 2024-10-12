@@ -113,7 +113,7 @@ class AdminPanelState extends State<AdminPanel> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PreviewDoc()));
+                                  builder: (context) => PreviewDoc(url: jobProvider.docs,id: jobProvider.id,)));
                         },
                         child: Card(
                           color: Colors.white12,

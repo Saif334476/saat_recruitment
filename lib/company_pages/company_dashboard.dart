@@ -32,15 +32,19 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
       isActive = doc.get('isActive');
     });
   }
-
-  final List<Widget> _children = [
-    HomePage(),
-    const CompanyNewAdPosting(
-      jobAdData: null,
-      jobAdId: null,
-    ),
-    const CompanyProfilePage(),
-  ];
+@override
+  void initState() {
+    _checkUserStatus();
+    super.initState();
+  }
+  // final List<Widget> _children = [
+  //   HomePage(),
+  //   const CompanyNewAdPosting(
+  //     jobAdData: null,
+  //     jobAdId: null,
+  //   ),
+  //   const CompanyProfilePage(),
+  // ];
 
   @override
   Widget build(BuildContext context) {
