@@ -16,6 +16,7 @@ class _PreviewDocState extends State<PreviewDoc> {
 
   void updateStatus(){
     FirebaseFirestore.instance.collection('Users').doc(widget.id).update({"isActive":true});
+    Navigator.pop(context);
   }
 
   Widget _getFilePreview(String fileUrl) {
