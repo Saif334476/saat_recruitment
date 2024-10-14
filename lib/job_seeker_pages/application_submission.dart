@@ -258,7 +258,7 @@ class _ApplicationSubmissionState extends State<ApplicationSubmission> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Scaffold()
+      body:Container()
     );
   }
 }

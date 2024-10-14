@@ -29,31 +29,92 @@ class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Column(children: [
-      Container(
-          decoration: const BoxDecoration(color: Colors.white
-              // gradient: LinearGradient(
-              //     colors: [Colors.blue, Colors.white],
-              //     begin: Alignment.topCenter,
-              //     end: Alignment.bottomCenter),
-              ),
-          // color: Colors.white,
-          child: Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child:
-                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                JobCategories(
-                  jobCategories: jobCategories,
-                  onCategorySelected: (category) {
-                    setState(() {
-                      _selectedCategory = category;
-                    });
-                  },
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        // clipBehavior: Clip.antiAlias,
+        // shape: const RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.only(
+        //     topLeft: Radius.circular(20) ,
+        //     topRight:  Radius.circular(20),
+        //     bottomLeft: Radius.circular(20),
+        //     bottomRight: Radius.circular(20),
+        //   ),
+        //   side: BorderSide(
+        //     color: Color(0xff1C4374),
+        //     width: 2,
+        //   ),
+        // ),
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              children: [
+                SizedBox(
+                  height: 200,
+                  width: constraints.maxWidth * 0.2, // 20% of screen width
+                  child: Image.asset(
+                    "assets/sirf_logo.png",
+                  ),
                 ),
-                JobsWidget(selectedCategory: _selectedCategory),
-              ])))
-    ]));
+                SizedBox(
+                  height: 50,
+                  width: 230,
+                  child: Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 10.0, right: 20, top: 5, bottom: 5),
+                      child: SizedBox(
+                        height: 50,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            prefixIcon: const Icon(Icons.search),
+                            hintText: 'Search',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.share_outlined,
+                    ))
+              ],
+            );
+          },
+        ),
+      ),
+      body: Center(
+          child: Column(children: [
+        Container(
+            decoration: const BoxDecoration(color: Colors.white
+                // gradient: LinearGradient(
+                //     colors: [Colors.blue, Colors.white],
+                //     begin: Alignment.topCenter,
+                //     end: Alignment.bottomCenter),
+                ),
+            // color: Colors.white,
+            child: Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      JobCategories(
+                        jobCategories: jobCategories,
+                        onCategorySelected: (category) {
+                          setState(() {
+                            _selectedCategory = category;
+                          });
+                        },
+                      ),
+                      JobsWidget(selectedCategory: _selectedCategory),
+                    ])))
+      ])),
+    );
   }
 }
 
@@ -70,7 +131,6 @@ class JobsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('jobs')
@@ -107,7 +167,8 @@ class JobsWidget extends StatelessWidget {
                           ),
                           child: ListTile(
                             onTap: () async {
-                              final jobAdData = jobAdDoc.data() as Map<String, dynamic>;
+                              final jobAdData =
+                                  jobAdDoc.data() as Map<String, dynamic>;
                               final jobAdId = snapshot.data!.docs[index].id;
                               showGeneralDialog(
                                 context: context,

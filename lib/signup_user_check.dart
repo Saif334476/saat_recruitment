@@ -13,134 +13,139 @@ class UserCheck extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
               color: Colors.white,
-              gradient: LinearGradient(
-                  colors: [Colors.white, Colors.blue],
-                  begin: Alignment(1, 0.54),
-                  end: Alignment(.2, 0.7)),
+              // gradient: LinearGradient(
+              //     colors: [Colors.white, Colors.blue],
+              //     begin: Alignment(1, 0.54),
+              //     end: Alignment(.2, 0.7)),
             ),
-            child: Column(children: <Widget>[
-              const Padding(
-                padding:
-                    EdgeInsets.only(top: 200, bottom: 20, right: 20, left: 20),
-                child: Text(
-                  'Select from below to continue!',
-                  style: TextStyle(
-                      shadows: [
-                        Shadow(
-                            blurRadius: 1,
-                            color: Colors.black,
-                            offset: Offset(0, 1.5))
-                      ],
-                      fontSize: 33,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 40.0, right: 10, left: 10),
-                child: InkWell(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 5.0,left: 5),
+              child: Column(children: <Widget>[
+                const Padding(
+                  padding:
+                      EdgeInsets.only(top: 200, bottom: 20, right: 20, left: 20),
+                  child: Text(
+                    'Tap below to continue!',
+                    style: TextStyle(
+                        shadows: [
+                          Shadow(
+                              blurRadius: 1,
                               color: Colors.black,
-                              blurRadius: 7,
-                              blurStyle: BlurStyle.outer)
-                        ]),
-                    child: Row(
-                      children: [
-                        Padding(
-                            padding: const EdgeInsets.only(right: 15.0, left: 15),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  height: 130,
-                                  width: 130,
-                                  child: Image.asset("assets/jobseeker2.webp"),
-                                ),
-                              ],
-                            )),
-                        const Text(
-                          "JOB SEEKER",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 28,
-                            color: Color(0xff1C4374),
-                            shadows: [
-                              Shadow(
-                                  blurRadius: 6,
-                                  color: Colors.black,
-                                  offset: Offset(0, 2.5))
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                              offset: Offset(0, 1.5))
+                        ],
+                        fontSize: 33,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xff1C4374)),
+                    textAlign: TextAlign.center,
                   ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignInEMail(
-                                  user: 'JobSeeker',
-                                )));
-                  },
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
-                child: InkWell(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black,
-                              blurRadius: 7,
-                              blurStyle: BlurStyle.outer)
-                        ]),
-                    child: Row(
-                      children: [
-                        Padding(
-                            padding: const EdgeInsets.only(
-                                right: 15.0, left: 15),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  height: 130,
-                                  width: 130,
-                                  child: Image.asset("assets/provider1.webp"),
-                                )
-                              ],
-                            )),
-                        const Text(
-                          "JOB PROVIDER",
-                          style: TextStyle(
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0, right: 10, left: 10),
+                  child: InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xff1C4374),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black,
+                                blurRadius: 7,
+                                blurStyle: BlurStyle.outer)
+                          ]),
+                      child: Row(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.only(right: 15.0, left: 15),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    height: 130,
+                                    width: 130,
+                                    child: Image.asset("assets/jobseeker2.webp"),
+                                  ),
+                                ],
+                              )),
+                          const Text(
+                            "JOB SEEKER",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 28,
+                              color: Colors.white,
                               shadows: [
                                 Shadow(
                                     blurRadius: 6,
                                     color: Colors.black,
                                     offset: Offset(0, 2.5))
                               ],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                              color: Color(0xff1C4374)),
-                        )
-                      ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignInEMail(
+                                    user: 'JobSeeker',
+                                  )));
+                    },
                   ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignInEMail(
-                                  user: 'JobProvider',
-                                )));
-                  },
                 ),
-              ),
-            ])));
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
+                  child: InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xff1C4374),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black,
+                                blurRadius: 7,
+                                blurStyle: BlurStyle.outer)
+                          ]),
+                      child: Row(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 15.0, left: 15),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    height: 130,
+                                    width: 130,
+                                    child: Image.asset("assets/provider1.webp"),
+                                  )
+                                ],
+                              )),
+                          const Text(
+                            "JOB PROVIDER",
+                            style: TextStyle(
+                                shadows: [
+                                  Shadow(
+                                      blurRadius: 6,
+                                      color: Colors.black,
+                                      offset: Offset(0, 2.5))
+                                ],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28,
+                                color: Colors.white),
+                          )
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignInEMail(
+                                    user: 'JobProvider',
+                                  )));
+                    },
+                  ),
+                ),
+              ]),
+            )));
   }
 }

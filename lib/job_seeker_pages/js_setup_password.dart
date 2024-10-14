@@ -10,10 +10,10 @@ import 'dart:convert';
 import '../login_page.dart';
 
 class JsSetupPassword extends StatefulWidget {
-
   final TextEditingController emailController;
   final String credentials;
-  const JsSetupPassword({super.key, required this.emailController,required this.credentials});
+  const JsSetupPassword(
+      {super.key, required this.emailController, required this.credentials});
   @override
   State<JsSetupPassword> createState() => JsSetupPasswordState();
 }
@@ -40,16 +40,24 @@ class JsSetupPasswordState extends State<JsSetupPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text(
+            "Password Creation",
+            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+          ),
+          backgroundColor: const Color(0xff1C4374),
+        ),
         body: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.white, Colors.blue],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
+                // gradient: LinearGradient(
+                //   colors: [Colors.white, Colors.blue],
+                //   begin: Alignment.topCenter,
+                //   end: Alignment.bottomCenter,
+                // ),
+                ),
             child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(

@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/login_page.dart';
 
-
 class JsProfilePage extends StatefulWidget {
   const JsProfilePage({super.key});
 
@@ -32,7 +31,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
   void selectFile() async {
     result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx', 'jpeg','jpg'],
+      allowedExtensions: ['pdf', 'doc', 'docx', 'jpeg', 'jpg'],
     );
     if (result != null && result!.files.isNotEmpty) {
       PlatformFile file = result!.files.first;
@@ -72,15 +71,15 @@ class _JsProfilePageState extends State<JsProfilePage> {
 
     if (docSnapshot.exists) {
       final existingResumeUrl = await docSnapshot.get('resumeUrl');
-      if (existingResumeUrl !="") {
+      if (existingResumeUrl != "") {
         await FirebaseStorage.instance.refFromURL(existingResumeUrl).delete();
       }
-        _showUploadDialog();
-        final newResumeUrl = await _uploadFileToStorage(selectedFile);
-        await users.doc(uid).update({
-          'resumeUrl': newResumeUrl,
-          'resumeFileName': selectedFileName,
-        });// Close the dialog
+      _showUploadDialog();
+      final newResumeUrl = await _uploadFileToStorage(selectedFile);
+      await users.doc(uid).update({
+        'resumeUrl': newResumeUrl,
+        'resumeFileName': selectedFileName,
+      }); // Close the dialog
     }
     Navigator.pop(context);
     Navigator.pop(context);
@@ -138,7 +137,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
                     color: const Color(0xff1C4374),
                     onPressed: () {
                       updateFileOnFirestoreAndStorage(selectedFile);
-
                     },
                     child: const Text(
                       'OK',
@@ -200,7 +198,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
                       onPressed: () {
                         Navigator.pop(context);
                         selectFile();
-
                       },
                       child: const Text(
                         'Update',
@@ -256,6 +253,14 @@ class _JsProfilePageState extends State<JsProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "Profile",
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+        ),
+        backgroundColor: const Color(0xff1C4374),
+      ),
       body: companyInfo != null
           ? displayCompanyInfo(companyInfo!, context, selectFile, selectedFile,
               selectedFileName, showPreviewModal, showPreviewModals)

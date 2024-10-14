@@ -2,15 +2,12 @@ import 'dart:core';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/job_seeker_dashboard.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:intl/intl.dart';
-
-//import 'dashboard/bottom_navigation/bottom_navigation.dart';
 
 class JobSeekerProfile extends StatefulWidget {
   final String? email;
@@ -41,16 +38,24 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text(
+            "Account Creation fORM",
+            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+          ),
+          backgroundColor: const Color(0xff1C4374),
+        ),
         body: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
               color: Colors.white,
-              gradient: LinearGradient(
-                colors: [Colors.white, Colors.blue],
-                begin: Alignment(0.78, 0),
-                end: Alignment(0.78, 0.77),
-              ),
+              // gradient: LinearGradient(
+              //   colors: [Colors.white, Colors.blue],
+              //   begin: Alignment(0.78, 0),
+              //   end: Alignment(0.78, 0.77),
+              // ),
             ),
             child: SingleChildScrollView(
               child: Padding(
@@ -454,7 +459,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
         'Dob': _dateController.text,
         'Location': _city,
         'isComplete': true,
-        'resumeUrl': resumeUrl??"",
+        'resumeUrl': resumeUrl ?? "",
         'resumeFileName': _selectedFileName ?? "",
       });
     } catch (e) {

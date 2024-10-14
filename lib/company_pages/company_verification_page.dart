@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_dashboard.dart';
-import 'package:saat_recruitment/company_pages/validation_loader.dart';
 
 class ReviewAndSubmitPage extends StatelessWidget {
   final File uploadedDocument;
@@ -25,7 +24,7 @@ class ReviewAndSubmitPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final uid=FirebaseAuth.instance.currentUser?.uid;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
     double uploadProgress = 0;
     void _showUploadDialog() {
       showDialog(
@@ -51,10 +50,12 @@ class ReviewAndSubmitPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Review and Submit',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
         ),
+        backgroundColor: const Color(0xff1C4374),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -90,7 +91,7 @@ class ReviewAndSubmitPage extends StatelessWidget {
                           'Industry': industry,
                           'Email': email,
                           'isComplete': true,
-                          'isActive':false
+                          'isActive': false
                         });
                       } catch (e) {
                         print('Error setting document: $e');
@@ -99,7 +100,8 @@ class ReviewAndSubmitPage extends StatelessWidget {
                         final storageRef = FirebaseStorage.instance.ref(
                             'LegalDocs/${DateTime.now().millisecondsSinceEpoch}.jpeg');
                         _showUploadDialog();
-                        final uploadTask = await storageRef.putFile(uploadedDocument);
+                        final uploadTask =
+                            await storageRef.putFile(uploadedDocument);
                         final downloadUrl =
                             await (uploadTask).ref.getDownloadURL();
                         await FirebaseFirestore.instance
@@ -114,7 +116,8 @@ class ReviewAndSubmitPage extends StatelessWidget {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const CompanyDashBoard()));
+                                builder: (context) =>
+                                    const CompanyDashBoard()));
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

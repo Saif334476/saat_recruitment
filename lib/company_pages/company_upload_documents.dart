@@ -35,10 +35,12 @@ class CompanyVerificationPageState extends State<CompanyVerificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Company Verification',
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
+        backgroundColor: const Color(0xff1C4374),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -218,7 +220,6 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                 'documents': downloadUrl,
                 'documentFileName': file.name,
               });
-
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(

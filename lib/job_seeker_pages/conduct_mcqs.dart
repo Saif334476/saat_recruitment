@@ -37,6 +37,14 @@ class _ConductMcqsState extends State<ConductMcqs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "MCQs Quiz",
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+        ),
+        backgroundColor: const Color(0xff1C4374),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 50.0),

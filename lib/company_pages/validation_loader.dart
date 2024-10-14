@@ -14,7 +14,7 @@ class SplashScreenState extends State<SplashScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: const Text(
-            "User Validation",
+            "Validation",
             style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
           ),
           backgroundColor: const Color(0xff1C4374),

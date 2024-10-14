@@ -29,64 +29,64 @@ class HomePageState extends State<NHomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        // clipBehavior: Clip.antiAlias,
-        // shape: const RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.only(
-        //     topLeft: Radius.circular(20) ,
-        //     topRight:  Radius.circular(20),
-        //     bottomLeft: Radius.circular(20),
-        //     bottomRight: Radius.circular(20),
-        //   ),
-        //   side: BorderSide(
-        //     color: Color(0xff1C4374),
-        //     width: 2,
-        //   ),
-        // ),
-        title: LayoutBuilder(
-          builder: (context, constraints) {
-            return Row(
-              children: [
-                SizedBox(
-                  height: 200,
-                  width: constraints.maxWidth * 0.2, // 20% of screen width
-                  child: Image.asset(
-                    "assets/sirf_logo.png",
-                  ),
-                ),
-                SizedBox(
-                  height: 50,
-                  width: 230,
-                  child: Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 10.0, right: 20, top: 5, bottom: 5),
-                      child: SizedBox(
-                        height: 50,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            prefixIcon: const Icon(Icons.search),
-                            hintText: 'Search',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.share_outlined,
-                    ))
-              ],
-            );
-          },
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   automaticallyImplyLeading: false,
+      //   // clipBehavior: Clip.antiAlias,
+      //   // shape: const RoundedRectangleBorder(
+      //   //   borderRadius: BorderRadius.only(
+      //   //     topLeft: Radius.circular(20) ,
+      //   //     topRight:  Radius.circular(20),
+      //   //     bottomLeft: Radius.circular(20),
+      //   //     bottomRight: Radius.circular(20),
+      //   //   ),
+      //   //   side: BorderSide(
+      //   //     color: Color(0xff1C4374),
+      //   //     width: 2,
+      //   //   ),
+      //   // ),
+      //   title: LayoutBuilder(
+      //     builder: (context, constraints) {
+      //       return Row(
+      //         children: [
+      //           SizedBox(
+      //             height: 200,
+      //             width: constraints.maxWidth * 0.2, // 20% of screen width
+      //             child: Image.asset(
+      //               "assets/sirf_logo.png",
+      //             ),
+      //           ),
+      //           SizedBox(
+      //             height: 50,
+      //             width: 230,
+      //             child: Expanded(
+      //               child: Padding(
+      //                 padding: const EdgeInsets.only(
+      //                     left: 10.0, right: 20, top: 5, bottom: 5),
+      //                 child: SizedBox(
+      //                   height: 50,
+      //                   child: TextField(
+      //                     decoration: InputDecoration(
+      //                       border: OutlineInputBorder(
+      //                           borderRadius: BorderRadius.circular(15)),
+      //                       prefixIcon: const Icon(Icons.search),
+      //                       hintText: 'Search',
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //           ),
+      //           IconButton(
+      //               onPressed: () {},
+      //               icon: const Icon(
+      //                 Icons.share_outlined,
+      //               ))
+      //         ],
+      //       );
+      //     },
+      //   ),
+      // ),
       body: _children[_currentIndex],
       bottomNavigationBar: Container(
         clipBehavior: Clip.hardEdge,

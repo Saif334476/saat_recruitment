@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:saat_recruitment/Admin_Panel/admin_panel.dart';
 import 'package:saat_recruitment/company_pages/company_dashboard.dart';
 import 'package:saat_recruitment/company_pages/company_form_page.dart';
-import 'package:saat_recruitment/job_seeker_pages/job_seeker_profile.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:flutter/cupertino.dart';
-//import 'job_seeker_pages/dashboard/bottom_navigation/bottom_navigation.dart';
 import 'job_seeker_pages/dashboard/job_seeker_dashboard.dart';
 import 'job_seeker_pages/job_seeker_form.dart';
 import 'signup_user_check.dart';
@@ -59,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                   border: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xff1C4374)),
                       borderRadius: BorderRadius.circular(15)),
-                  labelText: "Enter E-mail or Phone",
+                  labelText: "Enter your E-mail",
                   prefixIcon: const Icon(
                     Icons.email_outlined,
                     color: Colors.black,
@@ -67,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return "Enter E-mail or Password";
+                    return "Enter your E-mail";
                   }
                   return null;
                 },

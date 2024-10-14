@@ -37,6 +37,14 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xff1C4374),
+          automaticallyImplyLeading: false,
+          title: const Text(
+            "Password Creation",
+            style: TextStyle(fontWeight: FontWeight.w900,color: Colors.white),
+          ),
+        ),
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -48,11 +56,13 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                     child: SizedBox(
                         height: 150,
                         width: 150,
-                        child: Image.asset("assets/lock.webp",color: const Color(0xff1C4374),)),
+                        child: Image.asset(
+                          "assets/lock.webp",
+                          color: const Color(0xff1C4374),
+                        )),
                   ),
                   const Padding(
-                    padding:
-                        EdgeInsets.only(top: 20.0, left: 20, right: 20),
+                    padding: EdgeInsets.only(top: 20.0, left: 20, right: 20),
                     child: Text(
                       "Create a Strong Password",
                       style: TextStyle(
@@ -70,8 +80,7 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                     ),
                   ),
                   const Padding(
-                    padding:
-                        EdgeInsets.only(top: 20.0, right: 20, left: 20),
+                    padding: EdgeInsets.only(top: 20.0, right: 20, left: 20),
                     child: Text(
                       'It must contain one Uppercase letter, combination of numbers, letters and symbols (/@#%^&*+= etc)',
                       style: TextStyle(
@@ -88,8 +97,8 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                     ),
                   ),
                   Padding(
-                      padding: const EdgeInsets.only(
-                          top: 40, right: 15, left: 15),
+                      padding:
+                          const EdgeInsets.only(top: 40, right: 15, left: 15),
                       child: textFormField(
                         "Create a Strong Password",
                         Icons.lock_outline,
@@ -157,24 +166,21 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                     ),
                   ),
                   Padding(
-                      padding: const EdgeInsets.only(
-                          top: 20.0, right: 65, left: 65),
+                      padding:
+                          const EdgeInsets.only(top: 20.0, right: 65, left: 65),
                       child: _isLoading
                           ? const CupertinoActivityIndicator()
-                          : cupertinoButtonWidget("Create Account",
-                              () async {
-                                if (_formKey.currentState!.validate()) {
+                          : cupertinoButtonWidget("Create Account", () async {
+                              if (_formKey.currentState!.validate()) {
                                 setState(() {
                                   _isLoading = true;
                                 });
 
                                 try {
-                                  final credential = await FirebaseAuth
-                                      .instance
+                                  final credential = await FirebaseAuth.instance
                                       .createUserWithEmailAndPassword(
                                     email: widget.emailController.text,
-                                    password:
-                                        _confirmPasswordController.text,
+                                    password: _confirmPasswordController.text,
                                   );
 
                                   await FirebaseFirestore.instance
@@ -186,8 +192,8 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                                     'Email': widget.emailController.text
                                   });
 
-                                  await credential.user!.updatePhotoURL(
-                                      "assets/office1.webp");
+                                  await credential.user!
+                                      .updatePhotoURL("assets/office1.webp");
 
                                   showDialog(
                                     context: context,
@@ -226,10 +232,8 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                                 } on FirebaseAuthException catch (e) {
                                   print('FirebaseAuthException: $e');
                                   if (e.code == 'weak-password') {
-                                    print(
-                                        'The password provided is too weak.');
-                                  } else if (e.code ==
-                                      'email-already-in-use') {
+                                    print('The password provided is too weak.');
+                                  } else if (e.code == 'email-already-in-use') {
                                     print(
                                         'The account already exists for that email.');
                                   }
