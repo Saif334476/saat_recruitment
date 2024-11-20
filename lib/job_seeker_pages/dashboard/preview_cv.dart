@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/update_data.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class PreviewCv extends StatefulWidget {
   final String? uid;
@@ -71,6 +72,7 @@ class _PreviewCvState extends State<PreviewCv> {
       );
     }
   }
+
   Future<DocumentSnapshot<Map<String, dynamic>>> getJobAd(String uid) async {
     final jobAdRef = _firestore.collection('jobs').doc(uid);
     final jobAdDoc = await jobAdRef.get();
@@ -81,6 +83,7 @@ class _PreviewCvState extends State<PreviewCv> {
       throw Exception('Job ad not found');
     }
   }
+
   void selectFile() async {
     result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -149,9 +152,11 @@ class _PreviewCvState extends State<PreviewCv> {
   }
 
   Future<String?> _uploadFileToStorage(File file) async {
+    String? fileExtension = selectedFileName?.split('.').last.toLowerCase();
+
     final storageRef = FirebaseStorage.instance.ref();
-    final fileRef = storageRef
-        .child('resumes/${DateTime.now().millisecondsSinceEpoch}.jpeg');
+    final fileRef = storageRef.child(
+        'resumes/${DateTime.now().millisecondsSinceEpoch}.$fileExtension');
     String? downloadUrl;
     final uploadTask = fileRef.putFile(file);
     downloadUrl = await (await uploadTask).ref.getDownloadURL();
@@ -221,7 +226,7 @@ class _PreviewCvState extends State<PreviewCv> {
     String fileExtension = parsedUrl.path.split('.').last.toLowerCase();
 
     if (fileExtension == 'pdf') {
-      return const Text('PDF Preview not supported');
+      return SfPdfViewer.network(fileUrl);
     } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
       return Image.network(fileUrl);
     } else if (['doc', 'docx'].contains(fileExtension)) {
@@ -292,7 +297,7 @@ class _PreviewCvState extends State<PreviewCv> {
                   onPressed: () async {
                     final jobAdId = widget.jobAdId;
                     final uid = FirebaseAuth.instance.currentUser?.uid;
-                     applyToJob(jobAdId!, uid!);
+                    applyToJob(jobAdId!, uid!);
                   },
                   child: const Text(
                     'Apply',

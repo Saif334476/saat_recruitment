@@ -11,14 +11,14 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text(
-            "Validation",
-            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
-          ),
-          backgroundColor: const Color(0xff1C4374),
-        ),
+        // appBar: AppBar(
+        //   automaticallyImplyLeading: false,
+        //   title: const Text(
+        //     "Validation",
+        //     style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+        //   ),
+        //   backgroundColor: const Color(0xff1C4374),
+        // ),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.only(top: 120.0),

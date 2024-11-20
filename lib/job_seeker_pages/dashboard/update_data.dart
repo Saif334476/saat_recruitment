@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/preview_cv.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class UpdateData extends StatefulWidget {
   final File selectedFile;
@@ -24,6 +25,7 @@ class _UpdateDataState extends State<UpdateData> {
   String? selectedFileName;
   File? selectedFile;
   double _uploadProgress = 0;
+  late final String fileExtension ;
 
   void _showUploadDialog() {
     showDialog(
@@ -87,7 +89,25 @@ class _UpdateDataState extends State<UpdateData> {
     }
     return downloadUrl;
   }
-
+  @override
+  void initState() {
+    super.initState();
+    selectedFile=widget.selectedFile;
+     fileExtension = selectedFile!.path.split('.').last.toLowerCase();
+  }
+  Widget _getFilePreview(String fileExtension) {
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
+      return Center(
+        child: Image.file(widget.selectedFile),
+      );
+    } else if (fileExtension == 'pdf') {
+      return SfPdfViewer.file(widget.selectedFile);
+    } else {
+      return const Center(
+        child: Text('Unsupported file type'),
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,18 +119,11 @@ class _UpdateDataState extends State<UpdateData> {
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.75,
-              width: MediaQuery.of(context).size.width,
-              child: Image.file(widget.selectedFile),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0),
+          _getFilePreview(fileExtension),
+          Positioned(
+            top: MediaQuery.of(context).size.height*0.72,right: 0,left: 0,bottom:0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

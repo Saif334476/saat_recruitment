@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/company_pages/company_dashboard.dart';
 
-class ReviewAndSubmitPage extends StatelessWidget {
+class ReviewAndSubmitPage extends StatefulWidget {
   final File uploadedDocument;
   final String name;
   final String location;
@@ -23,10 +23,15 @@ class ReviewAndSubmitPage extends StatelessWidget {
       this.companySize});
 
   @override
+  State<ReviewAndSubmitPage> createState() => _ReviewAndSubmitPageState();
+}
+
+class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
+  @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     double uploadProgress = 0;
-    void _showUploadDialog() {
+    void showUploadDialog() {
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -69,7 +74,7 @@ class ReviewAndSubmitPage extends StatelessWidget {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 20),
-                  Image.file(uploadedDocument),
+                  Image.file(widget.uploadedDocument),
                   const SizedBox(height: 20),
                   const Text(
                     'By submitting, you agree to our Terms and Conditions.',
@@ -85,11 +90,11 @@ class ReviewAndSubmitPage extends StatelessWidget {
                             .collection('Users')
                             .doc(uid)
                             .update({
-                          'Name': name,
-                          'Location': location,
-                          'CompanySize': companySize,
-                          'Industry': industry,
-                          'Email': email,
+                          'Name': widget.name,
+                          'Location': widget.location,
+                          'CompanySize': widget.companySize,
+                          'Industry': widget.industry,
+                          'Email': widget.email,
                           'isComplete': true,
                           'isActive': false
                         });
@@ -99,25 +104,34 @@ class ReviewAndSubmitPage extends StatelessWidget {
                       try {
                         final storageRef = FirebaseStorage.instance.ref(
                             'LegalDocs/${DateTime.now().millisecondsSinceEpoch}.jpeg');
-                        _showUploadDialog();
-                        final uploadTask =
-                            await storageRef.putFile(uploadedDocument);
+                        showUploadDialog();
+                        final uploadTask = storageRef.putFile(
+                          widget.uploadedDocument,
+                          SettableMetadata(
+                            contentType: 'image/jpeg',
+                          ),
+                        );
+                        uploadTask.snapshotEvents.listen((event) {
+                          setState(() {
+                            uploadProgress = event.bytesTransferred / event.totalBytes;
+                          });
+                        });
                         final downloadUrl =
-                            await (uploadTask).ref.getDownloadURL();
+                        await (await uploadTask).ref.getDownloadURL();
                         await FirebaseFirestore.instance
                             .collection('Users')
                             .doc(FirebaseAuth.instance.currentUser?.uid)
                             .update({
                           'legalDocs': downloadUrl,
                           'legalDocsFileName':
-                              uploadedDocument.path.split('/').last,
+                          widget.uploadedDocument.path.split('/').last,
                         });
 
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    const CompanyDashBoard()));
+                                const CompanyDashBoard()));
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

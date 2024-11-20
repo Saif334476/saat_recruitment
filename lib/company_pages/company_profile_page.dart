@@ -33,18 +33,20 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text(
-          "Profile Page",
-          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white,fontSize: 25),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text(
+            "Profile Page",
+            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white,fontSize: 25),
+          ),
+          backgroundColor: const Color(0xff1C4374),
         ),
-        backgroundColor: const Color(0xff1C4374),
+        body: companyInfo != null
+            ? displayCompanyInfo(companyInfo!, context)
+            : const Center(child: CircularProgressIndicator()),
       ),
-      body: companyInfo != null
-          ? displayCompanyInfo(companyInfo!, context)
-          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

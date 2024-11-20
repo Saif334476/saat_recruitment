@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/login_page.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class JsProfilePage extends StatefulWidget {
   const JsProfilePage({super.key});
@@ -48,6 +49,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -86,9 +88,11 @@ class _JsProfilePageState extends State<JsProfilePage> {
   }
 
   Future<String?> _uploadFileToStorage(File file) async {
+
+    String? fileExtension = selectedFileName?.split('.').last.toLowerCase();
     final storageRef = FirebaseStorage.instance.ref();
     final fileRef = storageRef
-        .child('resumes/${DateTime.now().millisecondsSinceEpoch}.jpeg');
+        .child('resumes/${DateTime.now().millisecondsSinceEpoch}.$fileExtension');
     String? downloadUrl;
     final uploadTask = fileRef.putFile(file);
     downloadUrl = await (await uploadTask).ref.getDownloadURL();
@@ -165,19 +169,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
-              Expanded(child: _getFilePreview(fileUrl)
-
-                  // FutureBuilder(
-                  //   future: FirebaseFirestore.instance.collection('JobProviders').doc(uid).get(),
-                  //   builder: (context, snapshot) {
-                  //     if (snapshot.hasData) {
-                  //       return _getFilePreview(snapshot.data!['resumeUrl']);
-                  //     } else {
-                  //       return const Center(child: CircularProgressIndicator());
-                  //     }
-                  //   },
-                  // ),
-                  ),
+              Expanded(child: _getFilePreview(fileUrl)),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -219,9 +211,16 @@ class _JsProfilePageState extends State<JsProfilePage> {
     String fileExtension = parsedUrl.path.split('.').last.toLowerCase();
 
     if (fileExtension == 'pdf') {
-      return const Text('PDF Preview not supported');
+      return SfPdfViewer.network(fileUrl);
     } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
-      return Image.network(fileUrl);
+      try {
+        return Image.network(fileUrl);
+      } catch (e) {
+        return Text(
+          'Error loading image: $e',
+          style: const TextStyle(fontSize: 18),
+        );
+      }
     } else if (['doc', 'docx'].contains(fileExtension)) {
       return const Text(
         'Microsoft Word Document',
@@ -342,7 +341,7 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-      
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
@@ -387,7 +386,7 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-      
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
@@ -440,7 +439,7 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-      
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
@@ -485,7 +484,7 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-      
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
@@ -535,7 +534,7 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-      
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
@@ -583,7 +582,7 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-      
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
@@ -623,7 +622,7 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-      
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
@@ -696,7 +695,7 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-      
+
               Container(
                 height: 50,
                 decoration: BoxDecoration(
@@ -740,7 +739,7 @@ Widget displayCompanyInfo(
                   },
                 ),
               ),
-      
+
               // Add more fields as needed
             ],
           ),
