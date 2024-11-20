@@ -42,7 +42,7 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
           automaticallyImplyLeading: false,
           title: const Text(
             "Password Creation",
-            style: TextStyle(fontWeight: FontWeight.w900,color: Colors.white),
+            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
           ),
         ),
         body: Form(
@@ -52,7 +52,7 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 100.0),
+                    padding: const EdgeInsets.only(top: 30.0),
                     child: SizedBox(
                         height: 150,
                         width: 150,
@@ -234,11 +234,28 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                                   if (e.code == 'weak-password') {
                                     print('The password provided is too weak.');
                                   } else if (e.code == 'email-already-in-use') {
-                                    print(
-                                        'The account already exists for that email.');
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('The account already exists for that email.'),
+                                          content: Text(
+                                              'An error occurred: ${e.message}'),
+                                          actions: [
+                                            TextButton(
+                                              child: const Text('OK'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                 
                                   }
                                 } on FirebaseException catch (e) {
-                                  print('FirebaseException: $e');
+
                                 } catch (e) {
                                   print('Error: $e');
                                 } finally {

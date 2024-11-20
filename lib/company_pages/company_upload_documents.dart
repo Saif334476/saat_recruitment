@@ -106,8 +106,7 @@ class CompanyVerificationPageState extends State<CompanyVerificationPage> {
                       value: _selectedDocumentType,
                     ),
                     const SizedBox(height: 30),
-                    FileUploadButton(
-                      onFileSelected: (file) {
+                    FileUploadButton(onFileSelected: (file) {
                         setState(() {
                           _uploadedDocument = file;
                         });

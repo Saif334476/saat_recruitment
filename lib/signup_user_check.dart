@@ -44,11 +44,11 @@ class UserCheck extends StatelessWidget {
                   child: InkWell(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xff1C4374),
+                        //color: const Color(0xff1C4374),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: const [
                             BoxShadow(
-                                color: Colors.black,
+                                color: Color(0xff1C4374),
                                 blurRadius: 7,
                                 blurStyle: BlurStyle.outer)
                           ]),
@@ -70,7 +70,7 @@ class UserCheck extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 28,
-                              color: Colors.white,
+                              color: Color(0xff1C4374),
                               shadows: [
                                 Shadow(
                                     blurRadius: 6,
@@ -97,11 +97,11 @@ class UserCheck extends StatelessWidget {
                   child: InkWell(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xff1C4374),
+                      //  color: const Color(0xff1C4374),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: const [
                             BoxShadow(
-                                color: Colors.black,
+                                color: Color(0xff1C4374),
                                 blurRadius: 7,
                                 blurStyle: BlurStyle.outer)
                           ]),
@@ -130,7 +130,7 @@ class UserCheck extends StatelessWidget {
                                 ],
                                 fontWeight: FontWeight.bold,
                                 fontSize: 28,
-                                color: Colors.white),
+                                color: Color(0xff1C4374)),
                           )
                         ],
                       ),

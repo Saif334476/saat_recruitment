@@ -137,196 +137,171 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10.0),
+             padding:  const EdgeInsets.only(top: 35, right: 20, left: 20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 35),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0xff1C4374),
-                            blurRadius: 5,
-                            blurStyle: BlurStyle.outer,
-                          ),
-                        ],
-                      ),
-                      child: CupertinoButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            try {
-                              final user = await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                email: _phoneTextController.text,
-                                password: _passwordTextController.text,
-                              )
-                                  .then((user) async {
-                                final role = await FirebaseFirestore.instance
-                                    .collection('Users')
-                                    .doc(user.user?.uid)
-                                    .get()
-                                    .then((doc) => doc.data()?['role']);
-                                final status = await FirebaseFirestore.instance
-                                    .collection('Users')
-                                    .doc(user.user?.uid)
-                                    .get()
-                                    .then((doc) => doc.data()?['role']);
-                                final uId =
-                                    FirebaseAuth.instance.currentUser?.uid;
+                  CupertinoButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          final user = await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                            email: _phoneTextController.text,
+                            password: _passwordTextController.text,
+                          )
+                              .then((user) async {
+                            final role = await FirebaseFirestore.instance
+                                .collection('Users')
+                                .doc(user.user?.uid)
+                                .get()
+                                .then((doc) => doc.data()?['role']);
+                            final status = await FirebaseFirestore.instance
+                                .collection('Users')
+                                .doc(user.user?.uid)
+                                .get()
+                                .then((doc) => doc.data()?['role']);
+                            final uId =
+                                FirebaseAuth.instance.currentUser?.uid;
 
-                                final profileStatus = await FirebaseFirestore
-                                    .instance
-                                    .collection('Users')
-                                    .doc(user.user?.uid)
-                                    .get()
-                                    .then((doc) => doc.data()?['isComplete']);
+                            final profileStatus = await FirebaseFirestore
+                                .instance
+                                .collection('Users')
+                                .doc(user.user?.uid)
+                                .get()
+                                .then((doc) => doc.data()?['isComplete']);
 
-                                if (role == 'JobSeeker' &&
-                                    profileStatus == true) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const NHomePage()),
-                                  );
-                                } else if (role == 'JobSeeker' &&
-                                    profileStatus == false) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => JobSeekerProfile(
-                                            _phoneTextController.text,
-                                            'email',
-                                            _phoneTextController.text,
-                                            uId)),
-                                  );
-                                } else if (role == 'JobProvider' &&
-                                    profileStatus == true) {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CompanyDashBoard()),
-                                    (route) => false,
-                                  );
-                                } else if (role == 'JobProvider' &&
-                                    profileStatus == false) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CompanyFormPage(
-                                            _phoneTextController.text,
-                                            "email",
-                                            _phoneTextController.text,
-                                            uId)),
-                                  );
-                                } else if (role == 'Admin') {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const AdminPanel()),
-                                  );
-                                }
-                              });
-                            } on FirebaseAuthException catch (e) {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: const Text('Login Failed'),
-                                  content: Text('Login failed: ${e.message}'),
-                                  actions: [
-                                    TextButton(
-                                      child: const Text('OK'),
-                                      onPressed: () => Navigator.of(context).pop(),
-                                    ),
-                                  ],
-                                ),
+                            if (role == 'JobSeeker' &&
+                                profileStatus == true) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const JsBottomNavigationBar()),
+                              );
+                            } else if (role == 'JobSeeker' &&
+                                profileStatus == false) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JobSeekerProfile(
+                                        _phoneTextController.text,
+                                        'email',
+                                        _phoneTextController.text,
+                                        uId)),
+                              );
+                            } else if (role == 'JobProvider' &&
+                                profileStatus == true) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CompanyDashBoard()),
+                                (route) => false,
+                              );
+                            } else if (role == 'JobProvider' &&
+                                profileStatus == false) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CompanyFormPage(
+                                        _phoneTextController.text,
+                                        "email",
+                                        _phoneTextController.text,
+                                        uId)),
+                              );
+                            } else if (role == 'Admin') {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AdminPanel()),
                               );
                             }
-                          }
-                        },
-                        color: const Color(0xff1C4374),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
-                        pressedOpacity: 0.3,
-                        child: _isLoading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 25,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ))
-                            : const Text(
-                                'LOG IN',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                      ),
+                          });
+                        } on FirebaseAuthException catch (e) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Login Failed'),
+                              content: Text('Login failed: ${e.message}'),
+                              actions: [
+                                TextButton(
+                                  child: const Text('OK'),
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    color: const Color(0xff1C4374),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(15)),
+                    pressedOpacity: 0.3,
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 25,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ))
+                        : const Text(
+                            'LOG IN',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                  ),
+                  const SizedBox(height: 10,),
+                  CupertinoButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const UserCheck()));
+                    },
+                    color: const Color(0xff1C4374),
+                    borderRadius: BorderRadius.circular(15),
+                    pressedOpacity: 0.3,
+                    child: const Text(
+                      'Create New Account',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 15),
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(15),
+                  //         boxShadow: const [
+                  //           BoxShadow(
+                  //               color: Color(0xff1C4374),
+                  //               blurRadius: 5,
+                  //               blurStyle: BlurStyle.outer)
+                  //         ]),
+                  //     child: CupertinoButton(
+                  //       onPressed: () {
+                  //         Navigator.push(
+                  //             context,
+                  //             MaterialPageRoute(
+                  //                 builder: (context) => const AdminPanel()));
+                  //       },
+                  //       color: const Color(0xff1C4374),
+                  //       borderRadius: BorderRadius.circular(15),
+                  //       pressedOpacity: 0.3,
+                  //       child: const Text(
+                  //         'Continue as a Guest',
+                  //         style: TextStyle(
+                  //             fontWeight: FontWeight.bold, color: Colors.white),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // )
                 ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 25),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color(0xff1C4374),
-                          blurRadius: 5,
-                          blurStyle: BlurStyle.outer)
-                    ]),
-                child: CupertinoButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const UserCheck()));
-                  },
-                  color: const Color(0xff1C4374),
-                  borderRadius: BorderRadius.circular(15),
-                  pressedOpacity: 0.3,
-                  child: const Text(
-                    'Create New Account',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color(0xff1C4374),
-                          blurRadius: 5,
-                          blurStyle: BlurStyle.outer)
-                    ]),
-                child: CupertinoButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AdminPanel()));
-                  },
-                  color: const Color(0xff1C4374),
-                  borderRadius: BorderRadius.circular(15),
-                  pressedOpacity: 0.3,
-                  child: const Text(
-                    'Continue as a Guest',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
               ),
             )
           ]),

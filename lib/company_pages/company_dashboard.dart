@@ -32,7 +32,8 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
       isActive = doc.get('isActive');
     });
   }
-@override
+
+  @override
   void initState() {
     _checkUserStatus();
     super.initState();

@@ -277,16 +277,9 @@ Widget displayCompanyInfo(
     String? selectedFileName,
     Function showPreviewModal,
     Function showPreviewModals) {
-  return Container(
-    decoration: const BoxDecoration(
-      //   gradient: LinearGradient(
-      //       colors: [Colors.blue, Colors.white],
-      //       begin: Alignment.topCenter,
-      //       end: Alignment.bottomCenter),
-      color: Colors.white,
-    ),
-    child: Padding(
-      padding: const EdgeInsets.only(right: 20.0, left: 20),
+  return Padding(
+    padding: const EdgeInsets.only(right: 20.0, left: 20),
+    child: SingleChildScrollView(
       child: Column(
         children: [
           Padding(
@@ -308,7 +301,7 @@ Widget displayCompanyInfo(
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(5),
                       border: Border.all(
                           style: BorderStyle.solid,
                           color: const Color(0xff1C4374),
@@ -349,13 +342,13 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-
+      
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(5),
                       border: Border.all(
                           style: BorderStyle.solid,
                           color: const Color(0xff1C4374),
@@ -394,13 +387,13 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-
+      
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(5),
                       border: Border.all(
                           style: BorderStyle.solid,
                           color: const Color(0xff1C4374),
@@ -447,13 +440,13 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-
+      
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(5),
                       border: Border.all(
                           style: BorderStyle.solid,
                           color: const Color(0xff1C4374),
@@ -492,13 +485,13 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-
+      
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(5),
                       border: Border.all(
                           style: BorderStyle.solid,
                           color: const Color(0xff1C4374),
@@ -542,13 +535,13 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-
+      
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(5),
                       border: Border.all(
                           style: BorderStyle.solid,
                           color: const Color(0xff1C4374),
@@ -590,13 +583,13 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-
+      
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(5),
                       border: Border.all(
                           style: BorderStyle.solid,
                           color: const Color(0xff1C4374),
@@ -630,13 +623,13 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-
+      
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Container(
                   height: 65,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(5),
                       border: Border.all(
                           style: BorderStyle.solid,
                           color: const Color(0xff1C4374),
@@ -703,11 +696,11 @@ Widget displayCompanyInfo(
                   ),
                 ),
               ),
-
+      
               Container(
                 height: 50,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(5),
                     border: Border.all(
                         style: BorderStyle.solid,
                         color: const Color(0xff1C4374),
@@ -747,7 +740,7 @@ Widget displayCompanyInfo(
                   },
                 ),
               ),
-
+      
               // Add more fields as needed
             ],
           ),

@@ -9,6 +9,8 @@ import 'package:saat_recruitment/job_seeker_pages/dashboard/job_seeker_dashboard
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:intl/intl.dart';
 
+import 'dashboard/bottom_navigation/home.dart';
+
 class JobSeekerProfile extends StatefulWidget {
   final String? email;
   final String? credentials;
@@ -416,7 +418,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const NHomePage(),
+                                              const JobSeekerHomePage(),
                                         ),
                                       );
                                     }

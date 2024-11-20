@@ -63,81 +63,82 @@ class _JobInfoState extends State<JobInfo> {
 
   Future<DocumentSnapshot<Map<String, dynamic>>> companyName(name) async {
     final named =
-        await FirebaseFirestore.instance.collection('Users').doc(name).get();
+    await FirebaseFirestore.instance.collection('Users').doc(name).get();
     return named;
   }
 
   Future<Map<String, dynamic>?> fetchJobSeekerInfo(String uid) async {
     final doc =
-        await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+    await FirebaseFirestore.instance.collection('Users').doc(uid).get();
     return doc.data();
   }
 
   Map<String, dynamic>? companyInfo;
-  FilePickerResult? result;
+  //FilePickerResult? result;
 
   String? selectedFileName;
   File? selectedFile;
 
-  // Widget _getFilePreview(String fileUrl) {
-  //   Uri parsedUrl = Uri.parse(fileUrl);
-  //   String fileExtension = parsedUrl.path.split('.').last.toLowerCase();
-  //
-  //   if (fileExtension == 'pdf') {
-  //     return const Text('PDF Preview not supported');
-  //   } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
-  //     return Image.network(fileUrl);
-  //   } else if (['doc', 'docx'].contains(fileExtension)) {
-  //     return const Text(
-  //       'Microsoft Word Document',
-  //       style: TextStyle(fontSize: 18),
-  //     );
-  //   } else if (['xls', 'xlsx'].contains(fileExtension)) {
-  //     return const Text(
-  //       'Microsoft Excel Spreadsheet',
-  //       style: TextStyle(fontSize: 18),
-  //     );
-  //   } else {
-  //     return const Text(
-  //       'Unsupported file type',
-  //       style: TextStyle(fontSize: 18),
-  //     );
-  //   }
-  // }
+  Widget _getFilePreview(String fileUrl) {
+    Uri parsedUrl = Uri.parse(fileUrl);
+    String fileExtension = parsedUrl.path.split('.').last.toLowerCase();
+
+    if (fileExtension == 'pdf') {
+      return const Text('PDF Preview not supported');
+    } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
+      return Image.network(fileUrl);
+    } else if (['doc', 'docx'].contains(fileExtension)) {
+      return const Text(
+        'Microsoft Word Document',
+        style: TextStyle(fontSize: 18),
+      );
+    } else if (['xls', 'xlsx'].contains(fileExtension)) {
+      return const Text(
+        'Microsoft Excel Spreadsheet',
+        style: TextStyle(fontSize: 18),
+      );
+    } else {
+      return const Text(
+        'Unsupported file type',
+        style: TextStyle(fontSize: 18),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          widget.jobAdData?['jobType'],
-          style:
-              const TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
-        ),
-        backgroundColor: const Color(0xff1C4374),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 30.0),
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 20, right: 20, top: 10, bottom: 10),
-              child: Column(
+    return SafeArea(
+        child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            style: BorderStyle.solid,
-                            width: 2,
-                            color: const Color(0xff1C4374)),
-                        borderRadius: BorderRadius.circular(20)),
-                    height: 220,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
+                  Text(
+                    widget.jobAdData?['jobTitle'],
+                    style:
+                    const TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.close_outlined,
+                        size: 30,
+                        color: Colors.white,
+                      ))
+                ],
+              ),
+              backgroundColor: const Color(0xff1C4374),
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 10, bottom: 10),
+                child: Column(
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Padding(
@@ -157,15 +158,7 @@ class _JobInfoState extends State<JobInfo> {
                                   ),
                                 ),
                               ),
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: const Icon(
-                                    Icons.close_outlined,
-                                    size: 40,
-                                    color: Color(0xff1C4374),
-                                  ))
+
                             ],
                           ),
                         ),
@@ -177,7 +170,7 @@ class _JobInfoState extends State<JobInfo> {
                             ),
                             FutureBuilder(
                               future:
-                                  companyName(widget.jobAdData!['postedBy']),
+                              companyName(widget.jobAdData!['postedBy']),
                               builder: (context, snapshot) {
                                 return Text(
                                   snapshot.data?['Name'].toUpperCase() ??
@@ -199,7 +192,7 @@ class _JobInfoState extends State<JobInfo> {
                                 children: [
                                   const Padding(
                                     padding:
-                                        EdgeInsets.only(right: 8.0, left: 8),
+                                    EdgeInsets.only(right: 8.0, left: 8),
                                     child: Icon(Icons.location_on_outlined),
                                   ),
                                   Text(
@@ -263,19 +256,14 @@ class _JobInfoState extends State<JobInfo> {
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            style: BorderStyle.solid,
-                            width: 2,
-                            color: const Color(0xff1C4374)),
-                        borderRadius: BorderRadius.circular(20)),
-                    height: 100,
-                    child: Column(
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Divider(height: 10,color: Color(0xff1C4374),),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Row(
@@ -320,19 +308,14 @@ class _JobInfoState extends State<JobInfo> {
                         )
                       ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            style: BorderStyle.solid,
-                            width: 2,
-                            color: const Color(0xff1C4374)),
-                        borderRadius: BorderRadius.circular(20)),
-                    height: 320,
-                    child: const Padding(
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Divider(height: 10,color: Color(0xff1C4374),),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Padding(
                       padding: EdgeInsets.all(10.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -348,53 +331,55 @@ class _JobInfoState extends State<JobInfo> {
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CupertinoButton(
-                      color: const Color(0xff193d67),
-                      onPressed: () {
-                        if (mcqList.isNotEmpty) {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ConductMcqs(mcqList: mcqList)));
-                        } else {
-                          if (companyInfo?['resumeUrl'] == "") {
-                            Navigator.pop(context);
-                            Navigator.push(
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Divider(height: 10,color: Color(0xff1C4374),),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    CupertinoButton(
+                        color: const Color(0xff193d67),
+                        onPressed: () {
+                          if (mcqList.isNotEmpty) {
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const UploadCvResume()));
+                                        ConductMcqs(mcqList: mcqList)));
                           } else {
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PreviewCv(
-                                          uid,
-                                          widget.jobAdId,
-                                          existingResumeUrl:
-                                              companyInfo?["resumeUrl"],
-                                        )));
-                            // showPreviewModals(companyInfo?["resumeUrl"]);
+                            if (companyInfo?['resumeUrl'] == "") {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                      const UploadCvResume()));
+                            } else {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PreviewCv(
+                                        uid,
+                                        widget.jobAdId,
+                                        existingResumeUrl:
+                                        companyInfo?["resumeUrl"],
+                                      )));
+                              // showPreviewModals(companyInfo?["resumeUrl"]);
+                            }
                           }
-                        }
-                      },
-                      child: const Text(
-                        "APPLY",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w900, color: Colors.white),
-                      ))
-                ],
+                        },
+                        child: const Text(
+                          "APPLY",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900, color: Colors.white),
+                        ))
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
+            ),
+        );
+    }
 }

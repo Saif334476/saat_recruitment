@@ -9,6 +9,7 @@ import 'Admin_Panel/admin_panel.dart';
 import 'company_pages/company_dashboard.dart';
 import 'company_pages/company_form_page.dart';
 
+import 'job_seeker_pages/dashboard/bottom_navigation/home.dart';
 import 'job_seeker_pages/dashboard/job_seeker_dashboard.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -38,7 +39,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
           if (role == 'JobSeeker' && profileStatus == true) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const NHomePage()),
+              MaterialPageRoute(builder: (context) => const JsBottomNavigationBar()),
             );
           }
           if (role == 'JobSeeker' && profileStatus == false) {
