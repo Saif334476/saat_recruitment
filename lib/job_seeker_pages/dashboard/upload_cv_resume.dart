@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,7 +18,7 @@ class _UploadCvResumeState extends State<UploadCvResume> {
   FilePickerResult? result;
   String? _selectedFileName;
   bool _isFileSelected = false;
- final uId= FirebaseAuth.instance.currentUser?.uid;
+  final uId = FirebaseAuth.instance.currentUser?.uid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +48,7 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                     onPressed: () async {
                       result = await FilePicker.platform.pickFiles(
                         type: FileType.custom,
-                        allowedExtensions: ['pdf', 'doc', 'docx'],
+                        allowedExtensions: ['pdf', 'jpg', 'jpeg'],
                       );
                       if (result != null && result!.files.isNotEmpty) {
                         PlatformFile file = result!.files.first;
@@ -59,7 +58,6 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                           convertedFile = File(file.path!);
                         });
                       }
-
                     },
                     icon: const Icon(
                       Icons.upload_file_outlined,
@@ -102,13 +100,13 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white),
                           ),
-                          onPressed: () async{
-
+                          onPressed: () async {
                             String? resumeUrl;
                             if (_isFileSelected) {
-                              final storageRef = FirebaseStorage.instance.ref(
-                                  'resumes/${DateTime.now().millisecondsSinceEpoch}.jpeg');
-                              final uploadTask = storageRef.putFile(convertedFile!);
+                              final storageRef = FirebaseStorage.instance
+                                  .ref('resumes/$uId.jpeg');
+                              final uploadTask =
+                                  storageRef.putFile(convertedFile!);
                               resumeUrl =
                                   await (await uploadTask).ref.getDownloadURL();
 

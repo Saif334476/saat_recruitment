@@ -10,7 +10,7 @@ import 'company_pages/company_dashboard.dart';
 import 'company_pages/company_form_page.dart';
 
 import 'job_seeker_pages/dashboard/bottom_navigation/home.dart';
-import 'job_seeker_pages/dashboard/job_seeker_dashboard.dart';
+import 'job_seeker_pages/dashboard/bottom_navigation/js_bottom_nav_bar.dart';
 
 class SplashScreenPage extends StatefulWidget {
   const SplashScreenPage({super.key});

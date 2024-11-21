@@ -52,6 +52,9 @@ class _JsProfilePageState extends State<JsProfilePage> {
       Navigator.pop(context);
       print('Error uploading file: $e');
     }
+    setState(() {
+
+    });
   }
 
   void _showUploadDialog() {

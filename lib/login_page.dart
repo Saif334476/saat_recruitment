@@ -6,7 +6,7 @@ import 'package:saat_recruitment/company_pages/company_dashboard.dart';
 import 'package:saat_recruitment/company_pages/company_form_page.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:flutter/cupertino.dart';
-import 'job_seeker_pages/dashboard/job_seeker_dashboard.dart';
+import 'job_seeker_pages/dashboard/bottom_navigation/js_bottom_nav_bar.dart';
 import 'job_seeker_pages/job_seeker_form.dart';
 import 'signup_user_check.dart';
 

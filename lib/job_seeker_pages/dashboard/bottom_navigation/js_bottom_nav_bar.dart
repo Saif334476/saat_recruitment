@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'bottom_navigation/home.dart';
-import 'bottom_navigation/js_my_jobs_page.dart';
-import 'bottom_navigation/js_profile_page.dart';
+import 'home.dart';
+import 'js_my_jobs_page.dart';
+import 'js_profile_page.dart';
 
 
 class JsBottomNavigationBar extends StatefulWidget {
