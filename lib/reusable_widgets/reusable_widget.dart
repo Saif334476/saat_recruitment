@@ -85,6 +85,7 @@ SizedBox elevatedButton(String text, Function onPressed,
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23),
           )));
 }
+
 DropdownButtonFormField dropDown({
   required String text,
   required dynamic value,
@@ -128,7 +129,7 @@ TextFormField textFormField(String text, IconData icon, bool obscuredText,
     obscureText: obscuredText,
     keyboardType: keyboard,
     decoration: InputDecoration(
-      errorStyle:const TextStyle(color: Colors.red),
+        errorStyle: const TextStyle(color: Colors.red),
         errorBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.red),
             borderRadius: BorderRadius.circular(15)),
@@ -140,6 +141,19 @@ TextFormField textFormField(String text, IconData icon, bool obscuredText,
         prefixIcon: Icon(icon)),
     validator: validator,
     controller: controller,
-
   );
+}
+
+ElevatedButton elevatedButtons(
+    {required Function onPressed, required Widget widget}) {
+  return ElevatedButton(style: ButtonStyle(
+    backgroundColor: WidgetStateProperty.all(const Color(0xff1C4374)),
+    foregroundColor: WidgetStateProperty.all(const Color(0xff1C4374)),
+    shape: WidgetStateProperty.all(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(width: 2, color:  Color(0xff1C4374)),
+      ),
+    ),
+  ),onPressed: onPressed(), child: widget);
 }

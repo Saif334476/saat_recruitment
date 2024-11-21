@@ -42,50 +42,49 @@ class HomePageState extends State<JsBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
 
-            body: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              children: _children,
-            ),
-            bottomNavigationBar: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                clipBehavior: Clip.hardEdge,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    topRight: Radius.circular(8),
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8),
-                  ),
-                ),
-                child: BottomNavigationBar(
-                  unselectedItemColor: Colors.white,
-                  backgroundColor: const Color(0xff1C4374),
-                  currentIndex: _currentIndex,
-                  iconSize: 30,
-                  onTap: navigateTo,
-                  items: const [
-                    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.document_scanner_outlined),
-                        label: 'My Applications'),
-                    BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
-                  ],
-                  selectedItemColor: const Color(0xff97C5FF),
-                  unselectedLabelStyle:
-                  TextStyle(color: Colors.white10.withOpacity(0.5)),
-                  selectedLabelStyle: const TextStyle(color: Colors.grey),
-                ),
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          children: _children,
+        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+                bottomRight: Radius.circular(8),
               ),
             ),
-            ));
+            child: BottomNavigationBar(
+              unselectedItemColor: Colors.white,
+              backgroundColor: const Color(0xff1C4374),
+              currentIndex: _currentIndex,
+              iconSize: 30,
+              onTap: navigateTo,
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.document_scanner_outlined),
+                    label: 'My Applications'),
+                BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
+              ],
+              selectedItemColor: const Color(0xff97C5FF),
+              unselectedLabelStyle:
+              TextStyle(color: Colors.white10.withOpacity(0.5)),
+              selectedLabelStyle: const TextStyle(color: Colors.grey),
+            ),
+          ),
+        ),
+        );
     }
 }

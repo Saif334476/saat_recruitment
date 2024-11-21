@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/Firebase%20Services/resume_utils.dart';
 import 'package:saat_recruitment/login_page.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -26,13 +27,45 @@ class _JsProfilePageState extends State<JsProfilePage> {
   double _uploadProgress = 0;
   final uid = FirebaseAuth.instance.currentUser?.uid;
   Map<String, dynamic>? companyInfo;
-  String? selectedFileName;
+  String selectedFileName = "";
   File? selectedFile;
+
+  Future<void> _uploadResume(File selectedFile, String selectedFileName) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    _showUploadDialog();
+    try {
+      final newResumeUrl = await ResumeUtils().uploadFileToStorage(
+          selectedFile, selectedFileName, (double progress) {
+        setState(() {
+          _uploadProgress = progress;
+          print('Progress: $progress');
+        });
+      });
+
+      await ResumeUtils()
+          .saveResumeToFirestore(uid, newResumeUrl, selectedFileName);
+
+      Navigator.pop(context);
+      Navigator.pop(context);
+    } catch (e) {
+      // Handle any errors
+      Navigator.pop(context);
+      print('Error uploading file: $e');
+    }
+  }
+
+  void _showUploadDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ProgressLoader(progress: _uploadProgress),
+    );
+  }
 
   void selectFile() async {
     result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx', 'jpeg', 'jpg'],
+      allowedExtensions: ['pdf', 'jpeg', 'jpg'],
     );
     if (result != null && result!.files.isNotEmpty) {
       PlatformFile file = result!.files.first;
@@ -42,68 +75,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
       });
       showPreviewModal(selectedFile);
     }
-  }
-
-  void _showUploadDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Uploading...'),
-              LinearProgressIndicator(
-                value: _uploadProgress,
-              ),
-              Text('Uploaded: (${(_uploadProgress * 100).toInt()}%)'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void updateFileOnFirestoreAndStorage(selectedFile) async {
-    final users = FirebaseFirestore.instance.collection('Users');
-    final docSnapshot = await users.doc(uid).get();
-
-    if (docSnapshot.exists) {
-      final existingResumeUrl = await docSnapshot.get('resumeUrl');
-      if (existingResumeUrl != "") {
-        await FirebaseStorage.instance.refFromURL(existingResumeUrl).delete();
-      }
-      _showUploadDialog();
-      final newResumeUrl = await _uploadFileToStorage(selectedFile);
-      await users.doc(uid).update({
-        'resumeUrl': newResumeUrl,
-        'resumeFileName': selectedFileName,
-      }); // Close the dialog
-    }
-    Navigator.pop(context);
-    Navigator.pop(context);
-  }
-
-  Future<String?> _uploadFileToStorage(File file) async {
-
-    String? fileExtension = selectedFileName?.split('.').last.toLowerCase();
-    final storageRef = FirebaseStorage.instance.ref();
-    final fileRef = storageRef
-        .child('resumes/${DateTime.now().millisecondsSinceEpoch}.$fileExtension');
-    String? downloadUrl;
-    final uploadTask = fileRef.putFile(file);
-    downloadUrl = await (await uploadTask).ref.getDownloadURL();
-    await for (final snapshot in uploadTask.snapshotEvents) {
-      final progress = snapshot.bytesTransferred / snapshot.totalBytes;
-      setState(() {
-        _uploadProgress = progress;
-      });
-      downloadUrl = await snapshot.ref.getDownloadURL();
-    }
-    return downloadUrl;
   }
 
   void showPreviewModal(selectedFile) {
@@ -120,7 +91,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
               ),
               const SizedBox(height: 20),
               Text(
-                selectedFileName!,
+                selectedFileName,
                 style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 20),
@@ -140,7 +111,9 @@ class _JsProfilePageState extends State<JsProfilePage> {
                   CupertinoButton(
                     color: const Color(0xff1C4374),
                     onPressed: () {
-                      updateFileOnFirestoreAndStorage(selectedFile);
+                      setState(() {
+                        _uploadResume(selectedFile, selectedFileName);
+                      });
                     },
                     child: const Text(
                       'OK',
@@ -252,14 +225,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text(
-          "Profile",
-          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
-        ),
-        backgroundColor: const Color(0xff1C4374),
-      ),
       body: companyInfo != null
           ? displayCompanyInfo(companyInfo!, context, selectFile, selectedFile,
               selectedFileName, showPreviewModal, showPreviewModals)
@@ -281,22 +246,56 @@ Widget displayCompanyInfo(
     child: SingleChildScrollView(
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: SizedBox(
-              height: 120,
-              width: 120,
-              child: Container(
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(100)),
+          const SizedBox(
+            height: 50,
+          ),
+          Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border:
+                      Border.all(color: const Color(0xff1C4374), width: 1.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xff1C4374).withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipOval(
                   child: Image.asset(
-                      FirebaseAuth.instance.currentUser!.photoURL.toString())),
-            ),
+                    height: 120,
+                    width: 120,
+                    FirebaseAuth.instance.currentUser!.photoURL.toString(),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                bottom: 85,
+                right: 0,
+                left: 85,
+                child: Container(
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Color(0xff1C4374)),
+                  child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      )),
+                ),
+              ),
+            ],
           ),
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 10),
+                padding: const EdgeInsets.only(top: 30.0, bottom: 10),
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(

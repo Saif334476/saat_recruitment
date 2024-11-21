@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/job_seeker_pages/Resume_Preview.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/job_seeker_dashboard.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:intl/intl.dart';
@@ -24,7 +25,7 @@ class JobSeekerProfile extends StatefulWidget {
 }
 
 class JobSeekerProfileState extends State<JobSeekerProfile> {
-  File? convertedFile;
+  late File convertedFile;
 
   FilePickerResult? result;
   final _formKey = GlobalKey<FormState>();
@@ -34,7 +35,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
   final TextEditingController _phoneNumber = TextEditingController();
   String _city = "Lahore";
   String _gender = "Male";
-  String? _selectedFileName;
+  String _selectedFileName="";
   bool _isFileSelected = false;
 
   @override
@@ -362,7 +363,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                                 onPressed: () async {
                                   result = await FilePicker.platform.pickFiles(
                                     type: FileType.custom,
-                                    allowedExtensions: ['pdf', 'doc', 'docx'],
+                                    allowedExtensions: ['pdf','jpg','jpeg'],
                                   );
                                   if (result != null &&
                                       result!.files.isNotEmpty) {
@@ -372,6 +373,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                                       _isFileSelected = true;
                                       convertedFile = File(file.path!);
                                     });
+                                    Navigator.push(context,MaterialPageRoute(builder: (context)=>ResumePreview(selectedFile:convertedFile,selectedFileName:_selectedFileName )));
                                   }
                                 },
                                 child: const Icon(
@@ -446,7 +448,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
       String? resumeUrl;
       if (_isFileSelected) {
         final storageRef = FirebaseStorage.instance
-            .ref('resumes/${DateTime.now().millisecondsSinceEpoch}.jpeg');
+            .ref('resumes/${widget.uId}.jpeg');
         final uploadTask = storageRef.putFile(convertedFile!);
         resumeUrl = await (await uploadTask).ref.getDownloadURL();
       }
