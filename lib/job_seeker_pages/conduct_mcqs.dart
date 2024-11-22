@@ -1,10 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/job_seeker_pages/dashboard/preview_cv.dart';
 
 class ConductMcqs extends StatefulWidget {
   final List<Map<String, dynamic>> mcqList;
-
-  const ConductMcqs({super.key, required this.mcqList});
+  final String uid;
+  final String existingResumeUrl;
+  final String jobAdId;
+  const ConductMcqs(
+      {super.key,
+      required this.mcqList,
+      required this.existingResumeUrl,
+      required this.uid,
+      required this.jobAdId});
 
   @override
   State<ConductMcqs> createState() => _ConductMcqsState();
@@ -136,20 +144,61 @@ class _ConductMcqsState extends State<ConductMcqs> {
                     showDialog(
                       context: context,
                       builder: (context) {
+                        final String result = _score >= 7 ? 'Passed' : 'Failed';
+                        final Color resultColor =
+                            _score >= 7 ? Colors.green : Colors.red;
+
                         return AlertDialog(
-                          content: Text(
-                            'Your score is $_score/${widget.mcqList.length}',
+                          content: SizedBox(
+                            height: 65,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Your score is $_score/${widget.mcqList.length}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 20),
+                                ),
+                                Text(
+                                  result,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: resultColor,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                // IconButton(
+                                //   onPressed: () {
+                                //     Navigator.pop(context);
+                                //   },
+                                //   icon: const Icon(Icons.done, size: 50),
+                                // ),
+                              ],
+                            ),
                           ),
                           actions: [
                             TextButton(
                               onPressed: () {
-                                Navigator.pop(context);
+                                if (_score >= 7) {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PreviewCv(
+                                              widget.uid, widget.jobAdId,
+                                              existingResumeUrl:
+                                                  widget.existingResumeUrl)));
+                                } else {
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                }
                               },
                               child: const Text(
                                 'OK',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white),
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
                             ),
                           ],

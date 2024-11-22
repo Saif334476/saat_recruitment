@@ -63,7 +63,7 @@ class _PreviewPageState extends State<PreviewPage> {
             .toList(),
         'postedBy': uid,
         'postedAt': DateTime.now(),
-      });
+      },SetOptions(merge: true));
     } catch (e) {
       print('Error saving job posting: $e');
     }

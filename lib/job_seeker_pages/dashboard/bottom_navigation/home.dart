@@ -82,7 +82,10 @@ class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
                       });
                     },
                   ),
-                  JobsWidget(selectedCategory: _selectedCategory),
+                  JobsWidget(
+                    selectedCategory: _selectedCategory,
+                    jobCategories: jobCategories, // Pass it here
+                  ),
                 ]),
           )),
     );
@@ -91,8 +94,8 @@ class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
 
 class JobsWidget extends StatelessWidget {
   final String selectedCategory;
-
-  const JobsWidget({super.key, required this.selectedCategory});
+  final  List<JobCategory> jobCategories;
+  const JobsWidget({super.key, required this.selectedCategory, required  this.jobCategories});
 
   Future<DocumentSnapshot<Map<String, dynamic>>> companyName(name) async {
     final named =
@@ -121,6 +124,11 @@ class JobsWidget extends StatelessWidget {
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 DocumentSnapshot jobAdDoc = snapshot.data!.docs[index];
+                String category = jobAdDoc['selectedCategory'];
+                IconData categoryIcon = Icons.help_outline; // Default icon if not found
+                JobCategory? categoryItem = jobCategories.firstWhere(
+                        (categoryObj) => categoryObj.name == category,
+                    orElse: () => JobCategory(icon: Icons.help_outline, name: 'Unknown'),);
                 return Padding(
                   padding: const EdgeInsets.only(right: 10.0, left: 10),
                   child: Container(
@@ -136,6 +144,7 @@ class JobsWidget extends StatelessWidget {
                           const BorderRadius.all(Radius.circular(10)),
                     ),
                     child: ListTile(
+                      leading:Icon(categoryItem.icon) ,
                       onTap: () async {
                         final jobAdData =
                             jobAdDoc.data() as Map<String, dynamic>;
@@ -205,40 +214,48 @@ class JobsWidget extends StatelessWidget {
                           ),
                         ],
                       ),
-                      subtitle: Column(
+                      subtitle: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "Job Type: ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        "Job Type: ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Text(jobAdDoc['jobType']),
+                                    ],
                                   ),
-                                  Text(jobAdDoc['jobType']),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        "Req. Experience: ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Text(jobAdDoc['requiredExperience']),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  const Text(
-                                    "Req. Experience: ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  Text(jobAdDoc['requiredExperience']),
-                                ],
-                              ),
-                            ],
-                          ),
+
+                          IconButton(onPressed: (){}, icon: const Icon(Icons.share_outlined))
                         ],
                       ),
                     ),

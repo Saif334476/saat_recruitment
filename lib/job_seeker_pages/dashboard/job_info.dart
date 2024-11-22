@@ -10,8 +10,8 @@ import '../conduct_mcqs.dart';
 
 class JobInfo extends StatefulWidget {
   final Map<String, dynamic>? jobAdData;
-  final String? jobAdId;
-  const JobInfo({super.key, this.jobAdData, this.jobAdId});
+  final  String jobAdId;
+  const JobInfo({super.key, this.jobAdData, required this.jobAdId});
 
   @override
   State<JobInfo> createState() => _JobInfoState();
@@ -345,7 +345,10 @@ class _JobInfoState extends State<JobInfo> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        ConductMcqs(mcqList: mcqList)));
+                                        ConductMcqs(mcqList: mcqList,uid: uid!,
+                                          jobAdId:widget.jobAdId,
+                                          existingResumeUrl:
+                                          companyInfo?["resumeUrl"],)));
                           } else {
                             if (companyInfo?['resumeUrl'] == "") {
                               Navigator.pop(context);

@@ -22,6 +22,7 @@ class PreviewCv extends StatefulWidget {
 }
 
 class _PreviewCvState extends State<PreviewCv> {
+  String jsId = FirebaseAuth.instance.currentUser!.uid;
   String? jobAdId;
   FilePickerResult? result;
   final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -40,6 +41,12 @@ class _PreviewCvState extends State<PreviewCv> {
       await jobAdRef.update({
         'numberOfApplicants': FieldValue.increment(1),
       });
+      FirebaseFirestore.instance
+          .collection("Users")
+          .doc(jsId)
+          .collection("Job Applications")
+          .doc(jobAdId)
+          .set({"applicationStatus": "Successful"},SetOptions(merge: true));
 
       showDialog(
         context: context,
