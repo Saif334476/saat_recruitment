@@ -1,26 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/JobProvider%20Pages/JP%20Nav%20Bar/Nav%20Items/Job%20Ads%20Listing/applicants_on_ad.dart';
 import '../Ad Posting/new_ad_posting.dart';
 
 class JobAdsListView extends StatefulWidget {
-  final uid = FirebaseAuth.instance.currentUser?.uid;
-
-  JobAdsListView({super.key});
+  const JobAdsListView({super.key});
 
   @override
   JobAdsListViewState createState() => JobAdsListViewState();
 }
 
 class JobAdsListViewState extends State<JobAdsListView> {
+  final uid = FirebaseAuth.instance.currentUser?.uid;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height*0.77,
+      height: MediaQuery.of(context).size.height * 0.77,
       child: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('jobs')
-            .where('postedBy', isEqualTo: widget.uid)
+            .where('postedBy', isEqualTo: uid)
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -50,9 +50,10 @@ class JobAdsListViewState extends State<JobAdsListView> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 border: Border.all(
-                                    color: const Color(0xff1C4374), width: 1.5)),
+                                    color: const Color(0xff1C4374),
+                                    width: 1.5)),
                             child: ListTile(
-                              onTap: () async {
+                              onLongPress: () async {
                                 final jobAdId = (jobAdDoc.id);
                                 final jobAdData =
                                     jobAdDoc.data() as Map<String, dynamic>;
@@ -81,7 +82,8 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                       ),
                                       IconButton(
                                           onPressed: () {},
-                                          icon: const Icon(Icons.share_outlined))
+                                          icon:
+                                              const Icon(Icons.share_outlined))
                                     ],
                                   ),
                                   const Divider(
@@ -133,8 +135,8 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                                     fontWeight: FontWeight.w700,
                                                     fontSize: 17),
                                               ),
-                                              Text(
-                                                  jobAdDoc['requiredExperience']),
+                                              Text(jobAdDoc[
+                                                  'requiredExperience']),
                                             ],
                                           ),
                                           Row(
@@ -151,10 +153,20 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                         ],
                                       ),
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ApplicantsOnAd(
+                                                          jobAdId: jobAdDoc.id)));
+                                        },
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              border: Border.all(width: 1,color: const Color(0xff1C4374)),
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                      const Color(0xff1C4374)),
                                               borderRadius:
                                                   BorderRadius.circular(5)),
                                           child: Padding(
