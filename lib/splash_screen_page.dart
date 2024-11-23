@@ -6,10 +6,8 @@ import "package:gap/gap.dart";
 import 'package:saat_recruitment/job_seeker_pages/job_seeker_form.dart';
 import 'package:saat_recruitment/login_page.dart';
 import 'Admin_Panel/admin_panel.dart';
-import 'company_pages/company_dashboard.dart';
-import 'company_pages/company_form_page.dart';
-
-import 'job_seeker_pages/dashboard/bottom_navigation/home.dart';
+import 'JobProvider Pages/JP Nav Bar/jp_nav_bar.dart';
+import 'JobProvider Pages/jp_form_page.dart';
 import 'job_seeker_pages/dashboard/bottom_navigation/js_bottom_nav_bar.dart';
 
 class SplashScreenPage extends StatefulWidget {

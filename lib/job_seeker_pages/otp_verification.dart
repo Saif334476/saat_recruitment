@@ -2,16 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
-import 'package:saat_recruitment/job_seeker_pages/job_seeker_profile.dart';
-import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
-
-import '../company_pages/company_form_page.dart';
 
 class OtpVerification extends StatefulWidget {
   final String verificationId;
-  String phone;
+  final String phone;
   final String user;
-  OtpVerification({
+  const OtpVerification({
     super.key,
     required this.user,
     required this.verificationId,

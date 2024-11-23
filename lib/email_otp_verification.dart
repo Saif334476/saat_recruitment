@@ -1,8 +1,9 @@
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pinput/pinput.dart';
-import 'package:saat_recruitment/company_pages/company_setup_password.dart';
 import 'package:flutter/material.dart';
+
+import 'JobProvider Pages/jp_setup_password.dart';
 
 class OtpScreen extends StatefulWidget {
   final String user;

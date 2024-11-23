@@ -100,7 +100,7 @@ class _MyJobsPageState extends State<MyJobsPage> {
                   ));
                 }
 
-                return ListView.builder(
+                return ListView.separated(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot applicationDoc =
@@ -112,14 +112,14 @@ class _MyJobsPageState extends State<MyJobsPage> {
                       builder: (context, jobSnapshot) {
                         if (!jobSnapshot.hasData) {
                           return const Center(
-                              child: CircularProgressIndicator());
+                              child: SizedBox());
                         }
 
                         DocumentSnapshot jobAdDoc = jobSnapshot.data!;
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
+                              horizontal: 10),
                           child: Container(
                             decoration: BoxDecoration(
                               border:
@@ -236,7 +236,7 @@ class _MyJobsPageState extends State<MyJobsPage> {
                         );
                       },
                     );
-                  },
+                  }, separatorBuilder: (BuildContext context, int index) { return const SizedBox(height: 5,); },
                 );
               },
             ),
