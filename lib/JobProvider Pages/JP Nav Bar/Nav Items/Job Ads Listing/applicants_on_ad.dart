@@ -25,13 +25,7 @@ class _ApplicantsOnAdState extends State<ApplicantsOnAd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Applicants",
-          style: TextStyle(fontWeight: FontWeight.w900),
-        ),
-        backgroundColor: Colors.grey,
-      ),
+
       body: FutureBuilder(
         future: applicants(), // Fetch applicants using the future
         builder: (BuildContext context,

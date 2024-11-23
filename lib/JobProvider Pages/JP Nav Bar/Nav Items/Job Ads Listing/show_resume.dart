@@ -3,7 +3,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ShowResume extends StatefulWidget {
   final String resumeUrl;
-  const ShowResume({super.key,required this.resumeUrl});
+  const ShowResume({super.key, required this.resumeUrl});
 
   @override
   State<ShowResume> createState() => _ShowResumeState();
@@ -42,17 +42,11 @@ class _ShowResumeState extends State<ShowResume> {
       );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Resume",
-          style: TextStyle(fontWeight: FontWeight.w900),
-        ),
-        backgroundColor: Colors.grey,
-      ),
-      body:_getFilePreview(widget.resumeUrl) ,
+      body: _getFilePreview(widget.resumeUrl),
     );
   }
 }
