@@ -46,6 +46,7 @@ class _ShowResumeState extends State<ShowResume> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(automaticallyImplyLeading: false,),
       body: _getFilePreview(widget.resumeUrl),
     );
   }

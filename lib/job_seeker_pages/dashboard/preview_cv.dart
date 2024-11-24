@@ -37,7 +37,7 @@ class _PreviewCvState extends State<PreviewCv> {
     final docSnapshot = await applicantRef.get();
 
     if (!docSnapshot.exists) {
-      await applicantRef.set({'applicantId': uid,'resumeUrl':widget.existingResumeUrl});
+      await applicantRef.set({'applicantId': uid,'resumeUrl':widget.existingResumeUrl,'applicantEmail':FirebaseAuth.instance.currentUser?.email});
       await jobAdRef.update({
         'numberOfApplicants': FieldValue.increment(1),
       });

@@ -420,7 +420,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const JobSeekerHomePage(),
+                                              const JsBottomNavigationBar(),
                                         ),
                                       );
                                     }

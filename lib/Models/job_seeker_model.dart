@@ -4,24 +4,16 @@ class JobSeeker {
   String jsGender;
   String jsDob;
   String jsCity;
-  String jsEducation;
-  String jsExperience;
-  String? jsCompanyName;
-  String? jsSalary;
-  String? jsExperienceDuration;
   String cvFileName;
+  String resumeUrl;
   JobSeeker({
     required this.jsName,
     required this.jsEmail,
     required this.jsGender,
     required this.jsDob,
     required this.jsCity,
-    required this.jsEducation,
-    required this.jsExperience,
-    required String? jsCompanyName,
-    required String? jsSalary,
-    required String? jsExperienceDuration,
     required this.cvFileName,
+    required this.resumeUrl
   });
   Map<String, dynamic> toMap() {
     return {
@@ -30,11 +22,7 @@ class JobSeeker {
       'gender': jsGender,
       'dob': jsDob,
       'city': jsCity,
-      'education': jsEducation,
-      'experrience': jsExperience,
-      'companyName': jsCompanyName,
-      'salary': jsSalary,
-      'experienceDuration': jsExperienceDuration
+      'resumeUrl': resumeUrl
     };
   }
 }
