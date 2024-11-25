@@ -25,7 +25,7 @@ class CompanyMCQCreationScreen extends StatefulWidget {
       required this.selectedCategory,
       required this.jobTitle,
       this.jobAdData,
-        this.jobAdId,
+      this.jobAdId,
       required this.jobId});
 
   @override
@@ -66,26 +66,29 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xff1C4374),
         title: const Text(
           "MCQ's Creation",
           style: TextStyle(
             fontWeight: FontWeight.w900,
-            color: Color(0xff1C4374),
+            color: Colors.white,
           ),
         ),
-        iconTheme: const IconThemeData(color: Color(0xff1C4374)),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 15.0, right: 10, left: 10),
-            child: Text(
-              "Please add mcqs carefully for better filtration",
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
-                color: Color(0xff1C4374),
+          Padding(
+            padding: const EdgeInsets.only(top: 15.0, right: 10, left: 10),
+            child: Container(
+              child: const Text(
+                "Please add mcqs carefully for better filtration",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  color: Color(0xff1C4374),
+                ),textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -154,7 +157,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                       if (currentQuestion < questionCount) {
                         setState(() {
                           currentQuestion++;
-                         // _correctAnswer = ("Option 1"); // Reset _correctAnswer
+                          // _correctAnswer = ("Option 1"); // Reset _correctAnswer
                         });
                       }
                     } else {
@@ -177,7 +180,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                                   salary: widget.salary,
                                   selectedOption: widget.selectedOption,
                                   jobId: widget.jobId,
-                              jobAdId: widget.jobAdId,
+                                  jobAdId: widget.jobAdId,
                                 )));
                   },
                 ),

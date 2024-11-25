@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
+import 'package:share/share.dart';
 import '../job_info.dart';
 
 class MyJobsPage extends StatefulWidget {
@@ -12,17 +13,13 @@ class MyJobsPage extends StatefulWidget {
 }
 
 class _MyJobsPageState extends State<MyJobsPage> {
-  String selectedButton = "";
+  String selectedButton = "Successful";
   String uId = FirebaseAuth.instance.currentUser!.uid; // Get current user's UID
 
   @override
   void initState() {
     super.initState();
-    selectedButton = "Successful";
-  }
-
-  Future<DocumentSnapshot> fetchJobDetails(String jobId) async {
-    return FirebaseFirestore.instance.collection('jobs').doc(jobId).get();
+    selectedButton = "Successful"; // Default filter to "Successful"
   }
 
   @override
@@ -107,19 +104,36 @@ class _MyJobsPageState extends State<MyJobsPage> {
                         snapshot.data!.docs[index];
                     String jobId = applicationDoc.id;
 
-                    return FutureBuilder<DocumentSnapshot>(
-                      future: fetchJobDetails(jobId), // Fetch job details
+                    return StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('jobs')
+                          .doc(jobId)
+                          .snapshots(),
                       builder: (context, jobSnapshot) {
-                        if (!jobSnapshot.hasData) {
+                        if (jobSnapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
-                              child: SizedBox());
+                              child: CircularProgressIndicator());
+                        }
+
+                        if (!jobSnapshot.hasData || !jobSnapshot.data!.exists) {
+                          return Center(
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(
+                                          color: const Color(0xff1C4374))),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(5.0),
+                                    child: Text(
+                                        'Job not found or has been deleted'),
+                                  )));
                         }
 
                         DocumentSnapshot jobAdDoc = jobSnapshot.data!;
 
                         return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Container(
                             decoration: BoxDecoration(
                               border:
@@ -135,26 +149,7 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                   const BorderRadius.all(Radius.circular(10)),
                             ),
                             child: ListTile(
-                              onTap: () async {
-                                // final jobAdData =
-                                //     jobAdDoc.data() as Map<String, dynamic>;
-                                // final jobAdId =
-                                //     jobAdDoc.id; // Get the job document ID
-                                // showGeneralDialog(
-                                //   context: context,
-                                //   barrierDismissible: true,
-                                //   barrierLabel: 'Dismiss',
-                                //   barrierColor: Colors.black.withOpacity(0.5),
-                                //   transitionDuration:
-                                //       const Duration(milliseconds: 400),
-                                //   pageBuilder: (context, anim1, anim2) {
-                                //     return JobInfo(
-                                //       jobAdData: jobAdData,
-                                //       jobAdId: jobAdId,
-                                //     );
-                                //   },
-                                // );
-                              },
+                              onTap: () async {},
                               title: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -164,7 +159,7 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        jobAdDoc['jobTitle'],
+                                        jobAdDoc['jobTitle'] ?? 'No Title',
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w900),
                                       ),
@@ -179,7 +174,7 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w700),
                                           ),
-                                          Text(jobAdDoc['location']),
+                                          Text(jobAdDoc['location'] ?? 'N/A'),
                                         ],
                                       ),
                                       Row(
@@ -189,7 +184,7 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w700),
                                           ),
-                                          Text(jobAdDoc['salary']),
+                                          Text(jobAdDoc['salary'] ?? 'N/A'),
                                         ],
                                       ),
                                     ],
@@ -211,7 +206,7 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w700),
                                           ),
-                                          Text(jobAdDoc['jobType']),
+                                          Text(jobAdDoc['jobType'] ?? 'N/A'),
                                         ],
                                       ),
                                       Row(
@@ -221,14 +216,37 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w700),
                                           ),
-                                          Text(jobAdDoc['requiredExperience']),
+                                          Text(jobAdDoc['requiredExperience'] ??
+                                              'N/A'),
                                         ],
                                       ),
                                     ],
                                   ),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.share_outlined)),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        onPressed: () {
+                                          Share.share(
+                                              'Check out this job opportunity: ${jobAdDoc['jobTitle']}\nApply now:https://final-project2000202.firebaseapp.com/jobs/${jobAdDoc.id}');
+                                        },
+                                        icon: const Icon(Icons.share_outlined),
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          await FirebaseFirestore.instance
+                                              .collection("Users")
+                                              .doc(uId)
+                                              .collection("Job Applications")
+                                              .doc(jobAdDoc.id)
+                                              .delete();
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete_forever,
+                                          color: Colors.redAccent,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
@@ -236,7 +254,12 @@ class _MyJobsPageState extends State<MyJobsPage> {
                         );
                       },
                     );
-                  }, separatorBuilder: (BuildContext context, int index) { return const SizedBox(height: 5,); },
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(
+                      height: 5,
+                    );
+                  },
                 );
               },
             ),

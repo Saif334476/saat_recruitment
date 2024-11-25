@@ -87,14 +87,16 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                         ),
                                       ),
                                       Row(
-
-                                      children: [
+                                        children: [
                                           IconButton(
-                                              onPressed: () {Share.share('Check out this job opportunity: ${jobAdDoc['jobTitle']}\nApply now:https://final-project2000202.firebaseapp.com/jobs/${jobAdDoc.id}');},
+                                              onPressed: () {
+                                                Share.share(
+                                                    'Check out this job opportunity: ${jobAdDoc['jobTitle']}\nApply now:https://final-project2000202.firebaseapp.com/jobs/${jobAdDoc.id}');
+                                              },
                                               icon: const Icon(
                                                   Icons.share_outlined)),
                                           IconButton(
-                                              onPressed: () async{
+                                              onPressed: () async {
                                                 await FirebaseFirestore.instance
                                                     .collection("jobs")
                                                     .doc(jobAdDoc.id)

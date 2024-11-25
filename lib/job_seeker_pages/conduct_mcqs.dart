@@ -182,6 +182,7 @@ class _ConductMcqsState extends State<ConductMcqs> {
                               onPressed: () {
                                 if (_score >= 7) {
                                   Navigator.pop(context);
+                                  Navigator.pop(context);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

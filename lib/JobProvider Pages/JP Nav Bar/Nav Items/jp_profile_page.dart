@@ -175,7 +175,7 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> {
                                     fit: BoxFit.cover,
                                   )
                                 : Image.asset(
-                                    'assets/img1.png',
+                                    'assets/buss1.webp',
                                     height: 120,
                                     width: 120,
                                     fit: BoxFit.cover,
