@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:saat_recruitment/Firebase%20Services/resume_utils.dart';
 import 'package:saat_recruitment/login_page.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -33,6 +34,65 @@ class _JsProfilePageState extends State<JsProfilePage> {
   Stream<DocumentSnapshot<Map<String, dynamic>>>? companyInfo;
   String selectedFileName = "";
   File? selectedFile;
+  String _photoUrl = "";
+  File? _profileImage;
+  bool isLoading = false;
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+        isLoading = true; // Set loading state to true
+      });
+
+      await _uploadImageToFirebase(pickedFile);
+    }
+  }
+
+  Future<void> _uploadImageToFirebase(XFile pickedFile) async {
+    try {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child('profile_pics/$fileName');
+
+      UploadTask uploadTask = storageReference.putFile(File(pickedFile.path));
+
+      TaskSnapshot snapshot = await uploadTask;
+
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+
+      if (mounted) {
+        await _updateProfilePhoto(downloadUrl);
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+  }
+
+  Future<void> _updateProfilePhoto(String downloadUrl) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        await user.updatePhotoURL(downloadUrl);
+
+        if (mounted) {
+          setState(() {
+            _photoUrl = downloadUrl;
+            isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error updating profile photo URL: $e');
+    }
+  }
 
   Future<void> _uploadResume(File selectedFile, String selectedFileName) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -220,6 +280,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
   @override
   void initState() {
     super.initState();
+    _photoUrl = FirebaseAuth.instance.currentUser!.photoURL!;
     fetchCompanyInfo(uid!).then((info) {
       setState(() {
         companyInfo = info;
@@ -246,108 +307,285 @@ class _JsProfilePageState extends State<JsProfilePage> {
       Function showPreviewModal,
       Function showPreviewModals) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20.0, left: 20),
+      padding: const EdgeInsets.only(top: 70, right: 20.0, left: 20),
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 50,
-            ),
-            Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border:
-                        Border.all(color: const Color(0xff1C4374), width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xff1C4374).withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        offset: const Offset(0, 2),
+        child: StreamBuilder(
+            stream: companyInfo,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              if (!snapshot.hasData || !snapshot.data!.exists) {
+                return const Text('No company information available.');
+              }
+              final companyData = snapshot.data!.data() ?? {};
+
+              return Column(
+                children: [
+                  Stack(
+                    children: [
+                      // Profile image container
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: const Color(0xff1C4374), width: 1.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xff1C4374).withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: ClipOval(
+                          child: _profileImage != null
+                              ? Image.file(
+                            _profileImage!,
+                            height: 120,
+                            width: 120,
+                            fit: BoxFit.cover,
+                          )
+                              : _photoUrl != null
+                              ? Image.network(
+                            _photoUrl!,
+                            height: 120,
+                            width: 120,
+                            fit: BoxFit.cover,
+                          )
+                              : Image.asset(
+                            'assets/default_profile.png', // Placeholder if no image is selected
+                            height: 120,
+                            width: 120,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
+                      // Edit button
+                      Positioned(
+                        top: 0,
+                        bottom: 85,
+                        right: 0,
+                        left: 85,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: Color(0xff1C4374)),
+                          child: IconButton(
+                            onPressed: _pickImage, // Open image picker when button is pressed
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Loading indicator
+                      if (isLoading)
+                        const Positioned(
+                          top: 0,
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xff1C4374), // Change color if needed
+                            ),
+                          ),
+                        ),
                     ],
                   ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      height: 120,
-                      width: 120,
-                      FirebaseAuth.instance.currentUser!.photoURL.toString(),
-                      fit: BoxFit.contain,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30.0, bottom: 10),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Row(
+                            children: [
+                              const Text(
+                                'Name: ',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xff1C4374)),
+                              ),
+                              SizedBox(
+                                width: 220,
+                                child: Text(
+                                  companyData['Name'].toUpperCase() ?? "-----",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    final uid =
+                                        FirebaseAuth.instance.currentUser?.uid;
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 50, horizontal: 20),
+                                          child: Column(
+                                            children: [
+                                              textFormField(
+                                                length: 20,
+                                                "Enter Name to update",
+                                                Icons.edit,
+                                                false,
+                                                onChanged: () {},
+                                                keyboard: TextInputType.text,
+                                                controller: nameController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return "Please Enter Name";
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              const SizedBox(height: 20),
+                                              CupertinoButton(
+                                                color: const Color(0xff1C4374),
+                                                onPressed: () {
+                                                  JobProviderModel.updateJpData(
+                                                    uid,
+                                                    {
+                                                      'Name':
+                                                          nameController.text
+                                                    },
+                                                  );
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text(
+                                                  "OK",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w900,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(Icons.edit,
+                                      color: Colors.black))
+                            ],
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: 0,
-                  bottom: 85,
-                  right: 0,
-                  left: 85,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Color(0xff1C4374)),
-                    child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                        )),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 5.0, bottom: 5, left: 8.0),
+                          child: Row(
+                            children: [
+                              const Text(
+                                'E-mail: ',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xff1C4374)),
+                              ),
+                              Text(
+                                companyData['Email'] ?? "-----",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                    color: Colors.black),
+                              )
+                            ],
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            StreamBuilder(
-                stream: companyInfo,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  }
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
-                  if (!snapshot.hasData || !snapshot.data!.exists) {
-                    return const Text('No company information available.');
-                  }
-                  final companyData = snapshot.data!.data() ?? {};
-
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30.0, bottom: 10),
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  style: BorderStyle.solid,
-                                  color: const Color(0xff1C4374),
-                                  width: 2.5),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  blurStyle: BlurStyle.outer,
-                                  color: Color(0xff1C4374),
-                                )
-                              ]),
-                          child: InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Row(
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 5.0, bottom: 5, left: 8.0),
+                          child: Row(
+                            children: [
+                              const Text(
+                                'Phone: ',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xff1C4374)),
+                              ),
+                              Row(
                                 children: [
-                                  const Text(
-                                    'Name: ',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w900,
-                                        color: Color(0xff1C4374)),
-                                  ),
-                                  Text(
-                                    companyData['Name'].toUpperCase() ??
-                                        "-----",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        color: Colors.black,overflow: TextOverflow.ellipsis),
+                                  SizedBox(
+                                    width: 220,
+                                    child: Text(
+                                      companyData['Phone'] ?? "-----",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18,
+                                          color: Colors.black),
+                                    ),
                                   ),
                                   IconButton(
                                       onPressed: () {
@@ -364,22 +602,21 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                               child: Column(
                                                 children: [
                                                   textFormField(
-                                                    length: 20,
-                                                    "Enter Name to update",
-                                                    Icons.edit,
-                                                    false,
-                                                    onChanged: () {},
-                                                    keyboard:
-                                                        TextInputType.text,
-                                                    controller: nameController,
-                                                    validator: (value) {
-                                                      if (value == null ||
-                                                          value.isEmpty) {
-                                                        return "Please Enter Name";
-                                                      }
-                                                      return null;
-                                                    },
-                                                  ),
+                                                      "Enter Number to update",
+                                                      Icons.edit,
+                                                      false,
+                                                      onChanged: () {},
+                                                      keyboard:
+                                                          TextInputType.number,
+                                                      controller:
+                                                          nameController,
+                                                      validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return "Please Enter Number";
+                                                    }
+                                                    return null;
+                                                  }, length: 11),
                                                   const SizedBox(height: 20),
                                                   CupertinoButton(
                                                     color:
@@ -389,11 +626,13 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                                           .updateJpData(
                                                         uid,
                                                         {
-                                                          'Name': nameController
-                                                              .text
+                                                          'Phone':
+                                                              nameController
+                                                                  .text
                                                         },
                                                       );
                                                       Navigator.pop(context);
+                                                      nameController.text = "";
                                                     },
                                                     child: const Text(
                                                       "OK",
@@ -409,478 +648,373 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                           },
                                         );
                                       },
-                                      icon: const Icon(Icons.edit,
-                                          color: Colors.black))
-                                ],
-                              ),
-                            ),
-                            onTap: () {},
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  style: BorderStyle.solid,
-                                  color: const Color(0xff1C4374),
-                                  width: 2.5),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  blurStyle: BlurStyle.outer,
-                                  color: Color(0xff1C4374),
-                                )
-                              ]),
-                          child: InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 5.0, bottom: 5, left: 8.0),
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'E-mail: ',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w900,
-                                        color: Color(0xff1C4374)),
-                                  ),
-                                  Text(
-                                    companyData['Email'] ?? "-----",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        color: Colors.black),
-                                  )
-                                ],
-                              ),
-                            ),
-                            onTap: () {},
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  style: BorderStyle.solid,
-                                  color: const Color(0xff1C4374),
-                                  width: 2.5),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  blurStyle: BlurStyle.outer,
-                                  color: Color(0xff1C4374),
-                                )
-                              ]),
-                          child: InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 5.0, bottom: 5, left: 8.0),
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'Phone: ',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w900,
-                                        color: Color(0xff1C4374)),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        companyData['Phone'] ?? "-----",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 18,
-                                            color: Colors.black),
-                                      ),
-                                      IconButton(
-                                          onPressed: () {
-                                            final uid = FirebaseAuth
-                                                .instance.currentUser?.uid;
-                                            showModalBottomSheet(
-                                              context: context,
-                                              builder: (context) {
-                                                return Padding(
-                                                  padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 50,
-                                                      horizontal: 20),
-                                                  child: Column(
-                                                    children: [
-                                                      textFormField(
-                                                        "Enter Name to update",
-                                                        Icons.edit,
-                                                        false,
-                                                        onChanged: () {},
-                                                        keyboard:
-                                                        TextInputType.text,
-                                                        controller: nameController,
-                                                        validator: (value) {
-                                                          if (value == null ||
-                                                              value.isEmpty) {
-                                                            return "Please Enter Name";
-                                                          }
-                                                          return null;
-                                                        },
-                                                        length: 11
-                                                      ),
-                                                      const SizedBox(height: 20),
-                                                      CupertinoButton(
-                                                        color:
-                                                        const Color(0xff1C4374),
-                                                        onPressed: () {
-                                                          JobProviderModel
-                                                              .updateJpData(
-                                                            uid,
-                                                            {
-                                                              'Name': nameController
-                                                                  .text
-                                                            },
-                                                          );
-                                                          Navigator.pop(context);
-                                                        },
-                                                        child: const Text(
-                                                          "OK",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                              FontWeight.w900,
-                                                              color: Colors.white),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                          icon: const Icon(
-                                              Icons.phone_android_outlined))
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            onTap: () {},
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  style: BorderStyle.solid,
-                                  color: const Color(0xff1C4374),
-                                  width: 2.5),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  blurStyle: BlurStyle.outer,
-                                  color: Color(0xff1C4374),
-                                )
-                              ]),
-                          child: InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 5.0, bottom: 5, left: 8.0),
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'Gender: ',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff1C4374)),
-                                  ),
-                                  Text(
-                                    companyData['Gender'].toUpperCase() ??
-                                        "-----",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        color: Colors.black),
-                                  )
-                                ],
-                              ),
-                            ),
-                            onTap: () {},
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  style: BorderStyle.solid,
-                                  color: const Color(0xff1C4374),
-                                  width: 2.5),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  blurStyle: BlurStyle.outer,
-                                  color: Color(0xff1C4374),
-                                )
-                              ]),
-                          child: InkWell(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'Date of Birth: ',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w900,
-                                        color: Color(0xff1C4374)),
-                                  ),
-                                  Text(
-                                    companyData['Dob'].toUpperCase() ?? "-----",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        color: Colors.black),
-                                  ),
-                                  IconButton(
-                                      onPressed: () {},
                                       icon: const Icon(
-                                        Icons.edit,
+                                        Icons.edit_rounded,
                                         color: Colors.black,
                                       ))
                                 ],
-                              ),
-                            ),
-                            onTap: () {},
+                              )
+                            ],
                           ),
                         ),
+                        onTap: () {},
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  style: BorderStyle.solid,
-                                  color: const Color(0xff1C4374),
-                                  width: 2.5),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  blurStyle: BlurStyle.outer,
-                                  color: Color(0xff1C4374),
-                                )
-                              ]),
-                          child: InkWell(
-                            child: Padding(
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 5.0, bottom: 5, left: 8.0),
+                          child: Row(
+                            children: [
+                              const Text(
+                                'Gender: ',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xff1C4374)),
+                              ),
+                              Text(
+                                companyData['Gender'].toUpperCase() ?? "-----",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                    color: Colors.black),
+                              )
+                            ],
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Row(
+                            children: [
+                              const Text(
+                                'Date of Birth: ',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xff1C4374)),
+                              ),
+                              Text(
+                                companyData['Dob'].toUpperCase() ?? "-----",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                    color: Colors.black),
+                              ),
+                              // IconButton(
+                              //     onPressed: () {},
+                              //     icon: const Icon(
+                              //       Icons.edit,
+                              //       color: Colors.black,
+                              //     ))
+                            ],
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Row(
+                            children: [
+                              const Text(
+                                'Location: ',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xff1C4374)),
+                              ),
+                              SizedBox(
+                                width: 200,
+                                child: Text(
+                                  companyData['Location'].toUpperCase() ??
+                                      "-----",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    final uid =
+                                        FirebaseAuth.instance.currentUser?.uid;
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 50,
+                                                      horizontal: 20),
+                                              child: Column(children: [
+                                                textFormField("Enter Location",
+                                                    Icons.edit, false,
+                                                    onChanged: () {},
+                                                    keyboard:
+                                                        TextInputType.text,
+                                                    controller: nameController,
+                                                    validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return "Please Enter Your location";
+                                                  }
+                                                  return null;
+                                                }),
+                                                const SizedBox(height: 20),
+                                                CupertinoButton(
+                                                  color:
+                                                      const Color(0xff1C4374),
+                                                  onPressed: () {
+                                                    JobProviderModel
+                                                        .updateJpData(
+                                                      uid,
+                                                      {
+                                                        'Location':
+                                                            nameController.text
+                                                      },
+                                                    );
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text(
+                                                    "OK",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w900,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ]));
+                                        });
+                                  },
+                                  icon: const Icon(Icons.edit_location,
+                                      color: Colors.black))
+                            ],
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: InkWell(
+                        child: const Padding(
+                          padding:
+                              EdgeInsets.only(top: 5.0, bottom: 5, left: 8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Privacy & Security',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
+                          ),
+                        ),
+                        onTap: () {
+                          // Handle item 1 tap
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 65,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: InkWell(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8.0, top: 2),
+                              child: Text(
+                                "Resume/CV",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w900, fontSize: 20),
+                              ),
+                            ),
+                            Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: Row(
                                 children: [
-                                  const Text(
-                                    'Location: ',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w900,
-                                        color: Color(0xff1C4374)),
-                                  ),
-                                  Text(
-                                    companyData['Location'].toUpperCase() ??
-                                        "-----",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        color: Colors.black),
-                                  ),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.edit_location,
-                                          color: Colors.black))
-                                ],
-                              ),
-                            ),
-                            onTap: () {},
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  style: BorderStyle.solid,
-                                  color: const Color(0xff1C4374),
-                                  width: 2.5),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  blurStyle: BlurStyle.outer,
-                                  color: Color(0xff1C4374),
-                                )
-                              ]),
-                          child: InkWell(
-                            child: const Padding(
-                              padding: EdgeInsets.only(
-                                  top: 5.0, bottom: 5, left: 8.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'Privacy & Security',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
+                                  InkWell(
+                                    child: SizedBox(
+                                      width: 300,
+                                      child: companyData['resumeFileName'] == ""
+                                          ? const Text(
+                                              "TAP TO UPLOAD YOUR CV",
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.w900),
+                                            )
+                                          : Text(
+                                              companyData['resumeFileName'],
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.black),
+                                            ),
                                     ),
-                                    textAlign: TextAlign.left,
+                                    onTap: () async {
+                                      companyData['resumeFileName'] == ""
+                                          ? selectFile()
+                                          : showPreviewModals(
+                                              companyData['resumeUrl']);
+                                    },
                                   ),
+                                  // IconButton(
+                                  //   onPressed: () {
+                                  //     selectFile(companyInfo['resumeUrl']);
+                                  //   },
+                                  //   icon: const Icon(Icons.edit),
+                                  // )
                                 ],
                               ),
                             ),
-                            onTap: () {
-                              // Handle item 1 tap
-                            },
-                          ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Container(
-                          height: 65,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  style: BorderStyle.solid,
-                                  color: const Color(0xff1C4374),
-                                  width: 2.5),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  blurStyle: BlurStyle.outer,
-                                  color: Color(0xff1C4374),
-                                )
-                              ]),
-                          child: InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 8.0, top: 2),
-                                  child: Text(
-                                    "Resume/CV",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 20),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Row(
-                                    children: [
-                                      InkWell(
-                                        child: SizedBox(
-                                          width: 200,
-                                          child: companyData[
-                                                      'resumeFileName'] ==
-                                                  ""
-                                              ? const Text(
-                                                  "TAP TO UPLOAD YOUR CV",
-                                                  style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontWeight:
-                                                          FontWeight.w900),
-                                                )
-                                              : Text(
-                                                  companyData['resumeFileName'],
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: const TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w700),
-                                                ),
-                                        ),
-                                        onTap: () async {
-                                          companyData['resumeFileName'] == ""
-                                              ? selectFile()
-                                              : showPreviewModals(
-                                                  companyData['resumeUrl']);
-                                        },
-                                      ),
-                                      // IconButton(
-                                      //   onPressed: () {
-                                      //     selectFile(companyInfo['resumeUrl']);
-                                      //   },
-                                      //   icon: const Icon(Icons.edit),
-                                      // )
-                                    ],
-                                  ),
-                                ),
-                              ],
+                    ),
+                  ),
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                            style: BorderStyle.solid,
+                            color: const Color(0xff1C4374),
+                            width: 1.5),
+                        boxShadow: const [
+                          BoxShadow(
+                            blurRadius: 5,
+                            blurStyle: BlurStyle.outer,
+                            color: Color(0xff1C4374),
+                          )
+                        ]),
+                    child: InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 5.0, bottom: 5),
+                        child: Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.logout_outlined,
+                                  color: Colors.black,
+                                )),
+                            const Text(
+                              'Logout',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w700),
                             ),
-                          ),
+                          ],
                         ),
                       ),
-                      Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                                style: BorderStyle.solid,
-                                color: const Color(0xff1C4374),
-                                width: 2.5),
-                            boxShadow: const [
-                              BoxShadow(
-                                blurRadius: 5,
-                                blurStyle: BlurStyle.outer,
-                                color: Color(0xff1C4374),
-                              )
-                            ]),
-                        child: InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 5.0, bottom: 5),
-                            child: Row(
-                              children: [
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Icons.logout_outlined,
-                                      color: Colors.black,
-                                    )),
-                                const Text(
-                                  'Logout',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ],
-                            ),
-                          ),
-                          onTap: () async {
-                            await FirebaseAuth.instance.signOut();
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginPage()));
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                })
-          ],
-        ),
+                      onTap: () async {
+                        await FirebaseAuth.instance.signOut();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }),
       ),
     );
   }

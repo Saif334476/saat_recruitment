@@ -1,20 +1,13 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/splash_screen_page.dart';
-//import 'package:splash_screen_view/SplashScreenView.dart';
 import 'firebase_options.dart';
-//import 'login_page.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // await FirebaseAppCheck.instance.activate(
-  //   webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-  //   androidProvider: AndroidProvider.debug,
-  //   appleProvider: AppleProvider.appAttest,
-  // );
   runApp(MyApp());
 }
 
@@ -42,19 +35,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: myTheme,
       home: const SplashScreenPage(),
-      // home: Container(
-      //   decoration: const BoxDecoration(
-      //       gradient: LinearGradient(
-      //           colors: [Colors.white, Colors.blue],
-      //           end: Alignment.bottomCenter,
-      //           begin: Alignment.topCenter)),
-      //   child: SplashScreenView(
-      //     navigateRoute: ?userAccount. sHomePage(),
-      //     duration: 3000,
-      //     imageSize: 300,
-      //     imageSrc:'assets/round_latest.png',
-      //   ),
-      // )
     );
   }
 }

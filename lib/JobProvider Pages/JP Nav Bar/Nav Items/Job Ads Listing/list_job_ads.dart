@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/JobProvider%20Pages/JP%20Nav%20Bar/Nav%20Items/Job%20Ads%20Listing/applicants_on_ad.dart';
+import 'package:share/share.dart';
 import '../Ad Posting/new_ad_posting.dart';
 
 class JobAdsListView extends StatefulWidget {
@@ -13,6 +14,7 @@ class JobAdsListView extends StatefulWidget {
 
 class JobAdsListViewState extends State<JobAdsListView> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -74,16 +76,36 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        jobAdDoc['jobTitle'],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w900,
-                                            fontSize: 17),
+                                      SizedBox(
+                                        width: 230,
+                                        child: Text(
+                                          jobAdDoc['jobTitle'],
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w900,
+                                              fontSize: 20,
+                                              overflow: TextOverflow.ellipsis),
+                                        ),
                                       ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon:
-                                              const Icon(Icons.share_outlined))
+                                      Row(
+
+                                      children: [
+                                          IconButton(
+                                              onPressed: () {Share.share('Check out this job opportunity: ${jobAdDoc['jobTitle']}\nApply now:https://final-project2000202.firebaseapp.com/jobs/${jobAdDoc.id}');},
+                                              icon: const Icon(
+                                                  Icons.share_outlined)),
+                                          IconButton(
+                                              onPressed: () async{
+                                                await FirebaseFirestore.instance
+                                                    .collection("jobs")
+                                                    .doc(jobAdDoc.id)
+                                                    .delete();
+                                              },
+                                              icon: const Icon(
+                                                Icons.delete_forever,
+                                                color: Colors.redAccent,
+                                              )),
+                                        ],
+                                      )
                                     ],
                                   ),
                                   const Divider(
@@ -159,7 +181,8 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       ApplicantsOnAd(
-                                                          jobAdId: jobAdDoc.id)));
+                                                          jobAdId:
+                                                              jobAdDoc.id)));
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(

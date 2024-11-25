@@ -79,10 +79,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(color: Colors.white
-            // gradient: LinearGradient(
-            //     colors: [Colors.white, Colors.blue],
-            //     end: Alignment.topCenter,
-            //     begin: Alignment.bottomCenter)
+
             ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
