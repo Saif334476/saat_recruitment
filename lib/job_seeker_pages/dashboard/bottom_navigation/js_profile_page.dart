@@ -112,7 +112,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
       Navigator.pop(context);
       Navigator.pop(context);
     } catch (e) {
-      // Handle any errors
       Navigator.pop(context);
       print('Error uploading file: $e');
     }
@@ -307,7 +306,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
       Function showPreviewModal,
       Function showPreviewModals) {
     return Padding(
-      padding: const EdgeInsets.only(top: 70, right: 20.0, left: 20),
+      padding: const EdgeInsets.only(top: 70, right: 10.0, left: 10),
       child: SingleChildScrollView(
         child: StreamBuilder(
             stream: companyInfo,
@@ -351,7 +350,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                           )
                               : _photoUrl != null
                               ? Image.network(
-                            _photoUrl!,
+                            _photoUrl,
                             height: 120,
                             width: 120,
                             fit: BoxFit.cover,
@@ -374,7 +373,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                           decoration: const BoxDecoration(
                               shape: BoxShape.circle, color: Color(0xff1C4374)),
                           child: IconButton(
-                            onPressed: _pickImage, // Open image picker when button is pressed
+                            onPressed: _pickImage,
                             icon: const Icon(
                               Icons.edit,
                               color: Colors.white,
@@ -414,65 +413,407 @@ class _JsProfilePageState extends State<JsProfilePage> {
                               color: Color(0xff1C4374),
                             )
                           ]),
-                      child: InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'Name: ',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xff1C4374)),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'Name: ',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xff1C4374)),
+                            ),
+                            SizedBox(
+                              width: 220,
+                              child: Text(
+                                companyData['Name'].toUpperCase() ?? "-----",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    overflow: TextOverflow.ellipsis),
                               ),
-                              SizedBox(
-                                width: 220,
-                                child: Text(
-                                  companyData['Name'].toUpperCase() ?? "-----",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18,
-                                      color: Colors.black,
-                                      overflow: TextOverflow.ellipsis),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  final uid =
+                                      FirebaseAuth.instance.currentUser?.uid;
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 50, horizontal: 20),
+                                        child: Column(
+                                          children: [
+                                            textFormField(
+                                              length: 20,
+                                              "Enter Name to update",
+                                              Icons.edit,
+                                              false,
+                                              onChanged: () {},
+                                              keyboard: TextInputType.text,
+                                              controller: nameController,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "Please Enter Name";
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            const SizedBox(height: 20),
+                                            CupertinoButton(
+                                              color: const Color(0xff1C4374),
+                                              onPressed: () {
+                                                JobProviderModel.updateJpData(
+                                                  uid,
+                                                  {
+                                                    'Name':
+                                                        nameController.text
+                                                  },
+                                                );
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text(
+                                                "OK",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w900,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.edit,
+                                    color: Colors.black))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 5.0, bottom: 5, left: 8.0),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'E-mail: ',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xff1C4374)),
+                            ),
+                            Text(
+                              companyData['Email'] ?? "-----",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: Colors.black),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 5.0, bottom: 5, left: 8.0),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'Phone: ',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xff1C4374)),
+                            ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 220,
+                                  child: Text(
+                                    companyData['Phone'] ?? "-----",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        color: Colors.black),
+                                  ),
                                 ),
+                                IconButton(
+                                    onPressed: () {
+                                      final uid = FirebaseAuth
+                                          .instance.currentUser?.uid;
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Padding(
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 50,
+                                                    horizontal: 20),
+                                            child: Column(
+                                              children: [
+                                                textFormField(
+                                                    "Enter Number to update",
+                                                    Icons.edit,
+                                                    false,
+                                                    onChanged: () {},
+                                                    keyboard:
+                                                        TextInputType.number,
+                                                    controller:
+                                                        nameController,
+                                                    validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return "Please Enter Number";
+                                                  }
+                                                  return null;
+                                                }, length: 11),
+                                                const SizedBox(height: 20),
+                                                CupertinoButton(
+                                                  color:
+                                                      const Color(0xff1C4374),
+                                                  onPressed: () {
+                                                    JobProviderModel
+                                                        .updateJpData(
+                                                      uid,
+                                                      {
+                                                        'Phone':
+                                                            nameController
+                                                                .text
+                                                      },
+                                                    );
+                                                    Navigator.pop(context);
+                                                    nameController.text = "";
+                                                  },
+                                                  child: const Text(
+                                                    "OK",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w900,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit_rounded,
+                                      color: Colors.black,
+                                    ))
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 5.0, bottom: 5, left: 8.0),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'Gender: ',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xff1C4374)),
+                            ),
+                            Text(
+                              companyData['Gender'].toUpperCase() ?? "-----",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: Colors.black),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'Date of Birth: ',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xff1C4374)),
+                            ),
+                            Text(
+                              companyData['Dob'].toUpperCase() ?? "-----",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: Colors.black),
+                            ),
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: const Icon(
+                            //       Icons.edit,
+                            //       color: Colors.black,
+                            //     ))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              style: BorderStyle.solid,
+                              color: const Color(0xff1C4374),
+                              width: 1.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 5,
+                              blurStyle: BlurStyle.outer,
+                              color: Color(0xff1C4374),
+                            )
+                          ]),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'Location: ',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xff1C4374)),
+                            ),
+                            SizedBox(
+                              width: 200,
+                              child: Text(
+                                companyData['Location'].toUpperCase() ??
+                                    "-----",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    overflow: TextOverflow.ellipsis),
                               ),
-                              IconButton(
-                                  onPressed: () {
-                                    final uid =
-                                        FirebaseAuth.instance.currentUser?.uid;
-                                    showModalBottomSheet(
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  final uid =
+                                      FirebaseAuth.instance.currentUser?.uid;
+                                  showModalBottomSheet(
                                       context: context,
                                       builder: (context) {
                                         return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 50, horizontal: 20),
-                                          child: Column(
-                                            children: [
-                                              textFormField(
-                                                length: 20,
-                                                "Enter Name to update",
-                                                Icons.edit,
-                                                false,
-                                                onChanged: () {},
-                                                keyboard: TextInputType.text,
-                                                controller: nameController,
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return "Please Enter Name";
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 50,
+                                                    horizontal: 20),
+                                            child: Column(children: [
+                                              textFormField("Enter Location",
+                                                  Icons.edit, false,
+                                                  onChanged: () {},
+                                                  keyboard:
+                                                      TextInputType.text,
+                                                  controller: nameController,
+                                                  validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "Please Enter Your location";
+                                                }
+                                                return null;
+                                              }),
                                               const SizedBox(height: 20),
                                               CupertinoButton(
-                                                color: const Color(0xff1C4374),
+                                                color:
+                                                    const Color(0xff1C4374),
                                                 onPressed: () {
-                                                  JobProviderModel.updateJpData(
+                                                  JobProviderModel
+                                                      .updateJpData(
                                                     uid,
                                                     {
-                                                      'Name':
+                                                      'Location':
                                                           nameController.text
                                                     },
                                                   );
@@ -486,373 +827,13 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                                       color: Colors.white),
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  icon: const Icon(Icons.edit,
-                                      color: Colors.black))
-                            ],
-                          ),
+                                            ]));
+                                      });
+                                },
+                                icon: const Icon(Icons.edit_location,
+                                    color: Colors.black))
+                          ],
                         ),
-                        onTap: () {},
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              style: BorderStyle.solid,
-                              color: const Color(0xff1C4374),
-                              width: 1.5),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 5,
-                              blurStyle: BlurStyle.outer,
-                              color: Color(0xff1C4374),
-                            )
-                          ]),
-                      child: InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 5.0, bottom: 5, left: 8.0),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'E-mail: ',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xff1C4374)),
-                              ),
-                              Text(
-                                companyData['Email'] ?? "-----",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              style: BorderStyle.solid,
-                              color: const Color(0xff1C4374),
-                              width: 1.5),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 5,
-                              blurStyle: BlurStyle.outer,
-                              color: Color(0xff1C4374),
-                            )
-                          ]),
-                      child: InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 5.0, bottom: 5, left: 8.0),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'Phone: ',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xff1C4374)),
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 220,
-                                    child: Text(
-                                      companyData['Phone'] ?? "-----",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 18,
-                                          color: Colors.black),
-                                    ),
-                                  ),
-                                  IconButton(
-                                      onPressed: () {
-                                        final uid = FirebaseAuth
-                                            .instance.currentUser?.uid;
-                                        showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 50,
-                                                      horizontal: 20),
-                                              child: Column(
-                                                children: [
-                                                  textFormField(
-                                                      "Enter Number to update",
-                                                      Icons.edit,
-                                                      false,
-                                                      onChanged: () {},
-                                                      keyboard:
-                                                          TextInputType.number,
-                                                      controller:
-                                                          nameController,
-                                                      validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return "Please Enter Number";
-                                                    }
-                                                    return null;
-                                                  }, length: 11),
-                                                  const SizedBox(height: 20),
-                                                  CupertinoButton(
-                                                    color:
-                                                        const Color(0xff1C4374),
-                                                    onPressed: () {
-                                                      JobProviderModel
-                                                          .updateJpData(
-                                                        uid,
-                                                        {
-                                                          'Phone':
-                                                              nameController
-                                                                  .text
-                                                        },
-                                                      );
-                                                      Navigator.pop(context);
-                                                      nameController.text = "";
-                                                    },
-                                                    child: const Text(
-                                                      "OK",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w900,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                      icon: const Icon(
-                                        Icons.edit_rounded,
-                                        color: Colors.black,
-                                      ))
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              style: BorderStyle.solid,
-                              color: const Color(0xff1C4374),
-                              width: 1.5),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 5,
-                              blurStyle: BlurStyle.outer,
-                              color: Color(0xff1C4374),
-                            )
-                          ]),
-                      child: InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 5.0, bottom: 5, left: 8.0),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'Gender: ',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xff1C4374)),
-                              ),
-                              Text(
-                                companyData['Gender'].toUpperCase() ?? "-----",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              style: BorderStyle.solid,
-                              color: const Color(0xff1C4374),
-                              width: 1.5),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 5,
-                              blurStyle: BlurStyle.outer,
-                              color: Color(0xff1C4374),
-                            )
-                          ]),
-                      child: InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'Date of Birth: ',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xff1C4374)),
-                              ),
-                              Text(
-                                companyData['Dob'].toUpperCase() ?? "-----",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
-                                    color: Colors.black),
-                              ),
-                              // IconButton(
-                              //     onPressed: () {},
-                              //     icon: const Icon(
-                              //       Icons.edit,
-                              //       color: Colors.black,
-                              //     ))
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              style: BorderStyle.solid,
-                              color: const Color(0xff1C4374),
-                              width: 1.5),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 5,
-                              blurStyle: BlurStyle.outer,
-                              color: Color(0xff1C4374),
-                            )
-                          ]),
-                      child: InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'Location: ',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xff1C4374)),
-                              ),
-                              SizedBox(
-                                width: 200,
-                                child: Text(
-                                  companyData['Location'].toUpperCase() ??
-                                      "-----",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18,
-                                      color: Colors.black,
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    final uid =
-                                        FirebaseAuth.instance.currentUser?.uid;
-                                    showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 50,
-                                                      horizontal: 20),
-                                              child: Column(children: [
-                                                textFormField("Enter Location",
-                                                    Icons.edit, false,
-                                                    onChanged: () {},
-                                                    keyboard:
-                                                        TextInputType.text,
-                                                    controller: nameController,
-                                                    validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return "Please Enter Your location";
-                                                  }
-                                                  return null;
-                                                }),
-                                                const SizedBox(height: 20),
-                                                CupertinoButton(
-                                                  color:
-                                                      const Color(0xff1C4374),
-                                                  onPressed: () {
-                                                    JobProviderModel
-                                                        .updateJpData(
-                                                      uid,
-                                                      {
-                                                        'Location':
-                                                            nameController.text
-                                                      },
-                                                    );
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: const Text(
-                                                    "OK",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                              ]));
-                                        });
-                                  },
-                                  icon: const Icon(Icons.edit_location,
-                                      color: Colors.black))
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
                       ),
                     ),
                   ),
@@ -882,8 +863,8 @@ class _JsProfilePageState extends State<JsProfilePage> {
                               Text(
                                 'Privacy & Security',
                                 style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
                                 ),
                                 textAlign: TextAlign.left,
                               ),
@@ -922,7 +903,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                               child: Text(
                                 "Resume/CV",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w900, fontSize: 20),
+                                    fontWeight: FontWeight.w800, fontSize: 18),
                               ),
                             ),
                             Padding(
@@ -998,7 +979,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                             const Text(
                               'Logout',
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w700),
+                                  fontSize: 18, fontWeight: FontWeight.w800),
                             ),
                           ],
                         ),

@@ -28,66 +28,77 @@ class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
     JobCategory(icon: Icons.brush, name: 'Creative & Design'),
     JobCategory(icon: Icons.hotel, name: 'Hospitality & Tourism'),
     JobCategory(icon: Icons.school, name: 'Education & Training'),
+    JobCategory(icon: Icons.devices_other_rounded, name: 'Other Jobs'),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            SizedBox(
-              height: 200,
-              width: 80, // 20% of screen width
-              child: Image.asset(
-                "assets/sirf_logo.png",
-              ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+            const SizedBox(
+              height: 5,
             ),
             SizedBox(
-              height: 50,
-              width: 230,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 10.0, right: 20, top: 5, bottom: 5),
-                child: SizedBox(
-                  height: 50,
-                  child: textFormField("Search", Icons.search, false,
-                      onChanged: () {},
-                      keyboard: TextInputType.text,
-                      controller: searchController, validator: (ting) {
-                    return null;
-                  }),
-                ),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.06,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    child: Image.asset(
+                      height: 80,
+                      width: 80,
+                      "assets/sirf_logo.png",
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: textFormField("Search", Icons.search, false,
+                        onChanged: () {},
+                        keyboard: TextInputType.text,
+                        controller: searchController, validator: (ting) {
+                      return null;
+                    }),
+                  ),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.info,
+                        size: 35,
+                      ))
+                ],
               ),
             ),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.share_outlined,
-                ))
-          ],
+            const SizedBox(
+              height: 5,
+            ),
+
+            JobCategories(
+              jobCategories: jobCategories,
+              onCategorySelected: (category) {
+                setState(() {
+                  _selectedCategory = category;
+                });
+              },
+            ),
+            const Divider(
+              height: 0,
+              color: Color(0xff1C4374),
+              thickness: 2,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            JobsWidget(
+              selectedCategory: _selectedCategory,
+              jobCategories: jobCategories,
+            ),
+          ]),
         ),
       ),
-      body: Padding(
-          padding: const EdgeInsets.only(top: 15.0),
-          child: SingleChildScrollView(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              JobCategories(
-                jobCategories: jobCategories,
-                onCategorySelected: (category) {
-                  setState(() {
-                    _selectedCategory = category;
-                  });
-                },
-              ),
-              JobsWidget(
-                selectedCategory: _selectedCategory,
-                jobCategories: jobCategories, // Pass it here
-              ),
-            ]),
-          )),
     );
   }
 }
@@ -133,7 +144,7 @@ class JobsWidget extends StatelessWidget {
                             icon: Icons.help_outline, name: 'Unknown'),
                       );
                       return Padding(
-                        padding: const EdgeInsets.only(right: 10.0, left: 10),
+                        padding: const EdgeInsets.only(right: 5.0, left: 5),
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: const Color(0xff1C4374)),
