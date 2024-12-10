@@ -113,7 +113,7 @@ DropdownButtonFormField dropDown({
     items: items,
     onSaved: onSaved,
     dropdownColor: const Color(0xFF97C5FF),
-    validator: validator, // No need for null check
+    validator: validator,
     onChanged: onChanged,
   );
 }

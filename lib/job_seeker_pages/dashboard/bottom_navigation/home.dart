@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/job_info.dart';
 import 'package:share/share.dart';
+import '../../../Models/job.dart';
 import '../../../reusable_widgets/reusable_widget.dart';
-import '../job_info.dart';
 import 'job_categories.dart';
 
 class JobSeekerHomePage extends StatefulWidget {
@@ -15,7 +15,6 @@ class JobSeekerHomePage extends StatefulWidget {
 }
 
 class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
-  final TextEditingController searchController = TextEditingController();
   String _selectedCategory = "IT & Technology";
   final List<JobCategory> jobCategories = [
     JobCategory(icon: Icons.computer, name: 'IT & Technology'),
@@ -30,6 +29,7 @@ class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
     JobCategory(icon: Icons.school, name: 'Education & Training'),
     JobCategory(icon: Icons.devices_other_rounded, name: 'Other Jobs'),
   ];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,36 +46,44 @@ class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    child: Image.asset(
-                      height: 80,
-                      width: 80,
-                      "assets/sirf_logo.png",
-                      fit: BoxFit.fill,
-                    ),
+                  Image.asset(
+                    height: 80,
+                    width: 80,
+                    "assets/sirf_logo.png",
+                    fit: BoxFit.fill,
+                  ),
+                  // SizedBox(
+                  //   width: MediaQuery.of(context).size.width * 0.6,
+                  //   child: textFormField("Search", Icons.search, false,
+                  //       onChanged: ,
+                  //       keyboard: TextInputType.text,
+                  //       controller: _searchController, validator: (ting) {
+                  //     return null;
+                  //   }),
+                  // ),
+                  const Text(
+                    "SAAT",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 30,
+                        fontFamily: "Georgia"),
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: textFormField("Search", Icons.search, false,
-                        onChanged: () {},
-                        keyboard: TextInputType.text,
-                        controller: searchController, validator: (ting) {
-                      return null;
-                    }),
-                  ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.info,
-                        size: 35,
-                      ))
+                    height: 80,
+                    width: 80,
+                    child: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.info,
+                          size: 35,
+                        )),
+                  )
                 ],
               ),
             ),
             const SizedBox(
               height: 5,
             ),
-
             JobCategories(
               jobCategories: jobCategories,
               onCategorySelected: (category) {
@@ -136,8 +144,7 @@ class JobsWidget extends StatelessWidget {
                     itemBuilder: (context, index) {
                       DocumentSnapshot jobAdDoc = snapshot.data!.docs[index];
                       String category = jobAdDoc['selectedCategory'];
-                      IconData categoryIcon =
-                          Icons.help_outline; // Default icon if not found
+                      IconData categoryIcon = Icons.help_outline;
                       JobCategory? categoryItem = jobCategories.firstWhere(
                         (categoryObj) => categoryObj.name == category,
                         orElse: () => JobCategory(
