@@ -45,7 +45,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      JobSeekerProfile(userEmail, "email", userEmail, uId)),
+                      const JobSeekerProfile()),
             );
           } else if (role == 'JobProvider' && profileStatus == true) {
             Navigator.pushReplacement(
@@ -79,7 +79,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(color: Colors.white
-
             ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -92,14 +91,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                   "assets/round_latest.png",
                 )),
             const Gap(20),
-            // const Text(
-            //   "SAAT",
-            //   style: TextStyle(
-            //       fontSize: 50,
-            //       fontWeight: FontWeight.bold,
-            //       color: Colors.blueGrey),
-            //   textAlign: TextAlign.center,
-            // )
           ],
         ),
       ),

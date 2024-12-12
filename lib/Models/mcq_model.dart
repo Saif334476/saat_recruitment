@@ -8,7 +8,7 @@ class MCQ {
 
   MCQ(
       {required this.question,
-     required this.option1,
+      required this.option1,
       required this.option2,
       required this.option3,
       required this.option4,
@@ -35,4 +35,3 @@ class MCQ {
     };
   }
 }
-

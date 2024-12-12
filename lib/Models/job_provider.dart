@@ -6,6 +6,7 @@ class JobProviderModel {
   String industry;
   String companySize;
   String email;
+  String? documentUrl;
   JobProviderModel(
       {required this.location,required this.name,required this.industry, required this.companySize, required this.email});
   static Future<void> updateJpData(String? uid, Map<String, dynamic> field) async {
@@ -20,7 +21,8 @@ class JobProviderModel {
       'email': email,
       'Location': location,
       'Industry': industry,
-      'companySize': companySize
+      'companySize': companySize,
+      'documentUrl':documentUrl
     };
   }
 

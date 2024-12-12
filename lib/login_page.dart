@@ -184,11 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => JobSeekerProfile(
-                                            _phoneTextController.text,
-                                            'email',
-                                            _phoneTextController.text,
-                                            uId)),
+                                        builder: (context) => const JobSeekerProfile()),
                                   );
                                 } else if (role == 'JobProvider' &&
                                     profileStatus == true) {

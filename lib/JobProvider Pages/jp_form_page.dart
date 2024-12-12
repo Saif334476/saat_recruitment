@@ -122,7 +122,7 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                         'Engineering & Manufacturing',
                         'Creative & Design',
                         'Hospitality & Tourism',
-                        'Education & Training'
+                        'Education & Training',"Other"
                       ].map((industry) {
                         return DropdownMenuItem(
                           value: industry,
@@ -174,46 +174,10 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                         });
                       },
                     )),
-                // TypeAheadField(
-                //   textFieldConfiguration: TextFieldConfiguration(
-                //     controller: _location,
-                //     decoration: const InputDecoration(
-                //       labelText: 'Location',
-                //       prefixIcon: Icon(Icons.location_on),
-                //     ),
-                //   ),
-                //   suggestionsCallback: (pattern) async {
-                //     const url = 'AIzaSyAFfgSfMIBv_o5qdlm8fSmt_zeqYfl_3mE';
-                //     final response = await http.get(Uri.parse(url));
-                //     final data = jsonDecode(response.body);
-                //     return data.map((location) => location['display_name']).toList();
-                //   },
-                //   itemBuilder: (context, suggestion) {
-                //     return ListTile(
-                //       title: Text(suggestion.toString()),
-                //     );
-                //   },
-                //   onSuggestionSelected: (suggestion) {
-                //     _location.text = suggestion.toString();
-                //   },
-                // ),
-                Padding(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: textFormField(
-                        keyboard: TextInputType.text,
-                        onChanged: () {
-                          setState(() {});
-                        },
-                        "Location",
-                        Icons.location_on_outlined,
-                        false,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter the job location';
-                          }
-                          return null;
-                        },
-                        controller: _location)),
+                const SizedBox(
+                  height: 15,
+                ),
+                placesAutoCompleteTextField(_location),
                 const Padding(
                   padding: EdgeInsets.only(top: 10.0),
                   child: Text(
@@ -248,7 +212,5 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
             ),
           ),
         ));
-
-    // This trailing comma makes auto-formatting nicer for build methods.
   }
 }

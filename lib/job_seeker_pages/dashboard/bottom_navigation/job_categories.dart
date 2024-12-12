@@ -90,7 +90,7 @@ class _JobCategoriesState extends State<JobCategories> {
           ),
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.11,
+          height: 105,
           width: MediaQuery.of(context).size.width,
           child: ListView.builder(
               controller: _scrollController,
@@ -108,7 +108,7 @@ class _JobCategoriesState extends State<JobCategories> {
                     },
                     child: SizedBox(
                       height: 50,
-                      width: 100,
+                      width: 115,
                       child: Container(
                           margin: const EdgeInsets.only(
                               top: 10, bottom: 10, left: 6, right: 6),
