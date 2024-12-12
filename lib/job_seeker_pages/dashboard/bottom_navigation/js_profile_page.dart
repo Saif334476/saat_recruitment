@@ -11,7 +11,7 @@ import 'package:saat_recruitment/Services/cloud_storage.dart';
 import 'package:saat_recruitment/login_page.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../../Models/job_provider.dart';
-import '../../../View Models/profile_pic.dart';
+import '../../../reusable_widgets/profile_pic.dart';
 import '../../../reusable_widgets/reusable_widget.dart';
 
 class JsProfilePage extends StatefulWidget {
@@ -39,70 +39,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
   String _photoUrl = "";
   File? _profileImage;
   bool isLoading = false;
-
-  Future<void> _uploadImageToFirebase(XFile pickedFile) async {
-    try {
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-
-      Reference storageReference =
-          FirebaseStorage.instance.ref().child('profile_pics/$fileName');
-
-      UploadTask uploadTask = storageReference.putFile(File(pickedFile.path));
-
-      TaskSnapshot snapshot = await uploadTask;
-
-      String downloadUrl = await snapshot.ref.getDownloadURL();
-
-      if (mounted) {
-        await _updateProfilePhoto(downloadUrl);
-      }
-    } catch (e) {
-      print('Error uploading image: $e');
-    }
-  }
-
-  Future<void> _updateProfilePhoto(String downloadUrl) async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-
-      if (user != null) {
-        await user.updatePhotoURL(downloadUrl);
-
-        if (mounted) {
-          setState(() {
-            _photoUrl = downloadUrl;
-            isLoading = false;
-          });
-        }
-      }
-    } catch (e) {
-      print('Error updating profile photo URL: $e');
-    }
-  }
-
-  Future<void> _uploadResume(File selectedFile, String selectedFileName) async {
-    String uid = FirebaseAuth.instance.currentUser!.uid;
-    _showUploadDialog();
-    try {
-      final newResumeUrl = await ResumeUtils().uploadFileToStorage(
-          selectedFile, selectedFileName, (double progress) {
-        setState(() {
-          _uploadProgress = progress;
-          print('Progress: $progress');
-        });
-      });
-
-      await ResumeUtils()
-          .saveResumeToFirestore(uid, newResumeUrl, selectedFileName);
-
-      Navigator.pop(context);
-      Navigator.pop(context);
-    } catch (e) {
-      Navigator.pop(context);
-      print('Error uploading file: $e');
-    }
-    setState(() {});
-  }
+  FileUploadService fileUploadService = FileUploadService();
 
   void _showUploadDialog() {
     showDialog(
@@ -123,11 +60,11 @@ class _JsProfilePageState extends State<JsProfilePage> {
         selectedFileName = file.name;
         selectedFile = File(file.path!);
       });
-      showPreviewModal(selectedFile);
+      showPreviewModal(selectedFile,selectedFileName);
     }
   }
 
-  void showPreviewModal(selectedFile) {
+  void showPreviewModal(selectedFile,selectedFileName) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -160,10 +97,18 @@ class _JsProfilePageState extends State<JsProfilePage> {
                   ),
                   CupertinoButton(
                     color: const Color(0xff1C4374),
-                    onPressed: () {
-                      setState(() {
-                        _uploadResume(selectedFile, selectedFileName);
+                    onPressed: () async{
+                        final resumeUrl =
+                           await  fileUploadService.uploadResume(selectedFile, uid!);
+                      await FirebaseFirestore.instance
+                          .collection("Users")
+                          .doc(uid)
+                          .update({
+                        "resumeUrl": resumeUrl,
+                        "resumeFileName": selectedFileName
                       });
+                      Navigator.pop(context);
+
                     },
                     child: const Text(
                       'OK',

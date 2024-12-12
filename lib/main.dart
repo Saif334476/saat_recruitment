@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saat_recruitment/splash_screen_page.dart';
-import 'View Models/profile_pic.dart';
+import 'reusable_widgets/profile_pic.dart';
 import 'firebase_options.dart';
 
 

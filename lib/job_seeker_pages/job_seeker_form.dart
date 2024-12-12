@@ -12,7 +12,7 @@ import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:intl/intl.dart';
 import '../Models/job_seeker_model.dart';
 import '../Services/cloud_storage.dart';
-import '../View Models/profile_pic.dart';
+import '../reusable_widgets/profile_pic.dart';
 
 class JobSeekerProfile extends StatefulWidget {
   const JobSeekerProfile({super.key});

@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:share/share.dart';
-import '../job_info.dart';
 
 class MyJobsPage extends StatefulWidget {
   const MyJobsPage({super.key});
@@ -13,13 +12,13 @@ class MyJobsPage extends StatefulWidget {
 }
 
 class _MyJobsPageState extends State<MyJobsPage> {
-  String selectedButton = "Successful";
-  String uId = FirebaseAuth.instance.currentUser!.uid; // Get current user's UID
+  String selectedButton = "";
+  String uId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
-    selectedButton = "Successful"; // Default filter to "Successful"
+    selectedButton = "All";
   }
 
   @override
@@ -38,40 +37,49 @@ class _MyJobsPageState extends State<MyJobsPage> {
                 elevatedButtons(
                   onPressed: () {
                     setState(() {
-                      selectedButton = "Successful"; // Set to "Successful"
+                      selectedButton = "All"; // Update selectedButton to "All"
                     });
                   },
-                  widget: const Text(
-                    'Successful',
+                  widget: Text(
+                    "All",
                     style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15,
-                        color: Colors.white),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15,
+                      color: selectedButton == "All"
+                          ? Colors.lightBlue
+                          : Colors.white, // Change color based on selection
+                    ),
                   ),
                 ),
                 elevatedButtons(
                   onPressed: () {
                     setState(() {
-                      selectedButton = "UnSuccessful"; // Set to "UnSuccessful"
+                      selectedButton = "Successful";
                     });
                   },
-                  widget: const Text("UnSuccessful",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 15,
-                          color: Colors.white)),
+                  widget: Text(
+                    'Successful',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 15,
+                        color: selectedButton == "Successful"
+                            ? Colors.lightBlue
+                            : Colors.white),
+                  ),
                 ),
                 elevatedButtons(
                   onPressed: () {
                     setState(() {
-                      selectedButton = "All"; // Set to "All"
+                      selectedButton = "UnSuccessful";
                     });
                   },
-                  widget: const Text("All",
+                  widget: Text("UnSuccessful",
                       style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 15,
-                          color: Colors.white)),
+                          color: selectedButton == "UnSuccessful"
+                              ? Colors.lightBlue
+                              : Colors.white)),
                 ),
               ],
             ),
@@ -82,7 +90,9 @@ class _MyJobsPageState extends State<MyJobsPage> {
                   .collection('Users')
                   .doc(uId)
                   .collection("Job Applications")
-                  .where('applicationStatus', isEqualTo: "Successful")
+                  .where('applicationStatus',
+                      isEqualTo:
+                          selectedButton == "All" ? null : selectedButton)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -228,7 +238,8 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                         onPressed: () {
                                           Share.share(
                                               'Check out this job opportunity: ${jobAdDoc['jobTitle']}\nApply now:https://final-project2000202.firebaseapp.com/jobs/${jobAdDoc.id}');
-                                        }, icon: const Icon(Icons.share_outlined),
+                                        },
+                                        icon: const Icon(Icons.share_outlined),
                                       ),
                                       IconButton(
                                         onPressed: () async {
