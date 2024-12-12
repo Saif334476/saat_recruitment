@@ -1,42 +1,67 @@
 class JobSeeker {
-  String jsName;
-  String jsEmail;
-  String jsGender;
-  String jsDob;
-  String jsCity;
+  String name;
+  String email;
+  String phone;
+  String gender;
+  String dob;
+  String city;
+  String profilePicUrl;
   String cvFileName;
   String resumeUrl;
+
   JobSeeker({
-    required this.jsName,
-    required this.jsEmail,
-    required this.jsGender,
-    required this.jsDob,
-    required this.jsCity,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.gender,
+    required this.dob,
+    required this.city,
     required this.cvFileName,
-    required this.resumeUrl
+    required this.resumeUrl,
+    required this.profilePicUrl,
   });
+
+
   Map<String, dynamic> toMap() {
     return {
-      'name': jsName,
-      'email': jsEmail,
-      'gender': jsGender,
-      'dob': jsDob,
-      'city': jsCity,
-      'resumeUrl': resumeUrl
+      'name': name,
+      'email': email,
+      'phone':phone,
+      'gender': gender,
+      'dob': dob,
+      'city': city,
+      'resumeUrl': resumeUrl,
+      'resumeFileName': cvFileName,
+      'profilePicUrl': profilePicUrl,
     };
   }
+
+  factory JobSeeker.fromMap(Map<String, dynamic> map) {
+    return JobSeeker(
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      phone:map['phone'] ??"",
+      gender: map['gender'] ?? '',
+      dob: map['dob'] ?? '',
+      city: map['city'] ?? '',
+      cvFileName: map['resumeFileName'] ?? '',
+      resumeUrl: map['resumeUrl'] ?? '',
+      profilePicUrl: map['profilePicUrl'] ?? '',
+    );
+  }
 }
-// List<JobSeeker> jobSeeker = [
-//   JobSeeker(
-//       jsName: "jsName",
-//       jsEmail: "saif34476@gmail.com",
-//       jsGender: "Male",
-//       jsDob: "26-11-2001",
-//       jsCity: "Jhang",
-//       jsEducation: "Graduated",
-//       jsExperience: "No",
-//       jsCompanyName: "Null",
-//       jsSalary: "50000",
-//       jsExperienceDuration: "null",
-//       cvFileName: "fox.pdf")
-// ];
+// Future<void> saveJobSeeker(JobSeeker jobSeeker) async {
+//   try {
+//     await FirebaseFirestore.instance.collection('Users').doc(uid).set(jobSeeker.toMap(), SetOptions(merge: true));
+//   } catch (e) {
+//     print('Error saving job seeker data: $e');
+//   }
+// }
+// Future<JobSeeker> fetchJobSeeker(String uid) async {
+//   DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+//   if (snapshot.exists) {
+//     return JobSeeker.fromMap(snapshot.data() as Map<String, dynamic>);
+//   } else {
+//     throw Exception("User not found");
+//   }
+// }

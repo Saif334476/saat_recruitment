@@ -7,9 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saat_recruitment/Firebase%20Services/resume_utils.dart';
+import 'package:saat_recruitment/Services/cloud_storage.dart';
 import 'package:saat_recruitment/login_page.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../../Models/job_provider.dart';
+import '../../../View Models/profile_pic.dart';
 import '../../../reusable_widgets/reusable_widget.dart';
 
 class JsProfilePage extends StatefulWidget {
@@ -37,22 +39,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
   String _photoUrl = "";
   File? _profileImage;
   bool isLoading = false;
-
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-        isLoading = true; // Set loading state to true
-      });
-
-      await _uploadImageToFirebase(pickedFile);
-    }
-  }
 
   Future<void> _uploadImageToFirebase(XFile pickedFile) async {
     try {
@@ -306,7 +292,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
       Function showPreviewModal,
       Function showPreviewModals) {
     return Padding(
-      padding: const EdgeInsets.only(top: 70, right: 10.0, left: 10),
+      padding: const EdgeInsets.only(top: 50, right: 10.0, left: 10),
       child: SingleChildScrollView(
         child: StreamBuilder(
             stream: companyInfo,
@@ -324,78 +310,99 @@ class _JsProfilePageState extends State<JsProfilePage> {
 
               return Column(
                 children: [
-                  Stack(
-                    children: [
-                      // Profile image container
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: const Color(0xff1C4374), width: 1.5),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xff1C4374).withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 2,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: ClipOval(
-                          child: _profileImage != null
-                              ? Image.file(
-                            _profileImage!,
-                            height: 120,
-                            width: 120,
-                            fit: BoxFit.cover,
-                          )
-                              : _photoUrl != null
-                              ? Image.network(
-                            _photoUrl,
-                            height: 120,
-                            width: 120,
-                            fit: BoxFit.cover,
-                          )
-                              : Image.asset(
-                            'assets/default_profile.png', // Placeholder if no image is selected
-                            height: 120,
-                            width: 120,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      // Edit button
-                      Positioned(
-                        top: 0,
-                        bottom: 85,
-                        right: 0,
-                        left: 85,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle, color: Color(0xff1C4374)),
-                          child: IconButton(
-                            onPressed: _pickImage,
-                            icon: const Icon(
-                              Icons.edit,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Loading indicator
-                      if (isLoading)
-                        const Positioned(
-                          top: 0,
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: Color(0xff1C4374), // Change color if needed
-                            ),
-                          ),
-                        ),
-                    ],
+                  ProfilePicWidget(
+                    onImagePicked: (imageFile) async {
+                      FileUploadService fileUploadService = FileUploadService();
+
+                      try {
+                        String profilePicUrl = await fileUploadService
+                            .uploadProfilePic(imageFile, uid!);
+
+                        await FirebaseFirestore.instance
+                            .collection("Users")
+                            .doc(uid)
+                            .update({
+                          "profilePicUrl": profilePicUrl,
+                        });
+                      } catch (e) {
+                        print("Error uploading profile picture: $e");
+                      }
+                    },
+                    uploadedProfileUrl: companyData['profilePicUrl'] ?? "",
                   ),
+
+                  // Stack(
+                  //   children: [
+                  //     // Profile image container
+                  //     Container(
+                  //       decoration: BoxDecoration(
+                  //         shape: BoxShape.circle,
+                  //         border: Border.all(color: const Color(0xff1C4374), width: 1.5),
+                  //         boxShadow: [
+                  //           BoxShadow(
+                  //             color: const Color(0xff1C4374).withOpacity(0.5),
+                  //             spreadRadius: 2,
+                  //             blurRadius: 2,
+                  //             offset: const Offset(0, 2),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       child: ClipOval(
+                  //         child: _profileImage != null
+                  //             ? Image.file(
+                  //           _profileImage!,
+                  //           height: 120,
+                  //           width: 120,
+                  //           fit: BoxFit.cover,
+                  //         )
+                  //             : _photoUrl != null
+                  //             ? Image.network(
+                  //           _photoUrl,
+                  //           height: 120,
+                  //           width: 120,
+                  //           fit: BoxFit.cover,
+                  //         )
+                  //             : Image.asset(
+                  //           'assets/default_profile.png', // Placeholder if no image is selected
+                  //           height: 120,
+                  //           width: 120,
+                  //           fit: BoxFit.cover,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     // Edit button
+                  //     Positioned(
+                  //       top: 0,
+                  //       bottom: 85,
+                  //       right: 0,
+                  //       left: 85,
+                  //       child: Container(
+                  //         decoration: const BoxDecoration(
+                  //             shape: BoxShape.circle, color: Color(0xff1C4374)),
+                  //         child: IconButton(
+                  //           onPressed: _pickImage,
+                  //           icon: const Icon(
+                  //             Icons.edit,
+                  //             color: Colors.white,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     // Loading indicator
+                  //     if (isLoading)
+                  //       const Positioned(
+                  //         top: 0,
+                  //         bottom: 0,
+                  //         left: 0,
+                  //         right: 0,
+                  //         child: Center(
+                  //           child: CircularProgressIndicator(
+                  //             color: Color(0xff1C4374), // Change color if needed
+                  //           ),
+                  //         ),
+                  //       ),
+                  //   ],
+                  // ),
                   Padding(
                     padding: const EdgeInsets.only(top: 30.0, bottom: 10),
                     child: Container(
@@ -427,7 +434,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                             SizedBox(
                               width: 220,
                               child: Text(
-                                companyData['Name'].toUpperCase() ?? "-----",
+                                companyData['name'].toUpperCase() ?? "-----",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
@@ -469,18 +476,14 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                               onPressed: () {
                                                 JobProviderModel.updateJpData(
                                                   uid,
-                                                  {
-                                                    'Name':
-                                                        nameController.text
-                                                  },
+                                                  {'Name': nameController.text},
                                                 );
                                                 Navigator.pop(context);
                                               },
                                               child: const Text(
                                                 "OK",
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w900,
+                                                    fontWeight: FontWeight.w900,
                                                     color: Colors.white),
                                               ),
                                             ),
@@ -490,8 +493,8 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                     },
                                   );
                                 },
-                                icon: const Icon(Icons.edit,
-                                    color: Colors.black))
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.black))
                           ],
                         ),
                       ),
@@ -527,7 +530,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                   color: Color(0xff1C4374)),
                             ),
                             Text(
-                              companyData['Email'] ?? "-----",
+                              companyData['email'] ?? "-----",
                               style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16,
@@ -572,7 +575,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                 SizedBox(
                                   width: 220,
                                   child: Text(
-                                    companyData['Phone'] ?? "-----",
+                                    companyData['phone'] ?? "-----",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
@@ -587,10 +590,8 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                         context: context,
                                         builder: (context) {
                                           return Padding(
-                                            padding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 50,
-                                                    horizontal: 20),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 50, horizontal: 20),
                                             child: Column(
                                               children: [
                                                 textFormField(
@@ -600,8 +601,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                                     onChanged: () {},
                                                     keyboard:
                                                         TextInputType.number,
-                                                    controller:
-                                                        nameController,
+                                                    controller: nameController,
                                                     validator: (value) {
                                                   if (value == null ||
                                                       value.isEmpty) {
@@ -619,8 +619,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                                       uid,
                                                       {
                                                         'Phone':
-                                                            nameController
-                                                                .text
+                                                            nameController.text
                                                       },
                                                     );
                                                     Navigator.pop(context);
@@ -681,7 +680,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                   color: Color(0xff1C4374)),
                             ),
                             Text(
-                              companyData['Gender'].toUpperCase() ?? "-----",
+                              companyData['gender'].toUpperCase() ?? "-----",
                               style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16,
@@ -721,7 +720,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                   color: Color(0xff1C4374)),
                             ),
                             Text(
-                              companyData['Dob'].toUpperCase() ?? "-----",
+                              companyData['dob'].toUpperCase() ?? "-----",
                               style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16,
@@ -769,8 +768,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                             SizedBox(
                               width: 200,
                               child: Text(
-                                companyData['Location'].toUpperCase() ??
-                                    "-----",
+                                companyData['city'].toUpperCase() ?? "-----",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
@@ -786,16 +784,13 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                       context: context,
                                       builder: (context) {
                                         return Padding(
-                                            padding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 50,
-                                                    horizontal: 20),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 50, horizontal: 20),
                                             child: Column(children: [
                                               textFormField("Enter Location",
                                                   Icons.edit, false,
                                                   onChanged: () {},
-                                                  keyboard:
-                                                      TextInputType.text,
+                                                  keyboard: TextInputType.text,
                                                   controller: nameController,
                                                   validator: (value) {
                                                 if (value == null ||
@@ -806,11 +801,9 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                               }),
                                               const SizedBox(height: 20),
                                               CupertinoButton(
-                                                color:
-                                                    const Color(0xff1C4374),
+                                                color: const Color(0xff1C4374),
                                                 onPressed: () {
-                                                  JobProviderModel
-                                                      .updateJpData(
+                                                  JobProviderModel.updateJpData(
                                                     uid,
                                                     {
                                                       'Location':

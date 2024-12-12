@@ -3,13 +3,16 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/Services/firestore_services.dart';
 import 'package:saat_recruitment/job_seeker_pages/Resume_Preview.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/bottom_navigation/js_bottom_nav_bar.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:intl/intl.dart';
+import '../Models/job_seeker_model.dart';
+import '../Services/cloud_storage.dart';
+import '../View Models/profile_pic.dart';
 
 class JobSeekerProfile extends StatefulWidget {
   const JobSeekerProfile({super.key});
@@ -18,7 +21,8 @@ class JobSeekerProfile extends StatefulWidget {
 }
 
 class JobSeekerProfileState extends State<JobSeekerProfile> {
-  late File convertedFile;
+  File? profilePicFile;
+  File? cvFile;
   FilePickerResult? result;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _dateController = TextEditingController();
@@ -30,13 +34,18 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
   String _selectedFileName = "";
   bool _isFileSelected = false;
   String? _credentials;
-  String profilePicUrl = "";
+  String _profilePicUrl = "";
   final uid = FirebaseAuth.instance.currentUser?.uid;
+  final _userEmail = FirebaseAuth.instance.currentUser?.email;
+  final _userPhone = FirebaseAuth.instance.currentUser?.phoneNumber;
+
   _fetchCredentials() async {
     DocumentSnapshot snapshot =
         await FirebaseFirestore.instance.collection("Users").doc(uid).get();
     if (snapshot.exists) {
-      _credentials = snapshot.get("accountCreatedWith");
+      setState(() {
+        _credentials = snapshot.get("accountCreatedWith");
+      });
     } else {
       throw Exception("User not found");
     }
@@ -46,6 +55,12 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
   void initState() {
     super.initState();
     _fetchCredentials();
+    if (_userEmail != null) {
+      _email.text = _userEmail;
+    }
+    if (_userPhone != null) {
+      _phoneNumber.text = _userPhone;
+    }
   }
 
   @override
@@ -57,48 +72,14 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(100)),
-                      height: 120,
-                      width: 120,
-                      child: ClipOval(
-                        child: Image.asset(
-                          "assets/person.webp",
-                          fit: BoxFit.fill,
-                        ),
-                      )),
-                ),
-                Positioned(
-                    left: 95,
-                    top: 18,
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(100),
-                          color: const Color(0xff1C4374)),
-                      child: IconButton(
-                          onPressed: () {}, icon: const Icon(Icons.edit,color: Colors.white,)),
-                    ))
-              ],
+            ProfilePicWidget(
+              onImagePicked: (imageUrl) {
+                setState(() {
+                  profilePicFile=imageUrl;
+                });
+              },uploadedProfileUrl: "",
             ),
             Column(children: [
-              // const Text("PROFILE CREATION",
-              //     textAlign: TextAlign.center,
-              //     style: TextStyle(shadows: [
-              //       BoxShadow(
-              //           blurStyle: BlurStyle.outer,
-              //           blurRadius: 3,
-              //           offset: Offset(0, 1.59))
-              //     ], fontWeight: FontWeight.w900, fontSize: 25)),
-
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: Form(
@@ -146,8 +127,8 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                               child: TextFormField(
                                 decoration: InputDecoration(
                                     errorBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.red),
+                                        borderSide:
+                                            const BorderSide(color: Colors.red),
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                     border: OutlineInputBorder(
@@ -158,8 +139,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                                     labelText: "Your Phone",
                                     prefixIcon:
                                         const Icon(Icons.email_outlined)),
-                                initialValue: FirebaseAuth
-                                    .instance.currentUser?.phoneNumber,
+                                initialValue: _phoneNumber.text,
                                 readOnly: true,
                               ),
                             ),
@@ -180,16 +160,14 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                                     }
                                     return null.toString();
                                   },
-                                  controller: _email
-                                  // ..text = widget.lEmail.text
-                                  ))
+                                  controller: _email))
                           : Padding(
                               padding: const EdgeInsets.only(top: 10.0),
                               child: TextFormField(
                                 decoration: InputDecoration(
                                     errorBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.red),
+                                        borderSide:
+                                            const BorderSide(color: Colors.red),
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                     border: OutlineInputBorder(
@@ -197,11 +175,10 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                                             color: Color(0xff1C4374)),
                                         borderRadius:
                                             BorderRadius.circular(15)),
-                                    labelText: "Your Email",
+                                    labelText: "Your E-mail",
                                     prefixIcon:
                                         const Icon(Icons.email_outlined)),
-                                initialValue:
-                                    FirebaseAuth.instance.currentUser?.email,
+                                initialValue: _email.text,
                                 readOnly: true,
                               ),
                             ),
@@ -267,16 +244,6 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                         height: 10,
                       ),
                       placesAutoCompleteTextField(_city),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 20.0),
-                        child: Text('CV/Resume',
-                            style: TextStyle(shadows: [
-                              BoxShadow(
-                                  blurStyle: BlurStyle.outer,
-                                  blurRadius: 2,
-                                  offset: Offset(0, .5))
-                            ], fontSize: 18, fontWeight: FontWeight.w600)),
-                      ),
                       IconButton(
                         onPressed: () async {
                           result = await FilePicker.platform.pickFiles(
@@ -288,23 +255,29 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                             setState(() {
                               _selectedFileName = file.name;
                               _isFileSelected = true;
-                              convertedFile = File(file.path!);
+                              cvFile = File(file.path!);
                             });
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ResumePreview(
-                                        selectedFile: convertedFile,
-                                        selectedFileName:
-                                            _selectedFileName)));
+                                        selectedFile: cvFile!,
+                                        selectedFileName: _selectedFileName)));
                           }
                         },
                         icon: const Icon(
                           Icons.file_upload_outlined,
-                          size: 60,
-                          color: Color(0xff1C4374),
+                          size: 50,
+                          color: Colors.lightBlue,
                         ),
                       ),
+                      const Text('CV/Resume',
+                          style: TextStyle(shadows: [
+                            BoxShadow(
+                                blurStyle: BlurStyle.outer,
+                                blurRadius: 2,
+                                offset: Offset(0, .5))
+                          ], fontSize: 18, fontWeight: FontWeight.w600)),
                       if (_isFileSelected)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -316,18 +289,16 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                             const SizedBox(width: 8),
                             SizedBox(
                               width: MediaQuery.of(context).size.width / 2,
-                              child: Expanded(
-                                child: Text(
-                                  _selectedFileName,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1, // Limit to 3 lines
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.lightBlue,
-                                  ),
-                                  textAlign: TextAlign.center,
+                              child: Text(
+                                _selectedFileName,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1, // Limit to 3 lines
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.lightBlue,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ],
@@ -338,9 +309,9 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                             color: const Color(0xff1C4374),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                _saveJobSeekerData();
+                                _uploadJobSeekerData();
 
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
@@ -368,32 +339,30 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
     ));
   }
 
-  void _saveJobSeekerData() async {
-    try {
-      String? resumeUrl;
-      if (_isFileSelected) {
-        final storageRef = FirebaseStorage.instance.ref('resumes/$uid.jpeg');
-        final uploadTask = storageRef.putFile(convertedFile);
-        resumeUrl = await (await uploadTask).ref.getDownloadURL();
-      }
-      await FirebaseFirestore.instance.collection('Users').doc(uid).set({
-        'Name': _name.text,
-        'Phone': FirebaseAuth.instance.currentUser?.phoneNumber == ""
-            ? _phoneNumber.text
-            : FirebaseAuth.instance.currentUser?.phoneNumber,
-        'Email': FirebaseAuth.instance.currentUser?.email == ""
-            ? _email.text
-            : FirebaseAuth.instance.currentUser?.email,
-        'Gender': _gender,
-        'Dob': _dateController.text,
-        'Location': _city.text,
-        'isComplete': true,
-        'profilePicUrl': profilePicUrl,
-        'resumeUrl': resumeUrl ?? "",
-        'resumeFileName': _selectedFileName ?? "",
-      }, SetOptions(merge: true));
-    } catch (e) {
-      print('Error setting document: $e');
+  void _uploadJobSeekerData() async {
+    String profilePicUrl = "";
+    String resumeUrl = "";
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    FileUploadService fileUploadService = FileUploadService();
+    FirestoreService firestoreService = FirestoreService();
+    if (profilePicFile != null) {
+      profilePicUrl = await fileUploadService.uploadProfilePic(profilePicFile!, uid);
     }
+    if (cvFile != null) {
+      resumeUrl = await fileUploadService.uploadResume(cvFile!, uid);
+    }
+    JobSeeker jobSeeker = JobSeeker(
+      name: _name.text,
+      email: _email.text,
+      phone: _phoneNumber.text,
+      gender: _gender,
+      dob: _dateController.text,
+      city: _city.text,
+      profilePicUrl: profilePicUrl,
+      cvFileName: _selectedFileName,
+      resumeUrl: resumeUrl,
+    );
+    await firestoreService.saveJobSeekerData(uid, jobSeeker.toMap());
+    await FirebaseFirestore.instance.collection("Users").doc(uid).update({"isComplete":true});
   }
 }
