@@ -39,7 +39,7 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                 child: Text(
                   "You don't have Uploaded your CV/Resume yet,Please tap the icon below to continue application",
                   style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.w700),textAlign: TextAlign.center,
                 ),
               ),
               Padding(
@@ -60,8 +60,9 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                       }
                     },
                     icon: const Icon(
-                      Icons.upload_file_outlined,
+                      Icons.file_upload_outlined,
                       size: 100,
+                      color: Colors.lightBlue,
                     )),
               ),
               if (_isFileSelected)
@@ -70,7 +71,7 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.file_present),
+                        const Icon(Icons.file_present,color: Colors.lightBlue,),
                         const SizedBox(width: 8),
                         SizedBox(
                           width: MediaQuery.of(context).size.width / 2,
@@ -82,7 +83,7 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                                color: Colors.lightBlue,
                               ),
                               textAlign: TextAlign.center,
                             ),

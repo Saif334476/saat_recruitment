@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:share/share.dart';
 
 class MyJobsPage extends StatefulWidget {
@@ -25,103 +24,101 @@ class _MyJobsPageState extends State<MyJobsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 40,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.05,
           ),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all(const Color(0xff1C4374)),
-                    foregroundColor:
-                        WidgetStateProperty.all(const Color(0xff1C4374)),
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: const BorderSide(
-                            width: 2, color: Color(0xff1C4374)),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _selectedButton = "All"; // Update selectedButton to "All"
-                    });
-                  },
-                  child: Text(
-                    "All",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 15,
-                      color: _selectedButton == "All"
-                          ? const Color(0xFF97C5FF)
-                          : Colors.white, // Change color based on selection
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      WidgetStateProperty.all(const Color(0xff1C4374)),
+                  foregroundColor:
+                      WidgetStateProperty.all(const Color(0xff1C4374)),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side:
+                          const BorderSide(width: 2, color: Color(0xff1C4374)),
                     ),
                   ),
                 ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all(const Color(0xff1C4374)),
-                    foregroundColor:
-                        WidgetStateProperty.all(const Color(0xff1C4374)),
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: const BorderSide(
-                            width: 2, color: Color(0xff1C4374)),
-                      ),
+                onPressed: () {
+                  setState(() {
+                    _selectedButton = "All"; // Update selectedButton to "All"
+                  });
+                },
+                child: Text(
+                  "All",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 15,
+                    color: _selectedButton == "All"
+                        ? const Color(0xFF97C5FF)
+                        : Colors.white, // Change color based on selection
+                  ),
+                ),
+              ),
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      WidgetStateProperty.all(const Color(0xff1C4374)),
+                  foregroundColor:
+                      WidgetStateProperty.all(const Color(0xff1C4374)),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side:
+                          const BorderSide(width: 2, color: Color(0xff1C4374)),
                     ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _selectedButton = "Successful";
-                    });
-                  },
-                  child: Text(
-                    'Successful',
+                ),
+                onPressed: () {
+                  setState(() {
+                    _selectedButton = "Successful";
+                  });
+                },
+                child: Text(
+                  'Successful',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15,
+                      color: _selectedButton == "Successful"
+                          ? const Color(0xFF97C5FF)
+                          : Colors.white),
+                ),
+              ),
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      WidgetStateProperty.all(const Color(0xff1C4374)),
+                  foregroundColor:
+                      WidgetStateProperty.all(const Color(0xff1C4374)),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side:
+                          const BorderSide(width: 2, color: Color(0xff1C4374)),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _selectedButton = "UnSuccessful";
+                  });
+                },
+                child: Text("UnSuccessful",
                     style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 15,
-                        color: _selectedButton == "Successful"
+                        color: _selectedButton == "UnSuccessful"
                             ? const Color(0xFF97C5FF)
-                            : Colors.white),
-                  ),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all(const Color(0xff1C4374)),
-                    foregroundColor:
-                        WidgetStateProperty.all(const Color(0xff1C4374)),
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: const BorderSide(
-                            width: 2, color: Color(0xff1C4374)),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _selectedButton = "UnSuccessful";
-                    });
-                  },
-                  child: Text("UnSuccessful",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 15,
-                          color: _selectedButton == "UnSuccessful"
-                              ? const Color(0xFF97C5FF)
-                              : Colors.white)),
-                ),
-              ],
-            ),
+                            : Colors.white)),
+              ),
+            ],
           ),
           Expanded(
             child: StreamBuilder(
@@ -137,7 +134,6 @@ class _MyJobsPageState extends State<MyJobsPage> {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
                 if (snapshot.data!.docs.isEmpty) {
                   return const Center(
                       child: Text(
@@ -208,25 +204,27 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        width:MediaQuery.of(context).size.width*0.5,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.5,
                                         child: Text(
-                                          jobAdDoc['jobTitle']+"lgkdfklg" ?? 'No Title',overflow: TextOverflow.ellipsis,
+                                          jobAdDoc['jobTitle'] ?? 'No Title',
+                                          overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w900),
                                         ),
                                       ),
-                            SizedBox(
-                              width: MediaQuery.of(context)
-                                  .size
-                                  .width *
-                                  0.4,
-                              // child: Text(
-                              //   jobAdDoc['companyName'] ?? "---",
-                              //   overflow: TextOverflow.ellipsis,
-                              //   style: const TextStyle(
-                              //       fontWeight: FontWeight.w600),
-                              // ),
-                            )
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.4,
+                                        // child: Text(
+                                        //   jobAdDoc['companyName'] ?? "---",
+                                        //   overflow: TextOverflow.ellipsis,
+                                        //   style: const TextStyle(
+                                        //       fontWeight: FontWeight.w600),
+                                        // ),
+                                      )
                                     ],
                                   ),
                                   Column(
@@ -236,10 +234,11 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                           const Icon(
                                               Icons.location_on_outlined),
                                           SizedBox(
-                                            width: 100,
+                                              width: 100,
                                               child: Text(
-                                                  jobAdDoc['location'] ??
-                                                      'N/A',overflow: TextOverflow.ellipsis,)),
+                                                jobAdDoc['location'] ?? 'N/A',
+                                                overflow: TextOverflow.ellipsis,
+                                              )),
                                         ],
                                       ),
                                       Row(

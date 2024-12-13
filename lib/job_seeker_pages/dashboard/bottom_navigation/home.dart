@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/job_info.dart';
 import 'package:share/share.dart';
-import '../../../Models/job.dart';
-import '../../../reusable_widgets/reusable_widget.dart';
 import 'job_categories.dart';
 
 class JobSeekerHomePage extends StatefulWidget {
@@ -167,8 +165,7 @@ class JobsWidget extends StatelessWidget {
                           child: ListTile(
                             leading: Icon(categoryItem.icon),
                             onTap: () async {
-                              final jobAdData =
-                                  jobAdDoc.data() as Map<String, dynamic>;
+                              final jobAdData = jobAdDoc.data() as Map<String, dynamic>;
                               final jobAdId = snapshot.data!.docs[index].id;
                               showGeneralDialog(
                                 context: context,
@@ -181,7 +178,7 @@ class JobsWidget extends StatelessWidget {
                                   return JobInfo(
                                     jobAdData: jobAdData,
                                     jobAdId: jobAdId,
-                                  ); // Your full-page modal widget
+                                  );
                                 },
                               );
                             },

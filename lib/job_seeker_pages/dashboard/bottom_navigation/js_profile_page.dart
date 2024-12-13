@@ -8,9 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saat_recruitment/Firebase%20Services/resume_utils.dart';
 import 'package:saat_recruitment/Services/cloud_storage.dart';
+import 'package:saat_recruitment/Services/firestore_services.dart';
 import 'package:saat_recruitment/login_page.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../../Models/job_provider.dart';
+import '../../../reusable_widgets/file_preview.dart';
 import '../../../reusable_widgets/profile_pic.dart';
 import '../../../reusable_widgets/reusable_widget.dart';
 
@@ -52,7 +54,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
   void selectFile() async {
     result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'jpeg', 'jpg'],
+      allowedExtensions: ['pdf'],
     );
     if (result != null && result!.files.isNotEmpty) {
       PlatformFile file = result!.files.first;
@@ -60,11 +62,11 @@ class _JsProfilePageState extends State<JsProfilePage> {
         selectedFileName = file.name;
         selectedFile = File(file.path!);
       });
-      showPreviewModal(selectedFile,selectedFileName);
+      showPreviewModal(selectedFile, selectedFileName);
     }
   }
 
-  void showPreviewModal(selectedFile,selectedFileName) {
+  void showPreviewModal(selectedFile, selectedFileName) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -97,9 +99,9 @@ class _JsProfilePageState extends State<JsProfilePage> {
                   ),
                   CupertinoButton(
                     color: const Color(0xff1C4374),
-                    onPressed: () async{
-                        final resumeUrl =
-                           await  fileUploadService.uploadResume(selectedFile, uid!);
+                    onPressed: () async {
+                      final resumeUrl = await fileUploadService.uploadResume(
+                          selectedFile, uid!);
                       await FirebaseFirestore.instance
                           .collection("Users")
                           .doc(uid)
@@ -108,7 +110,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
                         "resumeFileName": selectedFileName
                       });
                       Navigator.pop(context);
-
                     },
                     child: const Text(
                       'OK',
@@ -137,7 +138,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
-              Expanded(child: _getFilePreview(fileUrl)),
+              Expanded(child: getFilePreview(fileUrl, true,null)),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -172,39 +173,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
         );
       },
     );
-  }
-
-  Widget _getFilePreview(String fileUrl) {
-    Uri parsedUrl = Uri.parse(fileUrl);
-    String fileExtension = parsedUrl.path.split('.').last.toLowerCase();
-
-    if (fileExtension == 'pdf') {
-      return SfPdfViewer.network(fileUrl);
-    } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
-      try {
-        return Image.network(fileUrl);
-      } catch (e) {
-        return Text(
-          'Error loading image: $e',
-          style: const TextStyle(fontSize: 18),
-        );
-      }
-    } else if (['doc', 'docx'].contains(fileExtension)) {
-      return const Text(
-        'Microsoft Word Document',
-        style: TextStyle(fontSize: 18),
-      );
-    } else if (['xls', 'xlsx'].contains(fileExtension)) {
-      return const Text(
-        'Microsoft Excel Spreadsheet',
-        style: TextStyle(fontSize: 18),
-      );
-    } else {
-      return const Text(
-        'Unsupported file type',
-        style: TextStyle(fontSize: 18),
-      );
-    }
   }
 
   @override
@@ -258,96 +226,23 @@ class _JsProfilePageState extends State<JsProfilePage> {
                   ProfilePicWidget(
                     onImagePicked: (imageFile) async {
                       FileUploadService fileUploadService = FileUploadService();
-
+                      FirestoreService firestoreService=FirestoreService();
                       try {
                         String profilePicUrl = await fileUploadService
                             .uploadProfilePic(imageFile, uid!);
-
-                        await FirebaseFirestore.instance
-                            .collection("Users")
-                            .doc(uid)
-                            .update({
-                          "profilePicUrl": profilePicUrl,
-                        });
+                        firestoreService.uploadProfilePicUrl(uid, profilePicUrl);
+                        // await FirebaseFirestore.instance
+                        //     .collection("Users")
+                        //     .doc(uid)
+                        //     .update({
+                        //   "profilePicUrl": profilePicUrl,
+                        // });
                       } catch (e) {
                         print("Error uploading profile picture: $e");
                       }
                     },
                     uploadedProfileUrl: companyData['profilePicUrl'] ?? "",
                   ),
-
-                  // Stack(
-                  //   children: [
-                  //     // Profile image container
-                  //     Container(
-                  //       decoration: BoxDecoration(
-                  //         shape: BoxShape.circle,
-                  //         border: Border.all(color: const Color(0xff1C4374), width: 1.5),
-                  //         boxShadow: [
-                  //           BoxShadow(
-                  //             color: const Color(0xff1C4374).withOpacity(0.5),
-                  //             spreadRadius: 2,
-                  //             blurRadius: 2,
-                  //             offset: const Offset(0, 2),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       child: ClipOval(
-                  //         child: _profileImage != null
-                  //             ? Image.file(
-                  //           _profileImage!,
-                  //           height: 120,
-                  //           width: 120,
-                  //           fit: BoxFit.cover,
-                  //         )
-                  //             : _photoUrl != null
-                  //             ? Image.network(
-                  //           _photoUrl,
-                  //           height: 120,
-                  //           width: 120,
-                  //           fit: BoxFit.cover,
-                  //         )
-                  //             : Image.asset(
-                  //           'assets/default_profile.png', // Placeholder if no image is selected
-                  //           height: 120,
-                  //           width: 120,
-                  //           fit: BoxFit.cover,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     // Edit button
-                  //     Positioned(
-                  //       top: 0,
-                  //       bottom: 85,
-                  //       right: 0,
-                  //       left: 85,
-                  //       child: Container(
-                  //         decoration: const BoxDecoration(
-                  //             shape: BoxShape.circle, color: Color(0xff1C4374)),
-                  //         child: IconButton(
-                  //           onPressed: _pickImage,
-                  //           icon: const Icon(
-                  //             Icons.edit,
-                  //             color: Colors.white,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     // Loading indicator
-                  //     if (isLoading)
-                  //       const Positioned(
-                  //         top: 0,
-                  //         bottom: 0,
-                  //         left: 0,
-                  //         right: 0,
-                  //         child: Center(
-                  //           child: CircularProgressIndicator(
-                  //             color: Color(0xff1C4374), // Change color if needed
-                  //           ),
-                  //         ),
-                  //       ),
-                  //   ],
-                  // ),
                   Padding(
                     padding: const EdgeInsets.only(top: 30.0, bottom: 10),
                     child: Container(

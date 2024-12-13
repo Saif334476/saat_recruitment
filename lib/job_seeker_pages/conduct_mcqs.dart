@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:saat_recruitment/job_seeker_pages/dashboard/preview_cv.dart';
+import 'package:saat_recruitment/Services/firestore_services.dart';
+import 'package:saat_recruitment/job_seeker_pages/dashboard/apply_to_job.dart';
 
 class ConductMcqs extends StatefulWidget {
   final List<Map<String, dynamic>> mcqList;
@@ -23,6 +25,9 @@ class _ConductMcqsState extends State<ConductMcqs> {
   int _score = 0;
   String _selectedOption = '';
   int _questionCount = 1;
+  FirestoreService firestoreService=FirestoreService();
+  final uid=FirebaseAuth.instance.currentUser?.uid;
+
   @override
   void initState() {
     super.initState();
@@ -186,11 +191,12 @@ class _ConductMcqsState extends State<ConductMcqs> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => PreviewCv(
+                                          builder: (context) => ApplyToJob(
                                               widget.uid, widget.jobAdId,
                                               existingResumeUrl:
                                                   widget.existingResumeUrl)));
                                 } else {
+                                  firestoreService.saveApplicationAtJS(widget.jobAdId, uid!,"UnSuccessful");
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FileUploadService {
@@ -25,6 +26,7 @@ class FileUploadService {
       throw Exception("Failed to upload resume: $e");
     }
   }
+
 }
 
 
