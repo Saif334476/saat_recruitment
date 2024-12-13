@@ -152,19 +152,10 @@ TextFormField textFormField(
   );
 }
 
-ElevatedButton elevatedButtons(
+TextButton textButtons(
     {required Function onPressed, required Widget widget}) {
-  return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(const Color(0xff1C4374)),
-        foregroundColor: WidgetStateProperty.all(const Color(0xff1C4374)),
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(width: 2, color: Color(0xff1C4374)),
-          ),
-        ),
-      ),
+  return TextButton(
+
       onPressed: onPressed(),
       child: widget);
 }

@@ -12,13 +12,13 @@ class MyJobsPage extends StatefulWidget {
 }
 
 class _MyJobsPageState extends State<MyJobsPage> {
-  String selectedButton = "";
+  String _selectedButton = "";
   String uId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
-    selectedButton = "All";
+    _selectedButton = "All";
   }
 
   @override
@@ -34,51 +34,90 @@ class _MyJobsPageState extends State<MyJobsPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                elevatedButtons(
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStateProperty.all(const Color(0xff1C4374)),
+                    foregroundColor:
+                        WidgetStateProperty.all(const Color(0xff1C4374)),
+                    shape: WidgetStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(
+                            width: 2, color: Color(0xff1C4374)),
+                      ),
+                    ),
+                  ),
                   onPressed: () {
                     setState(() {
-                      selectedButton = "All"; // Update selectedButton to "All"
+                      _selectedButton = "All"; // Update selectedButton to "All"
                     });
                   },
-                  widget: Text(
+                  child: Text(
                     "All",
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
-                      color: selectedButton == "All"
-                          ? Colors.lightBlue
+                      color: _selectedButton == "All"
+                          ? const Color(0xFF97C5FF)
                           : Colors.white, // Change color based on selection
                     ),
                   ),
                 ),
-                elevatedButtons(
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStateProperty.all(const Color(0xff1C4374)),
+                    foregroundColor:
+                        WidgetStateProperty.all(const Color(0xff1C4374)),
+                    shape: WidgetStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(
+                            width: 2, color: Color(0xff1C4374)),
+                      ),
+                    ),
+                  ),
                   onPressed: () {
                     setState(() {
-                      selectedButton = "Successful";
+                      _selectedButton = "Successful";
                     });
                   },
-                  widget: Text(
+                  child: Text(
                     'Successful',
                     style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 15,
-                        color: selectedButton == "Successful"
-                            ? Colors.lightBlue
+                        color: _selectedButton == "Successful"
+                            ? const Color(0xFF97C5FF)
                             : Colors.white),
                   ),
                 ),
-                elevatedButtons(
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStateProperty.all(const Color(0xff1C4374)),
+                    foregroundColor:
+                        WidgetStateProperty.all(const Color(0xff1C4374)),
+                    shape: WidgetStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(
+                            width: 2, color: Color(0xff1C4374)),
+                      ),
+                    ),
+                  ),
                   onPressed: () {
                     setState(() {
-                      selectedButton = "UnSuccessful";
+                      _selectedButton = "UnSuccessful";
                     });
                   },
-                  widget: Text("UnSuccessful",
+                  child: Text("UnSuccessful",
                       style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 15,
-                          color: selectedButton == "UnSuccessful"
-                              ? Colors.lightBlue
+                          color: _selectedButton == "UnSuccessful"
+                              ? const Color(0xFF97C5FF)
                               : Colors.white)),
                 ),
               ],
@@ -92,7 +131,7 @@ class _MyJobsPageState extends State<MyJobsPage> {
                   .collection("Job Applications")
                   .where('applicationStatus',
                       isEqualTo:
-                          selectedButton == "All" ? null : selectedButton)
+                          _selectedButton == "All" ? null : _selectedButton)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -201,62 +240,86 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                   ),
                                 ],
                               ),
-                              subtitle: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              subtitle: Column(
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const Text(
-                                            "Job Type: ",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700),
-                                          ),
-                                          Text(jobAdDoc['jobType'] ?? 'N/A'),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Text(
-                                            "Req. Experience: ",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700),
-                                          ),
-                                          Text(jobAdDoc['requiredExperience'] ??
-                                              'N/A'),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          Share.share(
-                                              'Check out this job opportunity: ${jobAdDoc['jobTitle']}\nApply now:https://final-project2000202.firebaseapp.com/jobs/${jobAdDoc.id}');
-                                        },
-                                        icon: const Icon(Icons.share_outlined),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Text(
+                                                "Job Type: ",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                              ),
+                                              Text(
+                                                  jobAdDoc['jobType'] ?? 'N/A'),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text(
+                                                "Req. Experience: ",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                              ),
+                                              Text(jobAdDoc[
+                                                      'requiredExperience'] ??
+                                                  'N/A'),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      IconButton(
-                                        onPressed: () async {
-                                          await FirebaseFirestore.instance
-                                              .collection("Users")
-                                              .doc(uId)
-                                              .collection("Job Applications")
-                                              .doc(jobAdDoc.id)
-                                              .delete();
-                                        },
-                                        icon: const Icon(
-                                          Icons.delete_forever,
-                                          color: Colors.redAccent,
-                                        ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              Share.share(
+                                                  'Check out this job opportunity: ${jobAdDoc['jobTitle']}\nApply now:https://final-project2000202.firebaseapp.com/jobs/${jobAdDoc.id}');
+                                            },
+                                            icon: const Icon(
+                                                Icons.share_outlined),
+                                          ),
+                                          IconButton(
+                                            onPressed: () async {
+                                              await FirebaseFirestore.instance
+                                                  .collection("Users")
+                                                  .doc(uId)
+                                                  .collection(
+                                                      "Job Applications")
+                                                  .doc(jobAdDoc.id)
+                                                  .delete();
+                                            },
+                                            icon: const Icon(
+                                              Icons.delete_forever,
+                                              color: Colors.redAccent,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: const Color(0xff1C4374))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Text(
+                                        applicationDoc["applicationStatus"],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w800),
+                                      ),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
