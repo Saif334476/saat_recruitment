@@ -191,35 +191,50 @@ class JobsWidget extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      jobAdDoc['jobTitle'],
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w900),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      child: Text(
+                                        jobAdDoc['jobTitle'],
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w900),
+                                      ),
                                     ),
                                     FutureBuilder(
                                       future: companyName(jobAdDoc['postedBy']),
                                       builder: (context, snapshot) {
-                                        return Text(
-                                          snapshot.data?['Name'] ??
-                                              "---", // assuming 'companyName' is the field in Firestore
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w600),
+                                        return Row(
+                                          children: [
+                                            const Icon(Icons.corporate_fare),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                                  0.3,
+                                              child: Text(
+                                                snapshot.data?['Name'] ?? "---",
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                            ),
+                                          ],
                                         );
                                       },
                                     )
                                   ],
                                 ),
                                 Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        const Text(
-                                          "Location: ",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w700),
-                                        ),
+                                        const Icon(Icons.location_on_outlined),
                                         SizedBox(
-                                            width: 60,
+                                            width: 100,
                                             child: Text(
                                               jobAdDoc['location'],
                                               style: const TextStyle(
@@ -231,16 +246,17 @@ class JobsWidget extends StatelessWidget {
                                     Row(
                                       children: [
                                         const Text(
-                                          "Salary: ",
+                                          "PKR. ",
                                           style: TextStyle(
                                               fontWeight: FontWeight.w700),
                                         ),
                                         SizedBox(
-                                            width: 80,
-                                            child: Text(jobAdDoc['salary'],
-                                                style: const TextStyle(
-                                                    overflow: TextOverflow
-                                                        .ellipsis))),
+                                          width: 100,
+                                          child: Text(jobAdDoc['salary'],
+                                              style: const TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis)),
+                                        ),
                                       ],
                                     ),
                                   ],

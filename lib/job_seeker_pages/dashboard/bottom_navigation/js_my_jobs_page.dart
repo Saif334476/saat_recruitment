@@ -207,29 +207,45 @@ class _MyJobsPageState extends State<MyJobsPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        jobAdDoc['jobTitle'] ?? 'No Title',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w900),
+                                      SizedBox(
+                                        width:MediaQuery.of(context).size.width*0.5,
+                                        child: Text(
+                                          jobAdDoc['jobTitle']+"lgkdfklg" ?? 'No Title',overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w900),
+                                        ),
                                       ),
+                            SizedBox(
+                              width: MediaQuery.of(context)
+                                  .size
+                                  .width *
+                                  0.4,
+                              // child: Text(
+                              //   jobAdDoc['companyName'] ?? "---",
+                              //   overflow: TextOverflow.ellipsis,
+                              //   style: const TextStyle(
+                              //       fontWeight: FontWeight.w600),
+                              // ),
+                            )
                                     ],
                                   ),
                                   Column(
                                     children: [
                                       Row(
                                         children: [
-                                          const Text(
-                                            "Location: ",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700),
-                                          ),
-                                          Text(jobAdDoc['location'] ?? 'N/A'),
+                                          const Icon(
+                                              Icons.location_on_outlined),
+                                          SizedBox(
+                                            width: 100,
+                                              child: Text(
+                                                  jobAdDoc['location'] ??
+                                                      'N/A',overflow: TextOverflow.ellipsis,)),
                                         ],
                                       ),
                                       Row(
                                         children: [
                                           const Text(
-                                            "Salary: ",
+                                            "PKR:",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w700),
                                           ),
