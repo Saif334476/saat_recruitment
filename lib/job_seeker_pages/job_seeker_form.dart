@@ -185,6 +185,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                       Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: dropDown(
+                            isEditing: false,
                             value: _gender,
                             icon: Icons.person_add,
                             validator: (value) {

@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/Models/job.dart';
 import '../../../../Models/mcq_model.dart';
 import 'ad_preview_page.dart';
 import 'mcq_card.dart';
@@ -13,7 +15,6 @@ class CompanyMCQCreationScreen extends StatefulWidget {
   final String jobType;
   final String selectedCategory;
   final String jobTitle;
-
   final String? jobAdId;
   const CompanyMCQCreationScreen(
       {super.key,
@@ -40,6 +41,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
   final TextEditingController _option3Controller = TextEditingController();
   final TextEditingController _option4Controller = TextEditingController();
   String _correctAnswer = '';
+  final uid = FirebaseAuth.instance.currentUser?.uid;
 
   int questionCount = 10;
   int currentQuestion = 1;
@@ -88,7 +90,8 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
                   color: Color(0xff1C4374),
-                ),textAlign: TextAlign.center,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -166,19 +169,27 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                             content: Text('Please select a correct answer')),
                       );
                     }
+
+                    Job job = Job(
+                        jobId: widget.jobId,
+                        jobTitle: widget.jobTitle,
+                        selectedCategory: widget.selectedCategory,
+                        jobType: widget.jobType,
+                        requiredExperience: widget.requiredExperience,
+                        location: widget.location,
+                        salary: widget.salary,
+                        selectedOption: widget.selectedOption,
+                        mcq: mcqs,
+                        postedBy: uid!,
+                        postedAt: DateTime.now(),
+                        description: "");
+
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => PreviewPage(
+                                  job: job,
                                   jobAdData: widget.jobAdData,
-                                  mcq: mcqs,
-                                  jobTitle: widget.jobTitle,
-                                  selectedCategory: widget.selectedCategory,
-                                  jobType: widget.jobType,
-                                  requiredExperience: widget.requiredExperience,
-                                  location: widget.location,
-                                  salary: widget.salary,
-                                  selectedOption: widget.selectedOption,
                                   jobId: widget.jobId,
                                   jobAdId: widget.jobAdId,
                                 )));

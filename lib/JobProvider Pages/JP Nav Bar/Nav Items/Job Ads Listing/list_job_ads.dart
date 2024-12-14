@@ -18,7 +18,7 @@ class JobAdsListViewState extends State<JobAdsListView> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.65,
+      height: MediaQuery.of(context).size.height * 0.75,
       child: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('jobs')
@@ -134,13 +134,17 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                       ),
                                       Row(
                                         children: [
-                                          const Text(
-                                            "Location: ",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 17),
-                                          ),
-                                          Text(jobAdDoc['location']),
+                                          const Icon(
+                                              Icons.location_on_outlined),
+                                          SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.3,
+                                              child: Text(
+                                                jobAdDoc['location'],
+                                                overflow: TextOverflow.ellipsis,
+                                              )),
                                         ],
                                       ),
                                     ],
@@ -166,12 +170,17 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                           Row(
                                             children: [
                                               const Text(
-                                                "Salary: ",
+                                                "PKR: ",
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.w700,
                                                     fontSize: 17),
                                               ),
-                                              Text(jobAdDoc['salary']),
+                                              SizedBox(
+                                                width: MediaQuery.of(context).size.width*0.2,
+                                                  child: Text(
+                                                jobAdDoc['salary'],
+                                                overflow: TextOverflow.ellipsis,
+                                              )),
                                             ],
                                           ),
                                         ],

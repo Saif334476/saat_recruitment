@@ -89,6 +89,7 @@ SizedBox elevatedButton(String text, Function onPressed,
 }
 
 DropdownButtonFormField dropDown({
+  required bool isEditing,
   required String text,
   required dynamic value,
   required IconData icon,
@@ -111,7 +112,7 @@ DropdownButtonFormField dropDown({
       labelText: text,
       prefixIcon: Icon(icon),
     ),
-    value: value,
+    value:isEditing? value:null,
     items: items,
     onSaved: onSaved,
     dropdownColor: const Color(0xFF97C5FF),

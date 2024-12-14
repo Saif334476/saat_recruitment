@@ -78,15 +78,20 @@ class AdminPanelState extends State<AdminPanel> {
       body: Column(
         children: [
           const Padding(
-            padding: EdgeInsets.only(top: 15.0),
+            padding: EdgeInsets.only(top: 10.0),
             child: Text(
-              'List of job providers awaiting verification',
+              'Job providers awaiting for verification',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
+          const Divider(color: Color(0xff1C4374),thickness: 1.5,),
           Expanded(
             child: _jobProviders.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                    child: Text(
+                    "No Job Providers to be validated!",
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ))
                 : RefreshIndicator(
                     onRefresh: _fetchJobProviders,
                     child: ListView.builder(
@@ -145,7 +150,8 @@ class AdminPanelState extends State<AdminPanel> {
                                           Text(
                                             jobProvider.industry.toUpperCase(),
                                             style: const TextStyle(
-                                                color: Colors.white),overflow: TextOverflow.ellipsis,
+                                                color: Colors.white),
+                                            overflow: TextOverflow.ellipsis,
                                           )
                                         ],
                                       )
@@ -162,7 +168,8 @@ class AdminPanelState extends State<AdminPanel> {
                                             MediaQuery.of(context).size.width *
                                                 0.7,
                                         child: Text(
-                                          " ${jobProvider.email}",overflow: TextOverflow.ellipsis,
+                                          " ${jobProvider.email}",
+                                          overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                               color: Colors.white),
                                         ),

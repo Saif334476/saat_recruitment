@@ -7,6 +7,7 @@ class Job {
   final String selectedCategory;
   final String jobType;
   final String requiredExperience;
+  final String description;
   final String location;
   final String salary;
   final String selectedOption;
@@ -26,6 +27,7 @@ class Job {
     required this.mcq,
     required this.postedBy,
     required this.postedAt,
+    required this.description
   });
 
   factory Job.fromMap(Map<String, dynamic> map) {
@@ -40,7 +42,7 @@ class Job {
       selectedOption: map['selectedOption'],
       mcq: (map['mcq'] as List).map((mcq) => MCQ.fromMap(mcq)).toList(),
       postedBy: map['postedBy'],
-      postedAt: (map['postedAt'] as Timestamp).toDate(),
+      postedAt: (map['postedAt'] as Timestamp).toDate(), description: map['description'],
     );
   }
 
@@ -57,6 +59,7 @@ class Job {
       'mcq': mcq.map((mcq) => mcq.toMap()).toList(),
       'postedBy': postedBy,
       'postedAt': Timestamp.fromDate(postedAt),
+      'description':description
     };
   }
 }

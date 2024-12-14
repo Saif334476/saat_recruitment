@@ -3,6 +3,8 @@ import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:saat_recruitment/Models/job_provider.dart';
 
+import '../Models/job.dart';
+
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
@@ -99,4 +101,26 @@ class FirestoreService {
     return jobProviders;
   }
 
+  Future<void> updateJob(String jobAdId, Map<String, dynamic> job) async {
+    if (jobAdId.isNotEmpty && job.isNotEmpty) {
+      await _db.collection("jobs").doc(jobAdId).set(
+            job,
+            SetOptions(merge: true),
+          );
+    } else {
+      throw Exception("Invalid jobAdId or job data");
+    }
+  }
+
+  Future<void> saveNewJob(Map<String, dynamic> job) async {
+    if (job.isNotEmpty) {
+      job['numberOfApplicants'] = 0;
+      await _db.collection("jobs").doc().set(
+           job,
+            SetOptions(merge: true),
+          );
+    } else {
+      throw Exception("Invalid jobAdId or job data");
+    }
+  }
 }

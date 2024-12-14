@@ -8,16 +8,22 @@ import '../reusable_widgets/file_preview.dart';
 class PreviewDoc extends StatefulWidget {
   final String url;
   final String id;
-  const PreviewDoc({required this.url,required this.id,super.key,});
+  const PreviewDoc({
+    required this.url,
+    required this.id,
+    super.key,
+  });
 
   @override
   State<PreviewDoc> createState() => _PreviewDocState();
 }
 
 class _PreviewDocState extends State<PreviewDoc> {
-
-  void updateStatus(){
-    FirebaseFirestore.instance.collection('Users').doc(widget.id).update({"isActive":true});
+  void _updateStatus() {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(widget.id)
+        .update({"isActive": true});
     Navigator.pop(context);
   }
 
@@ -35,14 +41,18 @@ class _PreviewDocState extends State<PreviewDoc> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.75,
-              child:getFilePreview(widget.url,true,null),
+              child: getFilePreview(widget.url, true, null),
             ),
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             Padding(
-              padding: const EdgeInsets.only(right: 10.0,left: 10),
+              padding: const EdgeInsets.only(right: 10.0, left: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -53,18 +63,25 @@ class _PreviewDocState extends State<PreviewDoc> {
                         style: TextStyle(
                             fontWeight: FontWeight.w900, color: Colors.white),
                       ),
-                      onPressed: () {Navigator.pop(context);}),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
                   CupertinoButton(
-                    color: const Color(0xff1C4374),
+                      color: const Color(0xff1C4374),
                       child: const Text(
                         "Validate",
                         style: TextStyle(
                             fontWeight: FontWeight.w900, color: Colors.white),
                       ),
-                      onPressed: () {updateStatus();}),
+                      onPressed: () {
+                        _updateStatus();
+                      }),
                 ],
               ),
-            ),const SizedBox(height: 10,)
+            ),
+            const SizedBox(
+              height: 10,
+            )
           ],
         ),
       ),

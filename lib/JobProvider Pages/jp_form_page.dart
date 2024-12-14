@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saat_recruitment/reusable_widgets/profile_pic.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
@@ -113,6 +112,7 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                 Padding(
                     padding: const EdgeInsets.only(top: 15),
                     child: dropDown(
+                      isEditing: false,
                       value: _selectedIndustry,
                       text: "Industry",
                       icon: Icons.category_outlined,
@@ -149,6 +149,7 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                 Padding(
                     padding: const EdgeInsets.only(top: 15),
                     child: dropDown(
+                      isEditing: false,
                       value: _selectedCompanySize,
                       text: "Company Size",
                       icon: Icons.business_sharp,

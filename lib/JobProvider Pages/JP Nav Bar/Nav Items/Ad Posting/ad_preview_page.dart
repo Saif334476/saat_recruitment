@@ -2,31 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/Services/firestore_services.dart';
+import '../../../../Models/job.dart';
 import '../../../../Models/mcq_model.dart';
 import '../../jp_nav_bar.dart';
 
 class PreviewPage extends StatefulWidget {
   final Map<String, dynamic>? jobAdData;
-  final List<MCQ> mcq;
-  final String jobTitle;
-  final String selectedCategory;
-  final String jobType;
-  final String requiredExperience;
-  final String location;
-  final String salary;
-  final String selectedOption;
+  final Job job;
   final String? jobId;
   final String? jobAdId;
   const PreviewPage(
       {super.key,
-      required this.mcq,
-      required this.jobTitle,
-      required this.selectedCategory,
-      required this.jobType,
-      required this.requiredExperience,
-      required this.location,
-      required this.salary,
-      required this.selectedOption,
+      required this.job,
       this.jobId,
       this.jobAdData,
       this.jobAdId});
@@ -39,73 +27,18 @@ class _PreviewPageState extends State<PreviewPage> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
   final dateTime = DateTime.now();
   final date = DateTime.now().millisecondsSinceEpoch.toString();
+  FirestoreService firestoreService=FirestoreService();
 
   Future<void> _saveJobAd() async {
-    final jobRef = FirebaseFirestore.instance.collection('jobs').doc();
-    try {
-      await jobRef.set({
-        'jobId': widget.jobId,
-        'jobTitle': widget.jobTitle,
-        'selectedCategory': widget.selectedCategory,
-        'jobType': widget.jobType,
-        'requiredExperience': widget.requiredExperience,
-        'location': widget.location,
-        'salary': widget.salary,
-        'selectedOption': widget.selectedOption,
-        'numberOfApplicants': 0,
-        'mcq': widget.mcq
-            .map((mcq) => {
-                  'question': mcq.question,
-                  'option1': mcq.option1,
-                  'option2': mcq.option2,
-                  'option3': mcq.option3,
-                  'option4': mcq.option4,
-                  'correctAnswer': mcq.correctAnswer,
-                })
-            .toList(),
-        'postedBy': uid,
-        'postedAt': DateTime.now(),
-      }, SetOptions(merge: true));
-    } catch (e) {
-      print('Error saving job posting: $e');
-    }
+    Map<String, dynamic> jobData = widget.job.toMap();
+    await firestoreService.saveNewJob(jobData);
 
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
   }
 
   Future<void> _updateJobAd() async {
-    final jobRef =
-        FirebaseFirestore.instance.collection('jobs').doc(widget.jobAdId);
-    try {
-      await jobRef.update({
-        'jobId': widget.jobId,
-        'jobTitle': widget.jobTitle,
-        'selectedCategory': widget.selectedCategory,
-        'jobType': widget.jobType,
-        'requiredExperience': widget.requiredExperience,
-        'location': widget.location,
-        'salary': widget.salary,
-        'selectedOption': widget.selectedOption,
-        'mcq': widget.mcq
-            .map((mcq) => {
-                  'question': mcq.question,
-                  'option1': mcq.option1,
-                  'option2': mcq.option2,
-                  'option3': mcq.option3,
-                  'option4': mcq.option4,
-                  'correctAnswer': mcq.correctAnswer,
-                })
-            .toList(),
-        'postedBy': uid,
-        'postedAt': DateTime.now(),
-      });
-    } catch (e) {
-      print('Error saving job posting: $e');
-    }
+    Map<String, dynamic> jobData = widget.job.toMap();
+    await firestoreService.saveNewJob(jobData);
 
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
   }
 
   @override
@@ -135,9 +68,12 @@ class _PreviewPageState extends State<PreviewPage> {
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      widget.jobTitle,
-                      style: const TextStyle(fontSize: 18),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.6,
+                      child: Text(
+                        widget.job.jobTitle,
+                        style: const TextStyle(fontSize: 18),overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),
@@ -149,7 +85,7 @@ class _PreviewPageState extends State<PreviewPage> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      widget.selectedCategory,
+                      widget.job.selectedCategory,
                       style: const TextStyle(fontSize: 18),
                     ),
                   ],
@@ -161,35 +97,40 @@ class _PreviewPageState extends State<PreviewPage> {
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      widget.jobType,
-                      style: const TextStyle(fontSize: 18),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.6,
+                      child: Text(
+                        widget.job.jobType,
+                        style: const TextStyle(fontSize: 18),overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),
                 Row(
                   children: [
                     const Text(
-                      'Required Experience: ',
+                      'Req. Experience: ',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      widget.requiredExperience,
-                      style: const TextStyle(fontSize: 18),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.4,
+                      child: Text(
+                        widget.job.requiredExperience,
+                        style: const TextStyle(fontSize: 18),overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),
                 Row(
                   children: [
-                    const Text(
-                      'Job Location: ',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      widget.location,
-                      style: const TextStyle(fontSize: 18),
+                  const Icon(Icons.location_on_outlined,color: Color(0xff1C4374),),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.8,
+                      child: Text(
+                        widget.job.location,
+                        style: const TextStyle(fontSize: 18),overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),
@@ -201,7 +142,7 @@ class _PreviewPageState extends State<PreviewPage> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      widget.salary,
+                      widget.job.salary,
                       style: const TextStyle(fontSize: 18),
                     ),
                   ],
@@ -209,7 +150,7 @@ class _PreviewPageState extends State<PreviewPage> {
               ]),
               const SizedBox(height: 20),
               const Divider(),
-              widget.selectedOption == 'No'
+              widget.job.selectedOption == 'No'
                   ? Container()
                   : Column(
                       children: [
@@ -224,25 +165,25 @@ class _PreviewPageState extends State<PreviewPage> {
                           child: SizedBox(
                             height: 400,
                             child: ListView.builder(
-                              itemCount: widget.mcq.length,
+                              itemCount: widget.job.mcq.length,
                               itemBuilder: (context, index) {
                                 return Column(
                                   children: [
                                     Text(
-                                      'Question ${index + 1}: ${widget.mcq[index].question}',
+                                      'Question ${index + 1}: ${widget.job.mcq[index].question}',
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                        'Option 1: ${widget.mcq[index].option1}'),
+                                        'Option 1: ${widget.job.mcq[index].option1}'),
                                     Text(
-                                        'Option 2: ${widget.mcq[index].option2}'),
+                                        'Option 2: ${widget.job.mcq[index].option2}'),
                                     Text(
-                                        'Option 3: ${widget.mcq[index].option3}'),
+                                        'Option 3: ${widget.job.mcq[index].option3}'),
                                     Text(
-                                        'Option 4: ${widget.mcq[index].option4}'),
+                                        'Option 4: ${widget.job.mcq[index].option4}'),
                                     const SizedBox(height: 15),
                                     Text(
-                                      'Correct Answer: ${widget.mcq[index].correctAnswer}',
+                                      'Correct Answer: ${widget.job.mcq[index].correctAnswer}',
                                     ),
                                     const SizedBox(height: 25),
                                     const Divider(
@@ -288,8 +229,12 @@ class _PreviewPageState extends State<PreviewPage> {
             onPressed: () async {
               if (widget.jobAdData != null) {
                 _updateJobAd();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
               } else {
                 _saveJobAd();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
               }
               // final jobService = JobService();
               // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);
