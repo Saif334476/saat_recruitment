@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:saat_recruitment/Services/cloud_storage.dart';
+import 'package:saat_recruitment/Services/firestore_services.dart';
 import 'package:saat_recruitment/login_page.dart';
 import 'package:saat_recruitment/reusable_widgets/profile_pic.dart';
 import '../../../Models/job_provider.dart';
@@ -92,7 +94,12 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> {
         FirebaseFirestore.instance.collection('Users').doc(uid).snapshots();
     return doc;
   }
-
+void _saveNewPhoto()async{
+  FirestoreService firestoreService=FirestoreService();
+  FileUploadService fileUploadService=FileUploadService();
+  final profilePicUrl=await fileUploadService.uploadProfilePic(profilePicFile!, uid!);
+  await firestoreService.uploadProfilePicUrl(uid, profilePicUrl);
+}
   @override
   void initState() {
     super.initState();
@@ -142,452 +149,186 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> {
               children: [
                 ProfilePicWidget(
                   onImagePicked: (imageUrl) {
+
                     setState(() {
                       profilePicFile = imageUrl;
                     });
+                  _saveNewPhoto();
+
                   },
                   uploadedProfileUrl: companyData['profilePicUrl'],
                 ),
 
-                buildListTile("Name: ", companyData['Name'],Icons.edit_rounded, () {
-                  final uid =
-                      FirebaseAuth.instance.currentUser?.uid;
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 50, horizontal: 20),
-                        child: Column(
-                          children: [
-                            textFormField(
-                              "Enter value to Update",
-                              Icons.edit,
-                              false,
-                              onChanged: () {},
-                              keyboard: TextInputType.text,
-                              controller: nameController,
-                              validator: (value) {
-                                if (value == null ||
-                                    value.isEmpty) {
-                                  return "Please enter text";
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            CupertinoButton(
-                              color: const Color(0xff1C4374),
-                              onPressed: () {
-                                JobProviderModel.updateJpData(
-                                  uid,
-                                  {'Name': nameController.text},
-                                );
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                "OK",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white),
+                buildListTile(
+                  context,
+                  "Name: ",
+                  companyData['Name'],
+                  Icons.edit_rounded,
+                  () {
+                    final uid = FirebaseAuth.instance.currentUser?.uid;
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 50, horizontal: 20),
+                          child: Column(
+                            children: [
+                              textFormField(
+                                "Enter value to Update",
+                                Icons.edit,
+                                false,
+                                onChanged: () {},
+                                keyboard: TextInputType.text,
+                                controller: nameController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter text";
+                                  }
+                                  return null;
+                                },
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },),
-                // Padding(
-                //   padding:
-                //       const EdgeInsets.only(top: 10, right: 20.0, left: 20),
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(5),
-                //         border: Border.all(
-                //             style: BorderStyle.solid,
-                //             color: const Color(0xff1C4374),
-                //             width: 1.5),
-                //         boxShadow: const [
-                //           BoxShadow(
-                //             blurRadius: 5,
-                //             blurStyle: BlurStyle.outer,
-                //             color: Color(0xff1C4374),
-                //           )
-                //         ]),
-                //     child: ListTile(
-                //       title: Row(
-                //         children: [
-                //           const Text(
-                //             'E-mail: ',
-                //             style: TextStyle(
-                //                 fontSize: 20,
-                //                 fontWeight: FontWeight.w700,
-                //                 color: Color(0xff1C4374)),
-                //           ),
-                //           Text(
-                //             companyData['Email'],
-                //             style: const TextStyle(
-                //                 fontWeight: FontWeight.w600,
-                //                 fontSize: 18,
-                //                 color: Color(0xff1C4374)),
-                //           )
-                //         ],
-                //       ),
-                //       onTap: () {},
-                //     ),
-                //   ),
-                // ),
+                              const SizedBox(height: 20),
+                              CupertinoButton(
+                                color: const Color(0xff1C4374),
+                                onPressed: () {
+                                  JobProviderModel.updateJpData(
+                                    uid,
+                                    {'Name': nameController.text},
+                                  );
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  "OK",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
 
-                // Padding(
-                //   padding:
-                //       const EdgeInsets.only(top: 10.0, right: 20, left: 20),
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(5),
-                //         border: Border.all(
-                //             style: BorderStyle.solid,
-                //             color: const Color(0xff1C4374),
-                //             width: 1.5),
-                //         boxShadow: const [
-                //           BoxShadow(
-                //             blurRadius: 5,
-                //             blurStyle: BlurStyle.outer,
-                //             color: Color(0xff1C4374),
-                //           )
-                //         ]),
-                //     child: ListTile(
-                //       title: Row(
-                //         children: [
-                //           const Text(
-                //             'Industry: ',
-                //             style: TextStyle(
-                //                 fontSize: 20,
-                //                 fontWeight: FontWeight.w700,
-                //                 color: Color(0xff1C4374)),
-                //           ),
-                //           Text(
-                //             companyData['Industry'],
-                //             style: const TextStyle(
-                //                 fontWeight: FontWeight.w600,
-                //                 fontSize: 18,
-                //                 color: Color(0xff1C4374)),
-                //           )
-                //         ],
-                //       ),
-                //       onTap: () {},
-                //     ),
-                //   ),
-                // ),
-                buildListTile("E-mail: ", companyData['Email'],null, () async {}),
-                buildListTile("Industry: ", companyData['Industry'],null, () async {}),
-                // Padding(
-                //   padding:
-                //       const EdgeInsets.only(top: 10.0, right: 20, left: 20),
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(5),
-                //         border: Border.all(
-                //             style: BorderStyle.solid,
-                //             color: const Color(0xff1C4374),
-                //             width: 1.5),
-                //         boxShadow: const [
-                //           BoxShadow(
-                //             blurRadius: 5,
-                //             blurStyle: BlurStyle.outer,
-                //             color: Color(0xff1C4374),
-                //           )
-                //         ]),
-                //     child: ListTile(
-                //       title: Row(
-                //         children: [
-                //           const Text(
-                //             'Location: ',
-                //             style: TextStyle(
-                //                 fontSize: 20,
-                //                 fontWeight: FontWeight.w700,
-                //                 color: Color(0xff1C4374)),
-                //           ),
-                //           SizedBox(
-                //             width: 160,
-                //             child: Text(
-                //               companyData['Location'],
-                //               style: const TextStyle(
-                //                   fontWeight: FontWeight.w600,
-                //                   fontSize: 18,
-                //                   color: Color(0xff1C4374),
-                //                   overflow: TextOverflow.ellipsis),
-                //             ),
-                //           ),
-                //           IconButton(
-                //               onPressed: () {
-                //                 final uid =
-                //                     FirebaseAuth.instance.currentUser?.uid;
-                //                 showModalBottomSheet(
-                //                   context: context,
-                //                   builder: (context) {
-                //                     return Padding(
-                //                       padding: const EdgeInsets.symmetric(
-                //                           vertical: 50, horizontal: 20),
-                //                       child: Column(
-                //                         children: [
-                //                           textFormField(
-                //                             "Enter value to Update",
-                //                             Icons.edit,
-                //                             false,
-                //                             onChanged: () {},
-                //                             keyboard: TextInputType.text,
-                //                             controller: nameController,
-                //                             validator: (value) {
-                //                               if (value == null ||
-                //                                   value.isEmpty) {
-                //                                 return "Please enter text";
-                //                               }
-                //                               return null;
-                //                             },
-                //                           ),
-                //                           const SizedBox(height: 20),
-                //                           CupertinoButton(
-                //                             color: const Color(0xff1C4374),
-                //                             onPressed: () {
-                //                               JobProviderModel.updateJpData(
-                //                                 uid,
-                //                                 {
-                //                                   'Location':
-                //                                       nameController.text
-                //                                 },
-                //                               );
-                //                               Navigator.pop(context);
-                //                             },
-                //                             child: const Text(
-                //                               "OK",
-                //                               style: TextStyle(
-                //                                   fontWeight: FontWeight.w900,
-                //                                   color: Colors.white),
-                //                             ),
-                //                           ),
-                //                         ],
-                //                       ),
-                //                     );
-                //                   },
-                //                 );
-                //               },
-                //               icon: const Icon(Icons.edit_location,
-                //                   color: Colors.black))
-                //         ],
-                //       ),
-                //       onTap: () {},
-                //     ),
-                //   ),
-                // ),
-                buildListTile("Location: ",  companyData['Location'],Icons.edit_rounded,() {
-                  final uid =
-                      FirebaseAuth.instance.currentUser?.uid;
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 50, horizontal: 20),
-                        child: Column(
-                          children: [
-                            textFormField(
-                              "Enter value to Update",
-                              Icons.edit,
-                              false,
-                              onChanged: () {},
-                              keyboard: TextInputType.text,
-                              controller: nameController,
-                              validator: (value) {
-                                if (value == null ||
-                                    value.isEmpty) {
-                                  return "Please enter text";
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            CupertinoButton(
-                              color: const Color(0xff1C4374),
-                              onPressed: () {
-                                JobProviderModel.updateJpData(
-                                  uid,
-                                  {
-                                    'Location':
-                                    nameController.text
-                                  },
-                                );
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                "OK",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white),
+                buildListTile(context, "E-mail: ", companyData['Email'], null,
+                    () async {}),
+                buildListTile(context, "Industry: ", companyData['Industry'],
+                    null, () async {}),
+
+                buildListTile(
+                  context,
+                  "Location: ",
+                  companyData['Location'],
+                  Icons.edit_rounded,
+                  () {
+                    final uid = FirebaseAuth.instance.currentUser?.uid;
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 50, horizontal: 20),
+                          child: Column(
+                            children: [
+                              textFormField(
+                                "Enter value to Update",
+                                Icons.edit,
+                                false,
+                                onChanged: () {},
+                                keyboard: TextInputType.text,
+                                controller: nameController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter text";
+                                  }
+                                  return null;
+                                },
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },),
-                //
-                // Padding(
-                //   padding:
-                //       const EdgeInsets.only(top: 10.0, right: 20, left: 20),
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(5),
-                //         border: Border.all(
-                //             style: BorderStyle.solid,
-                //             color: const Color(0xff1C4374),
-                //             width: 1.5),
-                //         boxShadow: const [
-                //           BoxShadow(
-                //             blurRadius: 5,
-                //             blurStyle: BlurStyle.outer,
-                //             color: Color(0xff1C4374),
-                //           )
-                //         ]),
-                //     child: ListTile(
-                //       title: Row(
-                //         children: [
-                //           const Text(
-                //             'Company Size: ',
-                //             style: TextStyle(
-                //                 fontSize: 20,
-                //                 fontWeight: FontWeight.w700,
-                //                 color: Color(0xff1C4374)),
-                //           ),
-                //           SizedBox(
-                //             width: 110,
-                //             child: Text(
-                //               companyData['companySize'],
-                //               style: const TextStyle(
-                //                   fontWeight: FontWeight.w600,
-                //                   fontSize: 18,
-                //                   color: Color(0xff1C4374),
-                //                   overflow: TextOverflow.ellipsis),
-                //             ),
-                //           ),
-                //           IconButton(
-                //               onPressed: () {
-                //                 final uid =
-                //                     FirebaseAuth.instance.currentUser?.uid;
-                //                 showModalBottomSheet(
-                //                   context: context,
-                //                   builder: (context) {
-                //                     return Padding(
-                //                       padding: const EdgeInsets.symmetric(
-                //                           vertical: 50, horizontal: 20),
-                //                       child: Column(
-                //                         children: [
-                //                           textFormField(
-                //                             "Enter value to Update",
-                //                             Icons.edit,
-                //                             false,
-                //                             onChanged: () {},
-                //                             keyboard: TextInputType.text,
-                //                             controller: nameController,
-                //                             validator: (value) {
-                //                               if (value == null ||
-                //                                   value.isEmpty) {
-                //                                 return "Please enter text";
-                //                               }
-                //                               return null;
-                //                             },
-                //                           ),
-                //                           const SizedBox(height: 20),
-                //                           CupertinoButton(
-                //                             color: const Color(0xff1C4374),
-                //                             onPressed: () {
-                //                               JobProviderModel.updateJpData(
-                //                                 uid,
-                //                                 {
-                //                                   'CompanySize':
-                //                                       nameController.text
-                //                                 },
-                //                               );
-                //                               Navigator.pop(context);
-                //                             },
-                //                             child: const Text(
-                //                               "OK",
-                //                               style: TextStyle(
-                //                                   fontWeight: FontWeight.w900,
-                //                                   color: Colors.white),
-                //                             ),
-                //                           ),
-                //                         ],
-                //                       ),
-                //                     );
-                //                   },
-                //                 );
-                //               },
-                //               icon: const Icon(
-                //                 Icons.edit,
-                //                 color: Colors.black,
-                //               ))
-                //         ],
-                //       ),
-                //       onTap: () {},
-                //     ),
-                //   ),
-                // ),
-                buildListTile("Company Size: ", companyData['companySize'],Icons.edit, () {
-                  final uid =
-                      FirebaseAuth.instance.currentUser?.uid;
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 50, horizontal: 20),
-                        child: Column(
-                          children: [
-                            textFormField(
-                              "Enter value to Update",
-                              Icons.edit,
-                              false,
-                              onChanged: () {},
-                              keyboard: TextInputType.text,
-                              controller: nameController,
-                              validator: (value) {
-                                if (value == null ||
-                                    value.isEmpty) {
-                                  return "Please enter text";
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            CupertinoButton(
-                              color: const Color(0xff1C4374),
-                              onPressed: () {
-                                JobProviderModel.updateJpData(
-                                  uid,
-                                  {
-                                    'CompanySize':
-                                    nameController.text
-                                  },
-                                );
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                "OK",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white),
+                              const SizedBox(height: 20),
+                              CupertinoButton(
+                                color: const Color(0xff1C4374),
+                                onPressed: () {
+                                  JobProviderModel.updateJpData(
+                                    uid,
+                                    {'Location': nameController.text},
+                                  );
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  "OK",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },),
-                buildListTile("Privacy & Security", "",null, () async {}),
-                buildListTile("Logout", "", Icons.logout_outlined, () async {
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+
+                buildListTile(
+                  context,
+                  "Company Size: ",
+                  companyData['companySize'],
+                  Icons.edit,
+                  () {
+                    final uid = FirebaseAuth.instance.currentUser?.uid;
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 50, horizontal: 20),
+                          child: Column(
+                            children: [
+                              textFormField(
+                                "Enter value to Update",
+                                Icons.edit,
+                                false,
+                                onChanged: () {},
+                                keyboard: TextInputType.text,
+                                controller: nameController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter text";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+                              CupertinoButton(
+                                color: const Color(0xff1C4374),
+                                onPressed: () {
+                                  JobProviderModel.updateJpData(
+                                    uid,
+                                    {'CompanySize': nameController.text},
+                                  );
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  "OK",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                buildListTile(
+                    context, "Privacy & Security", "", null, () async {}),
+                buildListTile(context, "Logout", "", Icons.logout_outlined,
+                    () async {
                   await FirebaseAuth.instance.signOut();
                   Navigator.pushReplacement(
                       context,
