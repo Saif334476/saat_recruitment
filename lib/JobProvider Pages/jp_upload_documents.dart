@@ -6,17 +6,16 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'jp_doc_review_submission.dart';
 
-import 'jp_verification_page.dart';
-
-class CompanyVerificationPage extends StatefulWidget {
+class JpUploadDocument extends StatefulWidget {
   final String name;
   final String location;
   final String? industry;
   final String email;
   final String? companySize;
 
-  const CompanyVerificationPage(
+  const JpUploadDocument(
       {super.key,
       required this.name,
       required this.location,
@@ -25,10 +24,10 @@ class CompanyVerificationPage extends StatefulWidget {
       required this.companySize});
 
   @override
-  CompanyVerificationPageState createState() => CompanyVerificationPageState();
+  JpUploadDocumentState createState() => JpUploadDocumentState();
 }
 
-class CompanyVerificationPageState extends State<CompanyVerificationPage> {
+class JpUploadDocumentState extends State<JpUploadDocument> {
   final _formKey = GlobalKey<FormState>();
   String? _selectedDocumentType;
   late File _uploadedDocument;
@@ -36,19 +35,22 @@ class CompanyVerificationPageState extends State<CompanyVerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text(
-          'Company Verification',
-          style: TextStyle(fontWeight: FontWeight.w900),
-        ),
-        backgroundColor: const Color(0xff1C4374),
-      ),
+      // appBar: AppBar(
+      //   automaticallyImplyLeading: false,
+      //   title: const Text(
+      //     'Company Verification',
+      //     style: TextStyle(fontWeight: FontWeight.w900),
+      //   ),
+      //   backgroundColor: const Color(0xff1C4374),
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
+              const SizedBox(
+                height: 50,
+              ),
               SizedBox(
                   height: 130, child: Image.asset("assets/uploadfile.webp")),
               Form(
@@ -108,7 +110,8 @@ class CompanyVerificationPageState extends State<CompanyVerificationPage> {
                       value: _selectedDocumentType,
                     ),
                     const SizedBox(height: 30),
-                    FileUploadButton(onFileSelected: (file) {
+                    FileUploadButton(
+                      onFileSelected: (file) {
                         setState(() {
                           _uploadedDocument = file;
                         });

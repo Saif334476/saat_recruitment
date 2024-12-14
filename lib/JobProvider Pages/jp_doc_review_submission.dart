@@ -4,7 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:saat_recruitment/Services/cloud_storage.dart';
+import 'package:saat_recruitment/Services/firestore_services.dart';
+import '../Models/job_provider.dart';
+import '../reusable_widgets/file_preview.dart';
 import 'JP Nav Bar/jp_nav_bar.dart';
 
 class ReviewAndSubmitPage extends StatefulWidget {
@@ -19,19 +22,28 @@ class ReviewAndSubmitPage extends StatefulWidget {
       required this.uploadedDocument,
       required this.name,
       required this.location,
-      this.industry,
+      required this.industry,
       required this.email,
-      this.companySize});
+      required this.companySize,});
 
   @override
   State<ReviewAndSubmitPage> createState() => _ReviewAndSubmitPageState();
 }
 
 class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
+  final uid = FirebaseAuth.instance.currentUser?.uid;
+  double uploadProgress = 0;
+  late String companyIndustry;
+  late String size;
+  @override
+  void initState() {
+    super.initState();
+    companyIndustry = widget.industry!;
+    size = widget.companySize!;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    double uploadProgress = 0;
     void showUploadDialog() {
       showDialog(
         context: context,
@@ -59,7 +71,8 @@ class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
         automaticallyImplyLeading: false,
         title: const Text(
           'Review and Submit',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+          style: TextStyle(
+              fontSize: 24, fontWeight: FontWeight.w900, color: Colors.white),
         ),
         backgroundColor: const Color(0xff1C4374),
       ),
@@ -75,7 +88,11 @@ class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 20),
-                  Image.file(widget.uploadedDocument),
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child:
+                          getFilePreview(null, false, widget.uploadedDocument)),
+                  // Image.file(widget.uploadedDocument),
                   const SizedBox(height: 20),
                   const Text(
                     'By submitting, you agree to our Terms and Conditions.',
@@ -87,6 +104,19 @@ class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
                     color: const Color(0xff1C4374),
                     onPressed: () async {
                       try {
+                        FirestoreService firestoreServices = FirestoreService();
+                        FileUploadService fileUploadService=FileUploadService();
+                        final docUrl=fileUploadService.uploadDocument(widget.uploadedDocument, uid!);
+                        JobProviderModel jobProvider = JobProviderModel(
+                            name: widget.name,
+                            industry: companyIndustry,
+                            location: widget.location,
+                            email: widget.email,
+                            companySize: size,
+                            );
+
+                        firestoreServices.saveJobProviderData(uid!, jobProvider as Map<String, dynamic>);
+
                         await FirebaseFirestore.instance
                             .collection('Users')
                             .doc(uid)
@@ -114,25 +144,26 @@ class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
                         );
                         uploadTask.snapshotEvents.listen((event) {
                           setState(() {
-                            uploadProgress = event.bytesTransferred / event.totalBytes;
+                            uploadProgress =
+                                event.bytesTransferred / event.totalBytes;
                           });
                         });
                         final downloadUrl =
-                        await (await uploadTask).ref.getDownloadURL();
+                            await (await uploadTask).ref.getDownloadURL();
                         await FirebaseFirestore.instance
                             .collection('Users')
                             .doc(FirebaseAuth.instance.currentUser?.uid)
                             .update({
                           'legalDocs': downloadUrl,
                           'legalDocsFileName':
-                          widget.uploadedDocument.path.split('/').last,
+                              widget.uploadedDocument.path.split('/').last,
                         });
 
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                const CompanyDashBoard()));
+                                    const CompanyDashBoard()));
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

@@ -27,6 +27,18 @@ class FileUploadService {
     }
   }
 
+  Future<String> uploadDocument(File file, String uid) async {
+    try {
+      final storageRef = _storage.ref().child('SAAT/Legal Docs/$uid.pdf');
+      UploadTask uploadTask = storageRef.putFile(file);
+      TaskSnapshot snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      throw Exception("Failed to upload resume: $e");
+    }
+  }
+
+
 }
 
 

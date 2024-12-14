@@ -36,14 +36,14 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xff1C4374),
-          automaticallyImplyLeading: false,
-          title: const Text(
-            "Password Creation",
-            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
-          ),
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: const Color(0xff1C4374),
+        //   automaticallyImplyLeading: false,
+        //   title: const Text(
+        //     "Password Creation",
+        //     style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+        //   ),
+        // ),
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(

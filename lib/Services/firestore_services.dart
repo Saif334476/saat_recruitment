@@ -72,4 +72,17 @@ class FirestoreService {
       throw Exception("Failed to upload application: $e");
     }
   }
+
+  Future<void> saveJobProviderData(
+      String uid, Map<String, dynamic> jobProviderData) async {
+    try {
+      await _db
+          .collection('Users')
+          .doc(uid)
+          .set(jobProviderData, SetOptions(merge: true));
+    } catch (e) {
+      throw Exception("Failed to save job seeker data: $e");
+    }
+  }
+
 }

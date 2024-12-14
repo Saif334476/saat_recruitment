@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:saat_recruitment/reusable_widgets/profile_pic.dart';
 import 'package:saat_recruitment/reusable_widgets/reusable_widget.dart';
 import 'package:flutter/material.dart';
 import 'jp_upload_documents.dart';
@@ -24,31 +27,32 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
   final _formKey = GlobalKey<FormState>();
   String? _selectedCompanySize;
   final credential = FirebaseAuth.instance;
+  File? profilePicFile;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text(
-            "Job Provider Account Creation",
-            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
-          ),
-          backgroundColor: const Color(0xff1C4374),
-        ),
+        // appBar: AppBar(
+        //   automaticallyImplyLeading: false,
+        //   title: const Text(
+        //     "Job Provider Account Creation",
+        //     style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+        //   ),
+        //   backgroundColor: const Color(0xff1C4374),
+        // ),
         body: Form(
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.only(left: 25.0, right: 25),
             child: SingleChildScrollView(
               child: Column(children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 90.0),
-                  child: SizedBox(
-                    height: 150,
-                    width: 150,
-                    child: Image.asset("assets/office1.webp"),
-                  ),
+                const SizedBox(height: 50,),
+                ProfilePicWidget(
+                  onImagePicked: (imageUrl) {
+                    setState(() {
+                      profilePicFile=imageUrl;
+                    });
+                  },uploadedProfileUrl: "",
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
@@ -56,7 +60,7 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                       onChanged: () {
                         setState(() {});
                       },
-                      "Company Name",
+                      "Enter organization name",
                       Icons.business_sharp,
                       false,
                       validator: (value) {
@@ -197,7 +201,7 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CompanyVerificationPage(
+                          builder: (context) => JpUploadDocument(
                               name: _companyName.text,
                               location: _location.text,
                               industry: _selectedIndustry,

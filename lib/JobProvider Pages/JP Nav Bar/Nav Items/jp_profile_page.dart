@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saat_recruitment/login_page.dart';
+import 'package:saat_recruitment/reusable_widgets/profile_pic.dart';
 import '../../../Models/job_provider.dart';
 import '../../../reusable_widgets/reusable_widget.dart';
 
@@ -29,7 +30,7 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> {
   File? _profileImage;
   String? _photoUrl;
   bool isLoading = false;
-
+  File? profilePicFile;
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
@@ -143,78 +144,14 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: const Color(0xff1C4374), width: 1.5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xff1C4374).withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 2,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: ClipOval(
-                        child: _profileImage != null
-                            ? Image.file(
-                                _profileImage!,
-                                height: 120,
-                                width: 120,
-                                fit: BoxFit.cover,
-                              )
-                            : _photoUrl != null
-                                ? Image.network(
-                                    _photoUrl!,
-                                    height: 120,
-                                    width: 120,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.asset(
-                                    'assets/buss1.webp',
-                                    height: 120,
-                                    width: 120,
-                                    fit: BoxFit.cover,
-                                  ),
-                      ),
-                    ),
-                    // Edit button
-                    Positioned(
-                      top: 0,
-                      bottom: 85,
-                      right: 0,
-                      left: 85,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle, color: Color(0xff1C4374)),
-                        child: IconButton(
-                          onPressed: _pickImage,
-                          icon: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Loading indicator
-                    if (isLoading)
-                      const Positioned(
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0xff1C4374), // Change color if needed
-                          ),
-                        ),
-                      ),
-                  ],
+                ProfilePicWidget(
+                  onImagePicked: (imageUrl) {
+                    setState(() {
+                      profilePicFile=imageUrl;
+                    });
+                  },uploadedProfileUrl: "",
                 ),
+
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 50.0, right: 20, left: 20),

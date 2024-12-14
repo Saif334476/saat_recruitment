@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -23,7 +22,7 @@ Widget getFilePreview(String? fileUrl, isUrl, File? file) {
   } else if (fileExtension == 'pdf') {
     return SfPdfViewer.file(file!);
   } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
-    return const Text("Image not Supported");
+     return Image.file(file!);
   } else if (['doc', 'docx'].contains(fileExtension)) {
     return const Text(
       'Microsoft Word Document',
