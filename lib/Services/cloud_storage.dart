@@ -1,10 +1,8 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FileUploadService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
-
   Future<String> uploadProfilePic(File file, String uid) async {
     try {
       final storageRef = _storage.ref().child('SAAT/profile_pics/$uid.jpg');
@@ -15,7 +13,6 @@ class FileUploadService {
       throw Exception("Failed to upload profile picture: $e");
     }
   }
-
   Future<String> uploadResume(File file, String uid) async {
     try {
       final storageRef = _storage.ref().child('SAAT/resumes/$uid.pdf');
@@ -26,7 +23,6 @@ class FileUploadService {
       throw Exception("Failed to upload resume: $e");
     }
   }
-
   Future<String> uploadDocument(File file, String uid) async {
     try {
       final storageRef = _storage.ref().child('SAAT/Legal Docs/$uid.pdf');

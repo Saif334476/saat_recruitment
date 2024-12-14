@@ -121,63 +121,50 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: const Color(0xff1C4374),
-        //   automaticallyImplyLeading: false,
-        //   title: const Text(
-        //     "Home",
-        //     style: TextStyle(
-        //       fontSize: 25,
-        //       fontWeight: FontWeight.w900,
-        //       color: Colors.white,
-        //     ),
-        //   ),
-        // ),
-        body: ListView(children: [
-      Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Column(children: [
-            Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 5),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: const Color(0xff1C4374), width: 2)),
-                      child: const Padding(
-                        padding: EdgeInsets.only(
-                            top: 5.0, bottom: 5, right: 10, left: 10),
-                        child: Text(
-                          'Posted Jobs',
-                          style: TextStyle(
-                            shadows: [
-                              Shadow(
-                                offset: Offset(1.0, 1.0),
-                                color: Colors.black54,
-                                blurRadius: 2.0,
-                              ),
-                            ],
-                            fontWeight: FontWeight.w900,
-                            fontSize: 30,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
+        body: SafeArea(
+      child: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              height: 80,
+              width: 80,
+              child: Image.asset("assets/sirf_logo.png",),
+            ),
+            const Text(
+              'SAAT',
+              style: TextStyle(
+                shadows: [
+                  Shadow(
+                    offset: Offset(1.0, 1.0),
+                    color: Colors.black54,
+                    blurRadius: 2.0,
                   ),
-                  JobAdsListView()
-                ])
-          ]))
-    ]));
+                ],
+                fontWeight: FontWeight.w700,
+                fontSize: 30,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.info_outline,
+                  size: 40,
+                ))
+          ],
+        ),
+        const Divider(
+          color: Colors.grey,
+        ),
+        const JobAdsListView()
+      ]),
+    ));
   }
 }

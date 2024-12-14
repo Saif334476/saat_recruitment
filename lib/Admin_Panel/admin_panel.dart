@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/Admin_Panel/preview_doc.dart';
+import 'package:saat_recruitment/Models/job_provider.dart';
+import 'package:saat_recruitment/Services/firestore_services.dart';
 import '../login_page.dart';
 
 class AdminPanel extends StatefulWidget {
@@ -12,38 +13,20 @@ class AdminPanel extends StatefulWidget {
 }
 
 class AdminPanelState extends State<AdminPanel> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  List<JobProvider> _jobProviders = [];
+  List<JobProviderModel> _jobProviders = [];
+  Future<void> _fetchJobProviders() async {
+    FirestoreService firestoreService = FirestoreService();
+    List<JobProviderModel> jobProviders =
+        await firestoreService.getJobProvidersAwaitingVerification();
+    setState(() {
+      _jobProviders = jobProviders;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _fetchJobProviders();
-  }
-
-  _fetchJobProviders() async {
-    try {
-      final querySnapshot = await _firestore
-          .collection('Users')
-          .where('role', isEqualTo: 'JobProvider')
-          .where('isActive', isEqualTo: false)
-          .where('isComplete', isEqualTo: true)
-          .get();
-
-      setState(() {
-        _jobProviders = querySnapshot.docs.map((doc) {
-          return JobProvider(
-              id: doc.id,
-              name: doc.get('Name'),
-              industry: doc.get('Industry'),
-              location: doc.get('Location'),
-              docs: doc.get('legalDocs'),
-              email: doc.get('Email'));
-        }).toList();
-      });
-    } catch (e) {
-      print('Error: $e');
-    }
   }
 
   @override
@@ -104,97 +87,119 @@ class AdminPanelState extends State<AdminPanel> {
           Expanded(
             child: _jobProviders.isEmpty
                 ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemCount: _jobProviders.length,
-                    itemBuilder: (context, index) {
-                      final jobProvider = _jobProviders[index];
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PreviewDoc(url: jobProvider.docs,id: jobProvider.id,)));
-                        },
-                        child: Card(
-                          color: Colors.white12,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Text(
-                                          'Name: ',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w700),
+                : RefreshIndicator(
+                    onRefresh: _fetchJobProviders,
+                    child: ListView.builder(
+                      itemCount: _jobProviders.length,
+                      itemBuilder: (context, index) {
+                        final jobProvider = _jobProviders[index];
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PreviewDoc(
+                                          url: jobProvider.docUrl,
+                                          id: jobProvider.id,
+                                        )));
+                          },
+                          child: Card(
+                            color: const Color(0xff1C4374),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.person_outline_sharp,
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.35,
+                                            child: Text(
+                                              " ${jobProvider.name.toUpperCase()}",
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            "Industry: ",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.white),
+                                          ),
+                                          Text(
+                                            jobProvider.industry.toUpperCase(),
+                                            style: const TextStyle(
+                                                color: Colors.white),overflow: TextOverflow.ellipsis,
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.email_outlined,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
+                                        child: Text(
+                                          " ${jobProvider.email}",overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              color: Colors.white),
                                         ),
-                                        Text(jobProvider.name.toUpperCase())
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        const Text(
-                                          "Location: ",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w700),
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on_outlined,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
+                                        child: Text(
+                                          jobProvider.location.toUpperCase(),
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
                                         ),
-                                        Text(jobProvider.location.toUpperCase())
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Text(
-                                      'Email: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    Text(jobProvider.email)
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Text(
-                                      "Industry: ",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    Text(jobProvider.industry.toUpperCase())
-                                  ],
-                                )
-                              ],
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
           ),
         ],
       ),
     );
   }
-}
-
-class JobProvider {
-  String id;
-  String name;
-  String industry;
-  String location;
-  String docs;
-  String email;
-
-  JobProvider(
-      {required this.id,
-      required this.name,
-      required this.industry,
-      required this.docs,
-      required this.location,
-      required this.email});
 }

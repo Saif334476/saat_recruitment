@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../reusable_widgets/file_preview.dart';
+
 class PreviewDoc extends StatefulWidget {
   final String url;
   final String id;
@@ -19,31 +21,6 @@ class _PreviewDocState extends State<PreviewDoc> {
     Navigator.pop(context);
   }
 
-  Widget _getFilePreview(String fileUrl) {
-    Uri parsedUrl = Uri.parse(fileUrl);
-    String fileExtension = parsedUrl.path.split('.').last.toLowerCase();
-
-    if (fileExtension == 'pdf') {
-      return const Text('PDF Preview not supported');
-    } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(fileExtension)) {
-      return Image.network(fileUrl);
-    } else if (['doc', 'docx'].contains(fileExtension)) {
-      return const Text(
-        'Microsoft Word Document',
-        style: TextStyle(fontSize: 18),
-      );
-    } else if (['xls', 'xlsx'].contains(fileExtension)) {
-      return const Text(
-        'Microsoft Excel Spreadsheet',
-        style: TextStyle(fontSize: 18),
-      );
-    } else {
-      return const Text(
-        'Unsupported file type',
-        style: TextStyle(fontSize: 18),
-      );
-    }
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +38,7 @@ class _PreviewDocState extends State<PreviewDoc> {
             const SizedBox(height: 10,),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.75,
-              child:_getFilePreview(widget.url),
+              child:getFilePreview(widget.url,true,null),
             ),
             const SizedBox(height: 10,),
             Padding(

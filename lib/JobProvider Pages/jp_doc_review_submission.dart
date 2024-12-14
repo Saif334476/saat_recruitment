@@ -47,18 +47,19 @@ class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
     try {
       FirestoreService firestoreServices = FirestoreService();
       FileUploadService fileUploadService = FileUploadService();
+
       final docUrl = await fileUploadService.uploadDocument(widget.uploadedDocument, uid!);
+      await FirebaseFirestore.instance.collection("Users").doc(uid).set(
+          {"isComplete": true, 'isActive': false, 'docUrl': docUrl,'profilePicUrl':profilePicUrl},
+          SetOptions(merge: true));
       JobProviderModel jobProvider = JobProviderModel(
         name: widget.name,
         industry: companyIndustry,
         location: widget.location,
         email: widget.email,
-        companySize: size,
+        companySize: size, docUrl:docUrl, id: uid!,
       );
       await firestoreServices.saveJobProviderData(uid!, jobProvider.toMap()) ;
-      await FirebaseFirestore.instance.collection("Users").doc(uid).set(
-          {"isComplete": true, 'isActive': false, 'docUrl': docUrl,'profilePicUrl':profilePicUrl},
-          SetOptions(merge: true));
     } catch (e) {
       print('Error uploading data: $e');
     }
