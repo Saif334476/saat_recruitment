@@ -30,7 +30,7 @@ class JpUploadDocument extends StatefulWidget {
 class JpUploadDocumentState extends State<JpUploadDocument> {
   final _formKey = GlobalKey<FormState>();
   String? _selectedDocumentType;
-  late File _uploadedDocument;
+ late File _uploadedDocument;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +122,7 @@ class JpUploadDocumentState extends State<JpUploadDocument> {
                       color: const Color(0xff1C4374),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          if (_uploadedDocument.path.isEmpty) {
+                          if (_uploadedDocument!.path.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Please upload a file'),
@@ -178,7 +178,7 @@ class FileUploadButton extends StatefulWidget {
 
 class _FileUploadButtonState extends State<FileUploadButton> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
-  File? _uploadedDocument;
+  late File _uploadedDocument;
   bool _isFileSelected = false;
   String? _selectedFileName;
 
@@ -189,41 +189,31 @@ class _FileUploadButtonState extends State<FileUploadButton> {
         CupertinoButton(
           color: Colors.transparent,
           onPressed: () async {
-            final FilePickerResult? result =
-                await FilePicker.platform.pickFiles(
+            final FilePickerResult? result = await FilePicker.platform.pickFiles(
               type: FileType.custom,
               allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg'],
             );
             if (result != null && result.files.isNotEmpty) {
               final PlatformFile file = result.files.first;
               await Future.delayed(const Duration(seconds: 0));
-              if (file.size > 1024 * 1024 * 5) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('File size exceeds 5MB limit'),
-                  ),
-                );
-                return;
-              }
               final File convertedFile = File(file.path!);
               setState(() {
                 _uploadedDocument = convertedFile;
                 _selectedFileName = file.name;
                 _isFileSelected = true;
               });
-              widget.onFileSelected(convertedFile);
-
-              final storageRef = FirebaseStorage.instance.ref(
-                  'LegalDocs/${DateTime.now().millisecondsSinceEpoch}.jpeg');
-              final uploadTask = storageRef.putFile(_uploadedDocument!);
-              final downloadUrl = await (await uploadTask).ref.getDownloadURL();
-              await FirebaseFirestore.instance
-                  .collection('JobProviders')
-                  .doc(FirebaseAuth.instance.currentUser?.uid)
-                  .set({
-                'documents': downloadUrl,
-                'documentFileName': file.name,
-              });
+             widget.onFileSelected(convertedFile);
+              // final storageRef = FirebaseStorage.instance.ref(
+              //     'LegalDocs/${DateTime.now().millisecondsSinceEpoch}.jpeg');
+              // final uploadTask = storageRef.putFile(_uploadedDocument!);
+              // final downloadUrl = await (await uploadTask).ref.getDownloadURL();
+              // await FirebaseFirestore.instance
+              //     .collection('JobProviders')
+              //     .doc(FirebaseAuth.instance.currentUser?.uid)
+              //     .set({
+              //   'documents': downloadUrl,
+              //   'documentFileName': file.name,
+              // });
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -248,7 +238,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.file_present),
+              const Icon(Icons.file_present,color: Colors.lightBlue,),
               const SizedBox(width: 8),
               SizedBox(
                 width: MediaQuery.of(context).size.width / 2,
@@ -260,7 +250,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Colors.lightBlue,
                     ),
                     textAlign: TextAlign.center,
                   ),

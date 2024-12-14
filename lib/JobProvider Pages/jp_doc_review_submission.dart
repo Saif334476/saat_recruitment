@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/Services/cloud_storage.dart';
@@ -17,14 +16,15 @@ class ReviewAndSubmitPage extends StatefulWidget {
   final String? industry;
   final String email;
   final String? companySize;
-  const ReviewAndSubmitPage(
-      {super.key,
-      required this.uploadedDocument,
-      required this.name,
-      required this.location,
-      required this.industry,
-      required this.email,
-      required this.companySize,});
+  const ReviewAndSubmitPage({
+    super.key,
+    required this.uploadedDocument,
+    required this.name,
+    required this.location,
+    required this.industry,
+    required this.email,
+    required this.companySize,
+  });
 
   @override
   State<ReviewAndSubmitPage> createState() => _ReviewAndSubmitPageState();
@@ -35,11 +35,33 @@ class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
   double uploadProgress = 0;
   late String companyIndustry;
   late String size;
+  String profilePicUrl="";
   @override
   void initState() {
     super.initState();
     companyIndustry = widget.industry!;
     size = widget.companySize!;
+  }
+
+  Future<void> _uploadJobProviderData() async {
+    try {
+      FirestoreService firestoreServices = FirestoreService();
+      FileUploadService fileUploadService = FileUploadService();
+      final docUrl = await fileUploadService.uploadDocument(widget.uploadedDocument, uid!);
+      JobProviderModel jobProvider = JobProviderModel(
+        name: widget.name,
+        industry: companyIndustry,
+        location: widget.location,
+        email: widget.email,
+        companySize: size,
+      );
+      await firestoreServices.saveJobProviderData(uid!, jobProvider.toMap()) ;
+      await FirebaseFirestore.instance.collection("Users").doc(uid).set(
+          {"isComplete": true, 'isActive': false, 'docUrl': docUrl,'profilePicUrl':profilePicUrl},
+          SetOptions(merge: true));
+    } catch (e) {
+      print('Error uploading data: $e');
+    }
   }
 
   @override
@@ -84,7 +106,7 @@ class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
               child: Column(
                 children: [
                   const Text(
-                    'Please review the uploaded document',
+                    'Please review the selected document',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 20),
@@ -103,74 +125,11 @@ class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
                   CupertinoButton(
                     color: const Color(0xff1C4374),
                     onPressed: () async {
-                      try {
-                        FirestoreService firestoreServices = FirestoreService();
-                        FileUploadService fileUploadService=FileUploadService();
-                        final docUrl=fileUploadService.uploadDocument(widget.uploadedDocument, uid!);
-                        JobProviderModel jobProvider = JobProviderModel(
-                            name: widget.name,
-                            industry: companyIndustry,
-                            location: widget.location,
-                            email: widget.email,
-                            companySize: size,
-                            );
-
-                        firestoreServices.saveJobProviderData(uid!, jobProvider as Map<String, dynamic>);
-
-                        await FirebaseFirestore.instance
-                            .collection('Users')
-                            .doc(uid)
-                            .update({
-                          'Name': widget.name,
-                          'Location': widget.location,
-                          'CompanySize': widget.companySize,
-                          'Industry': widget.industry,
-                          'Email': widget.email,
-                          'isComplete': true,
-                          'isActive': false
-                        });
-                      } catch (e) {
-                        print('Error setting document: $e');
-                      }
-                      try {
-                        final storageRef = FirebaseStorage.instance.ref(
-                            'LegalDocs/${DateTime.now().millisecondsSinceEpoch}.jpeg');
-                        showUploadDialog();
-                        final uploadTask = storageRef.putFile(
-                          widget.uploadedDocument,
-                          SettableMetadata(
-                            contentType: 'image/jpeg',
-                          ),
-                        );
-                        uploadTask.snapshotEvents.listen((event) {
-                          setState(() {
-                            uploadProgress =
-                                event.bytesTransferred / event.totalBytes;
-                          });
-                        });
-                        final downloadUrl =
-                            await (await uploadTask).ref.getDownloadURL();
-                        await FirebaseFirestore.instance
-                            .collection('Users')
-                            .doc(FirebaseAuth.instance.currentUser?.uid)
-                            .update({
-                          'legalDocs': downloadUrl,
-                          'legalDocsFileName':
-                              widget.uploadedDocument.path.split('/').last,
-                        });
-
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const CompanyDashBoard()));
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Failed to submit document'),
-                          ),
-                        );
-                      }
+                      _uploadJobProviderData();
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CompanyDashBoard()));
                     },
                     child: const Text(
                       'Submit',
