@@ -9,7 +9,7 @@ import 'ad_preview_page.dart';
 
 class CompanyNewAdPosting extends StatefulWidget {
   final String? jobAdId;
-  final Map<String, dynamic>? jobAdData;
+  final Job? jobAdData;
   const CompanyNewAdPosting({super.key, this.jobAdData, required this.jobAdId});
 
   @override
@@ -26,12 +26,12 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   String _jobType = '';
   String _requiredExperience = '';
   final TextEditingController _salary = TextEditingController();
-  late TextEditingController _location = TextEditingController();
+  late final TextEditingController _location = TextEditingController();
   final TextEditingController _description = TextEditingController();
   List<MCQ> mcqList = [];
   final _formKey = GlobalKey<FormState>();
   bool? isActive;
-  String jobAdId = "";
+  String _jobAdId = "";
 
   @override
   void dispose() {
@@ -42,16 +42,16 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
   void initState() {
     super.initState();
     if (widget.jobAdData != null) {
-      _selectedOption = widget.jobAdData!['selectedOption'];
-      _jobTitle.text = widget.jobAdData!['jobTitle'];
-      _selectedCategory = widget.jobAdData!['selectedCategory'];
-      _location.text = widget.jobAdData!['location'];
-      _jobType = widget.jobAdData!['jobType'];
-      _selectedOption = widget.jobAdData!['selectedOption'];
-      _requiredExperience = widget.jobAdData!['requiredExperience'];
-      _salary.text = widget.jobAdData!['salary'];
-      _description.text=widget.jobAdData!['description'];
-      mcqList=widget.jobAdData!['mcq'];
+      _selectedOption = widget.jobAdData!.selectedOption;
+      _jobTitle.text = widget.jobAdData!.jobTitle;
+      _selectedCategory = widget.jobAdData!.selectedCategory;
+      _location.text = widget.jobAdData!.location;
+      _jobType = widget.jobAdData!.jobType;
+      _selectedOption = widget.jobAdData!.selectedOption;
+      _requiredExperience = widget.jobAdData!.requiredExperience;
+      _salary.text = widget.jobAdData!.salary;
+      _description.text = widget.jobAdData!.description;
+      mcqList = widget.jobAdData!.mcq;
     } else {
       _selectedOption = '';
       _selectedCategory = '';
@@ -62,7 +62,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
       _salary.clear();
     }
     if (widget.jobAdId != null) {
-      jobAdId = widget.jobAdId!;
+      _jobAdId = widget.jobAdId!;
     }
   }
 
@@ -252,15 +252,18 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                             TextField(
                               controller: _description,
                               decoration: InputDecoration(
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15)),
                                 labelText: 'Description',
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 20.0, horizontal: 10.0),
                               ),
                               maxLines: null, // Unlimited lines
-                              minLines: 1,    // Start with 1 line
+                              minLines: 1, // Start with 1 line
                             ),
-                            const SizedBox(height: 10,),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             placesAutoCompleteTextField(_location),
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
@@ -317,7 +320,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                               if (_formKey.currentState!
                                                   .validate()) {
                                                 Job job = Job(
-                                                    jobId: jobAdId,
+                                                    jobId: _jobAdId,
                                                     jobTitle: _jobTitle.text,
                                                     selectedCategory:
                                                         _selectedCategory,
@@ -333,15 +336,14 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                                     postedAt: DateTime.now(),
                                                     description:
                                                         _description.text);
-      
+
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         PreviewPage(
                                                       job: job,
-                                                      jobAdData: widget.jobAdData,
-                                                      jobAdId: widget.jobAdId,
+                                                      jobAdId: _jobAdId,
                                                     ),
                                                   ),
                                                 );
@@ -362,7 +364,8 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                               if (_formKey.currentState!
                                                   .validate()) {
                                                 Job job = Job(
-                                                    jobId: jobAdId,
+                                                    jobId: DateTime.now()
+                                                        .toString(),
                                                     jobTitle: _jobTitle.text,
                                                     selectedCategory:
                                                         _selectedCategory,
@@ -384,7 +387,6 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                                     builder: (context) =>
                                                         PreviewPage(
                                                       job: job,
-                                                      jobAdData: widget.jobAdData,
                                                       jobAdId: widget.jobAdId,
                                                     ),
                                                   ),
@@ -406,24 +408,30 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                             onPressed: () async {
                                               if (_formKey.currentState!
                                                   .validate()) {
+
+
+
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         CompanyMCQCreationScreen(
-                                                      jobAdData: widget.jobAdData,
-                                                      jobTitle: _jobTitle.text,
-                                                      selectedCategory:
+                                                          jobTitle: _jobTitle.text,
+                                                          jobType: _jobType,
+                                                          jobCategory:
                                                           _selectedCategory,
-                                                      jobType: _jobType,
-                                                      requiredExperience:
-                                                          _requiredExperience,
-                                                      location: _location.text,
-                                                      salary: _salary.text,
-                                                      selectedOption:
+                                                          location: _location.text,
+                                                          salary: _salary.text,
+                                                          selectedOption:
                                                           _selectedOption,
-                                                      jobId: dateTime.toString(),
-                                                      jobAdId: widget.jobAdId, description: _description.text,
+                                                          description:
+                                                          _description.text,
+                                                          requiredExperience:
+                                                          _requiredExperience,
+                                                      jobAdData:
+                                                          widget.jobAdData,
+                                                      jobId: _jobAdId,
+                                                          jobAdId: widget.jobAdId,
                                                     ),
                                                   ),
                                                 );
@@ -444,23 +452,43 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                           onPressed: () async {
                                             if (_formKey.currentState!
                                                 .validate()) {
+                                              // Job job = Job(
+                                              //     jobId:
+                                              //         DateTime.now().toString(),
+                                              //     jobTitle: _jobTitle.text,
+                                              //     selectedCategory:
+                                              //         _selectedCategory,
+                                              //     jobType: _jobType,
+                                              //     requiredExperience:
+                                              //         _requiredExperience,
+                                              //     location: _location.text,
+                                              //     salary: _salary.text,
+                                              //     selectedOption:
+                                              //         _selectedOption,
+                                              //     mcq: [],
+                                              //     postedBy: uid!,
+                                              //     postedAt: DateTime.now(),
+                                              //     description:
+                                              //         _description.text);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       CompanyMCQCreationScreen(
-                                                    jobAdData: widget.jobAdData,
                                                     jobTitle: _jobTitle.text,
-                                                    selectedCategory:
-                                                        _selectedCategory,
                                                     jobType: _jobType,
-                                                    requiredExperience:
-                                                        _requiredExperience,
+                                                    jobCategory:
+                                                        _selectedCategory,
                                                     location: _location.text,
                                                     salary: _salary.text,
                                                     selectedOption:
                                                         _selectedOption,
-                                                    jobId: dateTime.toString(),description:_description.text
+                                                    description:
+                                                        _description.text,
+                                                    requiredExperience:
+                                                        _requiredExperience,
+                                                    jobAdData: null,
+                                                 //   job: job,
                                                   ),
                                                 ),
                                               );

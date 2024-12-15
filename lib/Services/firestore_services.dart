@@ -115,12 +115,36 @@ class FirestoreService {
   Future<void> saveNewJob(Map<String, dynamic> job) async {
     if (job.isNotEmpty) {
       job['numberOfApplicants'] = 0;
-      await _db.collection("jobs").doc().set(
-           job,
-            SetOptions(merge: true),
-          );
+
+      try {
+        await _db.collection("jobs").add(job);
+      } catch (e) {
+        throw Exception("Failed to save job: $e");
+      }
+    } else {
+      throw Exception("Invalid job data");
+    }
+  }
+
+  Future<void> updateJobAd(Map<String, dynamic> job,jobAdId) async {
+    if (job.isNotEmpty) {
+      await _db.collection("jobs").doc(jobAdId).set(
+        job,
+        SetOptions(merge: true),
+      );
     } else {
       throw Exception("Invalid jobAdId or job data");
+    }
+  }
+
+  Future<Job> getJobFromFirestore(String jobId) async {
+    DocumentSnapshot jobAdDoc = await FirebaseFirestore.instance.collection('jobs').doc(jobId).get();
+    if (jobAdDoc.exists) {
+      final jobAdData = jobAdDoc.data() as Map<String, dynamic>;
+      Job job = Job.fromMap(jobAdData);
+      return job;
+    } else {
+      throw Exception('Job not found or is deleted');
     }
   }
 }

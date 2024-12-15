@@ -11,7 +11,7 @@ class Job {
   final String location;
   final String salary;
   final String selectedOption;
-  final List<MCQ> mcq;
+  late final List<MCQ> mcq;
   final String postedBy;
   final DateTime postedAt;
 
