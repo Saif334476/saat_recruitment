@@ -45,11 +45,13 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
       _selectedOption = widget.jobAdData!['selectedOption'];
       _jobTitle.text = widget.jobAdData!['jobTitle'];
       _selectedCategory = widget.jobAdData!['selectedCategory'];
-      _location = widget.jobAdData!['location'];
+      _location.text = widget.jobAdData!['location'];
       _jobType = widget.jobAdData!['jobType'];
       _selectedOption = widget.jobAdData!['selectedOption'];
       _requiredExperience = widget.jobAdData!['requiredExperience'];
       _salary.text = widget.jobAdData!['salary'];
+      _description.text=widget.jobAdData!['description'];
+      mcqList=widget.jobAdData!['mcq'];
     } else {
       _selectedOption = '';
       _selectedCategory = '';
@@ -247,18 +249,16 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                             const SizedBox(
                               height: 10,
                             ),
-                            SizedBox(
-                              height: 100,
-                              child: TextField(
-                                controller: _description,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                                  labelText: 'Description',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 20.0, horizontal: 10.0),
-                                ),
-                                maxLines: null,
+                            TextField(
+                              controller: _description,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                                labelText: 'Description',
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 20.0, horizontal: 10.0),
                               ),
+                              maxLines: null, // Unlimited lines
+                              minLines: 1,    // Start with 1 line
                             ),
                             const SizedBox(height: 10,),
                             placesAutoCompleteTextField(_location),
@@ -423,7 +423,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                                       selectedOption:
                                                           _selectedOption,
                                                       jobId: dateTime.toString(),
-                                                      jobAdId: widget.jobAdId,
+                                                      jobAdId: widget.jobAdId, description: _description.text,
                                                     ),
                                                   ),
                                                 );
@@ -460,7 +460,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                                                     salary: _salary.text,
                                                     selectedOption:
                                                         _selectedOption,
-                                                    jobId: dateTime.toString(),
+                                                    jobId: dateTime.toString(),description:_description.text
                                                   ),
                                                 ),
                                               );

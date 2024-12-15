@@ -57,9 +57,7 @@ class JobAdsListViewState extends State<JobAdsListView> {
                             child: ListTile(
                               onLongPress: () async {
                                 final jobAdId = (jobAdDoc.id);
-                                final jobAdData =
-                                    jobAdDoc.data() as Map<String, dynamic>;
-
+                                final jobAdData = jobAdDoc.data() as Map<String, dynamic>;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

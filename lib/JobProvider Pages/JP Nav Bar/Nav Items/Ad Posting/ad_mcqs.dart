@@ -16,6 +16,7 @@ class CompanyMCQCreationScreen extends StatefulWidget {
   final String selectedCategory;
   final String jobTitle;
   final String? jobAdId;
+  final String description;
   const CompanyMCQCreationScreen(
       {super.key,
       required this.selectedOption,
@@ -27,7 +28,7 @@ class CompanyMCQCreationScreen extends StatefulWidget {
       required this.jobTitle,
       this.jobAdData,
       this.jobAdId,
-      required this.jobId});
+      required this.jobId, required  this.description});
 
   @override
   CompanyMCQCreationScreenState createState() =>
@@ -182,7 +183,7 @@ class CompanyMCQCreationScreenState extends State<CompanyMCQCreationScreen> {
                         mcq: mcqs,
                         postedBy: uid!,
                         postedAt: DateTime.now(),
-                        description: "");
+                        description:widget.description);
 
                     Navigator.push(
                         context,

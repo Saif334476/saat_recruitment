@@ -45,7 +45,9 @@ class _PreviewPageState extends State<PreviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Preview Job Posting'),
+        backgroundColor: const Color(0xff1C4374),
+        automaticallyImplyLeading: false,
+        title: const Text('Preview Job Post',style: TextStyle(color: Colors.white),),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -147,6 +149,21 @@ class _PreviewPageState extends State<PreviewPage> {
                     ),
                   ],
                 ),
+                Column(
+                  children: [
+                    const Text(
+                      'Description: ',
+                      style:
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),textAlign: TextAlign.start,
+                    ),
+                    SizedBox(
+                      child: Text(
+                        widget.job.description,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
+                ),
               ]),
               const SizedBox(height: 20),
               const Divider(),
@@ -201,47 +218,50 @@ class _PreviewPageState extends State<PreviewPage> {
           ),
         ),
       ),
-      bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          CupertinoButton(
-            color: const Color(0xff1C4374),
-            child: const Text(
-              "Back",
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            CupertinoButton(
+              color: const Color(0xff1C4374),
+              child: const Text(
+                "Back",
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                ),
               ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoButton(
-            color: const Color(0xff1C4374),
-            child: const Text(
-              "Post",
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
+            CupertinoButton(
+              color: const Color(0xff1C4374),
+              child: const Text(
+                "Post",
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                ),
               ),
+              onPressed: () async {
+                if (widget.jobAdData != null) {
+                  _updateJobAd();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
+                } else {
+                  _saveJobAd();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
+                }
+                // final jobService = JobService();
+                // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);
+                //  Navigator.pop(context);
+              },
             ),
-            onPressed: () async {
-              if (widget.jobAdData != null) {
-                _updateJobAd();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
-              } else {
-                _saveJobAd();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
-              }
-              // final jobService = JobService();
-              // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);
-              //  Navigator.pop(context);
-            },
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
