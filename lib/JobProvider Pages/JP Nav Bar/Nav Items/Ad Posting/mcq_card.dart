@@ -149,7 +149,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               false,
               keyboard: TextInputType.text,
               controller: widget.questionController,
-              onChanged: () {},
+
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Please enter a question';
@@ -166,7 +166,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               false,
               keyboard: TextInputType.text,
               controller: widget.option1Controller,
-              onChanged: () {},
+
               validator: (value) => validateOption(widget.option1Controller),
             ),
           ),
@@ -178,7 +178,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               false,
               keyboard: TextInputType.text,
               controller: widget.option2Controller,
-              onChanged: () {},
+
               validator: (value) => validateOption(widget.option2Controller),
             ),
           ),
@@ -190,7 +190,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               false,
               keyboard: TextInputType.text,
               controller: widget.option3Controller,
-              onChanged: () {},
+
               validator: (value) => validateOption(widget.option3Controller),
             ),
           ),
@@ -202,7 +202,7 @@ class _MCQCardState extends State<MCQCard> with AutomaticKeepAliveClientMixin {
               false,
               keyboard: TextInputType.text,
               controller: widget.option4Controller,
-              onChanged: () {},
+
               validator: (value) => validateOption(widget.option4Controller),
             ),
           ),

@@ -5,15 +5,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/job_seeker_pages/dashboard/apply_to_job.dart';
 
 class UploadCvResume extends StatefulWidget {
-  const UploadCvResume({super.key});
+  final dynamic uid;
+
+  final dynamic existingResumeUrl;
+
+  final dynamic jobAdId;
+
+  const UploadCvResume(
+      {super.key,
+      required this.uid,
+      required this.existingResumeUrl,
+      required this.jobAdId});
 
   @override
   State<UploadCvResume> createState() => _UploadCvResumeState();
 }
 
 class _UploadCvResumeState extends State<UploadCvResume> {
+  String? _resumeUrl;
   File? convertedFile;
   FilePickerResult? result;
   String? _selectedFileName;
@@ -39,7 +51,8 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                 child: Text(
                   "You don't have Uploaded your CV/Resume yet,Please tap the icon below to continue application",
                   style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.w700),textAlign: TextAlign.center,
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
+                  textAlign: TextAlign.center,
                 ),
               ),
               Padding(
@@ -71,7 +84,10 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.file_present,color: Colors.lightBlue,),
+                        const Icon(
+                          Icons.file_present,
+                          color: Colors.lightBlue,
+                        ),
                         const SizedBox(width: 8),
                         SizedBox(
                           width: MediaQuery.of(context).size.width / 2,
@@ -102,24 +118,31 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                                 color: Colors.white),
                           ),
                           onPressed: () async {
-                            String? resumeUrl;
                             if (_isFileSelected) {
                               final storageRef = FirebaseStorage.instance
                                   .ref('resumes/$uId.jpeg');
                               final uploadTask =
                                   storageRef.putFile(convertedFile!);
-                              resumeUrl =
-                                  await (await uploadTask).ref.getDownloadURL();
+                              setState(() async {
+                                _resumeUrl =
+                                    await (await uploadTask).ref.getDownloadURL();
+                              });
+
 
                               await FirebaseFirestore.instance
                                   .collection('Users')
                                   .doc(uId)
                                   .update({
-                                'resumeUrl': resumeUrl,
+                                'resumeUrl': _resumeUrl,
                                 'resumeFileName': _selectedFileName ?? "",
                               });
                             }
-                            Navigator.pop(context);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ApplyToJob(
+                                        widget.uid, widget.jobAdId,
+                                        existingResumeUrl: _resumeUrl!)));
                           }),
                     )
                   ],

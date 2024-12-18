@@ -178,7 +178,7 @@ void _saveNewPhoto()async{
                                 "Enter value to Update",
                                 Icons.edit,
                                 false,
-                                onChanged: () {},
+
                                 keyboard: TextInputType.text,
                                 controller: nameController,
                                 validator: (value) {
@@ -237,7 +237,6 @@ void _saveNewPhoto()async{
                                 "Enter value to Update",
                                 Icons.edit,
                                 false,
-                                onChanged: () {},
                                 keyboard: TextInputType.text,
                                 controller: nameController,
                                 validator: (value) {
@@ -291,7 +290,7 @@ void _saveNewPhoto()async{
                                 "Enter value to Update",
                                 Icons.edit,
                                 false,
-                                onChanged: () {},
+
                                 keyboard: TextInputType.text,
                                 controller: nameController,
                                 validator: (value) {

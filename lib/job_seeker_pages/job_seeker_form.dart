@@ -90,9 +90,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                           padding: const EdgeInsets.only(top: 25),
                           child: textFormField(
                               keyboard: TextInputType.text,
-                              onChanged: () {
-                                setState(() {});
-                              },
+
                               "Enter Your Name",
                               Icons.person,
                               false,
@@ -109,9 +107,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                               padding: const EdgeInsets.only(top: 10),
                               child: textFormField(
                                   keyboard: TextInputType.number,
-                                  onChanged: () {
-                                    setState(() {});
-                                  },
+
                                   "Enter Phone Number",
                                   Icons.phone_android_outlined,
                                   false,
@@ -148,9 +144,7 @@ class JobSeekerProfileState extends State<JobSeekerProfile> {
                               padding: const EdgeInsets.only(top: 10),
                               child: textFormField(
                                   keyboard: TextInputType.text,
-                                  onChanged: () {
-                                    setState(() {});
-                                  },
+
                                   "Enter Your E-mail",
                                   Icons.email,
                                   false,

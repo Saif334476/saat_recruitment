@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/JobProvider%20Pages/JP%20Nav%20Bar/Nav%20Items/Job%20Ads%20Listing/applicants_on_ad.dart';
+import 'package:saat_recruitment/Services/firestore_services.dart';
 import 'package:share/share.dart';
+import '../../../../Models/job.dart';
 import '../Ad Posting/new_ad_posting.dart';
 
 class JobAdsListView extends StatefulWidget {
@@ -14,6 +16,11 @@ class JobAdsListView extends StatefulWidget {
 
 class JobAdsListViewState extends State<JobAdsListView> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
+  Future<Job> _fetchJob(jobAdId) async {
+    FirestoreService firestoreService = FirestoreService();
+    Job job = await firestoreService.getJobFromFirestore(jobAdId);
+    return job;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +52,6 @@ class JobAdsListViewState extends State<JobAdsListView> {
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot jobAdDoc = snapshot.data!.docs[index];
-
                         return Padding(
                           padding: const EdgeInsets.only(right: 10, left: 10),
                           child: Container(
@@ -57,7 +63,9 @@ class JobAdsListViewState extends State<JobAdsListView> {
                             child: ListTile(
                               onLongPress: () async {
                                 final jobAdId = (jobAdDoc.id);
-                                final jobAdData = jobAdDoc.data() as Map<String, dynamic>;
+                                final job = await _fetchJob(jobAdId);
+
+                                final jobAdData = job;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -75,7 +83,7 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       SizedBox(
-                                        width: 230,
+                                        width: MediaQuery.of(context).size.width*0.55,
                                         child: Text(
                                           jobAdDoc['jobTitle'],
                                           style: const TextStyle(
@@ -127,7 +135,8 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                                 fontWeight: FontWeight.w700,
                                                 fontSize: 17),
                                           ),
-                                          Text(jobAdDoc['jobType']),
+                                          SizedBox(width: 100,
+                                              child: Text(jobAdDoc['jobType'],overflow: TextOverflow.ellipsis,)),
                                         ],
                                       ),
                                       Row(
@@ -161,8 +170,15 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                                     fontWeight: FontWeight.w700,
                                                     fontSize: 17),
                                               ),
-                                              Text(jobAdDoc[
-                                                  'requiredExperience']),
+                                              SizedBox(
+                                                width: 70,
+                                                child: Text(
+                                                  jobAdDoc[
+                                                      'requiredExperience'],
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                           Row(
@@ -174,11 +190,15 @@ class JobAdsListViewState extends State<JobAdsListView> {
                                                     fontSize: 17),
                                               ),
                                               SizedBox(
-                                                width: MediaQuery.of(context).size.width*0.2,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.2,
                                                   child: Text(
-                                                jobAdDoc['salary'],
-                                                overflow: TextOverflow.ellipsis,
-                                              )),
+                                                    jobAdDoc['salary'],
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  )),
                                             ],
                                           ),
                                         ],

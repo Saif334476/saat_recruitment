@@ -104,9 +104,6 @@ class JsSetupPasswordState extends State<JsSetupPassword> {
                       child: textFormField(
                         "Create a Strong Password",
                         Icons.lock_outline,
-                        onChanged: () {
-                          setState(() {});
-                        },
                         controller: _passwordController,
                         suffixIcon: IconButton(
                           icon: Icon(obscuredTextOne
@@ -146,9 +143,6 @@ class JsSetupPasswordState extends State<JsSetupPassword> {
                         },
                       ),
                       obscuredTextTwo,
-                      onChanged: () {
-                        setState(() {});
-                      },
                       keyboard: TextInputType.text,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -250,9 +244,6 @@ class JsSetupPasswordState extends State<JsSetupPassword> {
                                                 child: textFormField(
                                                   "Create a Strong Password",
                                                   Icons.lock_outline,
-                                                  onChanged: () {
-                                                    setState(() {});
-                                                  },
                                                   controller:
                                                       _passwordController,
                                                   suffixIcon: IconButton(
@@ -310,9 +301,6 @@ class JsSetupPasswordState extends State<JsSetupPassword> {
                                                   },
                                                 ),
                                                 obscuredTextTwo,
-                                                onChanged: () {
-                                                  setState(() {});
-                                                },
                                                 keyboard:
                                                     TextInputType.text,
                                                 validator: (value) {

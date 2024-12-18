@@ -32,6 +32,7 @@ class _JobInfoState extends State<JobInfo> {
   List<Map<String, dynamic>> mcqList = [];
   FirestoreService firestoreService = FirestoreService();
   bool _isApplied = false;
+  String _description = '';
   Future<void> status() async {
     final isApplied =
         await firestoreService.checkApplicantStatus(uid!, widget.jobAdId);
@@ -52,6 +53,7 @@ class _JobInfoState extends State<JobInfo> {
       _selectedOption = widget.jobAdData!['selectedOption'];
       _requiredExperience = widget.jobAdData!['requiredExperience'];
       _salary.text = widget.jobAdData!['salary'];
+      _description = widget.jobAdData!['description'];
       mcqList = List<Map<String, dynamic>>.from(widget.jobAdData!['mcq']);
       status();
       fetchCompanyInfo(uid!).then((info) {
@@ -92,26 +94,30 @@ class _JobInfoState extends State<JobInfo> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                widget.jobAdData?['jobTitle'],
-                style: const TextStyle(
-                    fontWeight: FontWeight.w900, color: Colors.white),
-              ),
-              IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(
-                    Icons.close_outlined,
-                    size: 30,
-                    color: Colors.white,
-                  ))
-            ],
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text(
+            "JOB INFO.",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
           ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Text(
+          //       widget.jobAdData?['jobTitle'],
+          //       style: const TextStyle(
+          //           fontWeight: FontWeight.w900, color: Colors.white),
+          //     ),
+          //     IconButton(
+          //         onPressed: () {
+          //           Navigator.pop(context);
+          //         },
+          //         icon: const Icon(
+          //           Icons.close_outlined,
+          //           size: 30,
+          //           color: Colors.white,
+          //         ))
+          //   ],
+          // ),
           backgroundColor: const Color(0xff1C4374),
         ),
         body: SingleChildScrollView(
@@ -141,6 +147,10 @@ class _JobInfoState extends State<JobInfo> {
                           ),
                         ],
                       ),
+                    ),
+                    Divider(
+                      thickness: 1.5,
+                      color: Colors.blueGrey,
                     ),
                     Row(
                       children: [
@@ -172,10 +182,14 @@ class _JobInfoState extends State<JobInfo> {
                                 padding: EdgeInsets.only(right: 8.0, left: 8),
                                 child: Icon(Icons.location_on_outlined),
                               ),
-                              Text(
-                                _location,
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w700),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.7,
+                                child: Text(
+                                  _location,
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700),
+                                ),
                               ),
                             ],
                           ),
@@ -188,7 +202,9 @@ class _JobInfoState extends State<JobInfo> {
                           const Text(
                             'Job Type:',
                             style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: 20),
+                                fontWeight: FontWeight.w900,
+                                fontSize: 20,
+                                color: Colors.black),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
@@ -208,7 +224,9 @@ class _JobInfoState extends State<JobInfo> {
                               const Text(
                                 'Salary:',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 20),
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 20,
+                                    color: Colors.black),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
@@ -230,95 +248,58 @@ class _JobInfoState extends State<JobInfo> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Divider(
-                  height: 10,
-                  color: Color(0xff1C4374),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Row(
                   children: [
-                    const Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            "Requirements",
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Experience:',
                             style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 20,
+                                color: Colors.black),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              _requiredExperience,
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w600),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'Experience:',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 20),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                  _requiredExperience,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
                 const Divider(
-                  height: 10,
                   color: Color(0xff1C4374),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(10.0),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        "DESCRIPTION",
+                      const Text(
+                        "DESCRIPTION:",
                         style: TextStyle(
-                            fontWeight: FontWeight.w900, fontSize: 22),
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
+                            color: Colors.black),
                       ),
-                      Text(
-                          "sdgfsdghdfdshjfgdsfkjdshfkjdhskjfdskjfhdkjashfasdhfhjgh kjhsgkjhdfskj hvgsfj kjas hvkjasdh fkjdhasfhdkjas fkljsdh kjdshf dkjsh fkjshd fkjhdaskj fkjdhs  fkjhdskj hfkj hsdkjhf kjdshkjfh dkjskjf hdkjsh fkjhs kjdhs fkjhdskjh fkldjashfkj")
+                      Text(_description)
                     ],
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
                 const Divider(
                   height: 10,
                   color: Color(0xff1C4374),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 CupertinoButton(
                     color: const Color(0xff193d67),
@@ -343,8 +324,12 @@ class _JobInfoState extends State<JobInfo> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const UploadCvResume()));
+                                    builder: (context) => UploadCvResume(
+                                          uid: uid,
+                                          existingResumeUrl:
+                                              companyInfo?["resumeUrl"],
+                                          jobAdId: widget.jobAdId,
+                                        )));
                           } else {
                             Navigator.pop(context);
                             Navigator.push(

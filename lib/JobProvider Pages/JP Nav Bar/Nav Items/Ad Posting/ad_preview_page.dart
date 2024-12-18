@@ -8,16 +8,10 @@ import '../../../../Models/mcq_model.dart';
 import '../../jp_nav_bar.dart';
 
 class PreviewPage extends StatefulWidget {
-  final Map<String, dynamic>? jobAdData;
   final Job job;
   final String? jobId;
   final String? jobAdId;
-  const PreviewPage(
-      {super.key,
-      required this.job,
-      this.jobId,
-      this.jobAdData,
-      this.jobAdId});
+  const PreviewPage({super.key, required this.job, this.jobId, this.jobAdId});
 
   @override
   State<PreviewPage> createState() => _PreviewPageState();
@@ -27,18 +21,16 @@ class _PreviewPageState extends State<PreviewPage> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
   final dateTime = DateTime.now();
   final date = DateTime.now().millisecondsSinceEpoch.toString();
-  FirestoreService firestoreService=FirestoreService();
+  FirestoreService firestoreService = FirestoreService();
 
   Future<void> _saveJobAd() async {
     Map<String, dynamic> jobData = widget.job.toMap();
     await firestoreService.saveNewJob(jobData);
-
   }
 
   Future<void> _updateJobAd() async {
     Map<String, dynamic> jobData = widget.job.toMap();
-    await firestoreService.saveNewJob(jobData);
-
+    await firestoreService.updateJobAd(jobData,widget.jobAdId);
   }
 
   @override
@@ -47,7 +39,10 @@ class _PreviewPageState extends State<PreviewPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xff1C4374),
         automaticallyImplyLeading: false,
-        title: const Text('Preview Job Post',style: TextStyle(color: Colors.white),),
+        title: const Text(
+          'Preview Job Post',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -71,10 +66,11 @@ class _PreviewPageState extends State<PreviewPage> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width*0.6,
+                      width: MediaQuery.of(context).size.width * 0.6,
                       child: Text(
                         widget.job.jobTitle,
-                        style: const TextStyle(fontSize: 18),overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 18),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -100,10 +96,11 @@ class _PreviewPageState extends State<PreviewPage> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width*0.6,
+                      width: MediaQuery.of(context).size.width * 0.6,
                       child: Text(
                         widget.job.jobType,
-                        style: const TextStyle(fontSize: 18),overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 18),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -116,22 +113,27 @@ class _PreviewPageState extends State<PreviewPage> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width*0.4,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       child: Text(
                         widget.job.requiredExperience,
-                        style: const TextStyle(fontSize: 18),overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 18),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
                 Row(
                   children: [
-                  const Icon(Icons.location_on_outlined,color: Color(0xff1C4374),),
+                    const Icon(
+                      Icons.location_on_outlined,
+                      color: Color(0xff1C4374),
+                    ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width*0.8,
+                      width: MediaQuery.of(context).size.width * 0.8,
                       child: Text(
                         widget.job.location,
-                        style: const TextStyle(fontSize: 18),overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 18),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -154,7 +156,8 @@ class _PreviewPageState extends State<PreviewPage> {
                     const Text(
                       'Description: ',
                       style:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),textAlign: TextAlign.start,
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.start,
                     ),
                     SizedBox(
                       child: Text(
@@ -246,14 +249,18 @@ class _PreviewPageState extends State<PreviewPage> {
                 ),
               ),
               onPressed: () async {
-                if (widget.jobAdData != null) {
+                if (widget.jobAdId != null) {
                   _updateJobAd();
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CompanyDashBoard()));
                 } else {
                   _saveJobAd();
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const CompanyDashBoard()));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CompanyDashBoard()));
                 }
                 // final jobService = JobService();
                 // await jobService.createMCQ(DateTime.now().toString(), widget.mcq);

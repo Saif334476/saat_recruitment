@@ -101,9 +101,7 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                       child: textFormField(
                         "Create a Strong Password",
                         Icons.lock_outline,
-                        onChanged: () {
-                          setState(() {});
-                        },
+
                         controller: _passwordController,
                         suffixIcon: IconButton(
                           icon: Icon(obscuredTextOne
@@ -149,9 +147,7 @@ class CompanySetupPasswordState extends State<CompanySetupPassword> {
                         },
                       ),
                       obscuredTextTwo,
-                      onChanged: () {
-                        setState(() {});
-                      },
+
                       keyboard: TextInputType.text,
                       validator: (value) {
                         if (value!.isEmpty) {
