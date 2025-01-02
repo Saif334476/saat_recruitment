@@ -138,7 +138,7 @@ class _JsProfilePageState extends State<JsProfilePage> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
-              Expanded(child: getFilePreview(fileUrl, true,null)),
+              Expanded(child: getFilePreview(fileUrl, true, null)),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -226,11 +226,12 @@ class _JsProfilePageState extends State<JsProfilePage> {
                   ProfilePicWidget(
                     onImagePicked: (imageFile) async {
                       FileUploadService fileUploadService = FileUploadService();
-                      FirestoreService firestoreService=FirestoreService();
+                      FirestoreService firestoreService = FirestoreService();
                       try {
                         String profilePicUrl = await fileUploadService
                             .uploadProfilePic(imageFile, uid!);
-                        firestoreService.uploadProfilePicUrl(uid, profilePicUrl);
+                        firestoreService.uploadProfilePicUrl(
+                            uid, profilePicUrl);
                         // await FirebaseFirestore.instance
                         //     .collection("Users")
                         //     .doc(uid)
@@ -299,7 +300,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                               "Enter Name to update",
                                               Icons.edit,
                                               false,
-                                              onChanged: () {},
                                               keyboard: TextInputType.text,
                                               controller: nameController,
                                               validator: (value) {
@@ -438,7 +438,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                                     "Enter Number to update",
                                                     Icons.edit,
                                                     false,
-                                                    onChanged: () {},
                                                     keyboard:
                                                         TextInputType.number,
                                                     controller: nameController,
@@ -629,7 +628,6 @@ class _JsProfilePageState extends State<JsProfilePage> {
                                             child: Column(children: [
                                               textFormField("Enter Location",
                                                   Icons.edit, false,
-                                                  onChanged: () {},
                                                   keyboard: TextInputType.text,
                                                   controller: nameController,
                                                   validator: (value) {
@@ -800,29 +798,36 @@ class _JsProfilePageState extends State<JsProfilePage> {
                         ]),
                     child: InkWell(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 5.0, bottom: 5),
+                        padding: const EdgeInsets.only(top: 5.0, bottom: 5,left: 8,right: 20 ),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.logout_outlined,
-                                  color: Colors.black,
-                                )),
                             const Text(
                               'Logout',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w800),
                             ),
+                            IconButton(
+                                onPressed: () async {
+                                  await FirebaseAuth.instance.signOut();
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const LoginPage()), (route) => false,);
+                                },
+                                icon: const Icon(
+                                  Icons.logout_outlined,
+                                  color: Colors.black,
+                                )),
                           ],
                         ),
                       ),
                       onTap: () async {
                         await FirebaseAuth.instance.signOut();
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()));
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()), (route) => false,);
                       },
                     ),
                   ),

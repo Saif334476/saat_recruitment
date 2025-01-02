@@ -8,6 +8,7 @@ import 'package:saat_recruitment/Services/cloud_storage.dart';
 import 'package:saat_recruitment/Services/firestore_services.dart';
 import '../../Firebase Services/resume_utils.dart';
 import '../../reusable_widgets/file_preview.dart';
+import 'bottom_navigation/js_bottom_nav_bar.dart';
 
 class ApplyToJob extends StatefulWidget {
   final String? uid;
@@ -38,7 +39,7 @@ class _ApplyToJobState extends State<ApplyToJob> {
     final profilePicUrl =
         await fileUploadService.uploadResume(selectedFile, uid);
     await firestoreService.uploadResumeUrl(uid, profilePicUrl);
-    firestoreService.saveApplicationAtJS(widget.jobAdId, uid!,"Successful");
+    firestoreService.saveApplicationAtJS(widget.jobAdId, uid!, "Successful");
     firestoreService.sendApplicantDataToJP(
         widget.jobAdId, uid!, profilePicUrl, userEmail);
   }
@@ -55,7 +56,8 @@ class _ApplyToJobState extends State<ApplyToJob> {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     await firestoreService.sendApplicantDataToJP(
         widget.jobAdId, uid!, widget.existingResumeUrl, userEmail);
-    await firestoreService.saveApplicationAtJS(widget.jobAdId, uid,"Successful");
+    await firestoreService.saveApplicationAtJS(
+        widget.jobAdId, uid, "Successful");
   }
 
   void selectFile() async {
@@ -198,12 +200,28 @@ class _ApplyToJobState extends State<ApplyToJob> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('Application Successful'),
+                        title: const Column(
+                          children: [
+                            Text(
+                              'Application Successful',
+                              style: TextStyle(fontWeight: FontWeight.w900),
+                            ),
+                            Text(
+                              "Your Resume sent to Advertiser,soon you will get response",
+                              style: TextStyle(fontSize: 20),
+                            )
+                          ],
+                        ),
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const JsBottomNavigationBar()),
+                                (route) => false,
+                              );
                             },
                             child: const Text('OK'),
                           ),

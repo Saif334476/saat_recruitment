@@ -34,10 +34,10 @@ class FirestoreService {
 
   Future<bool> checkApplicantStatus(String uid, String jobAdId) async {
     DocumentSnapshot applicant = await _db
-        .collection('jobs')
-        .doc(jobAdId)
-        .collection("Applicants")
+        .collection('Users')
         .doc(uid)
+        .collection("Job Applications")
+        .doc(jobAdId)
         .get();
     return applicant.exists;
   }
@@ -86,19 +86,16 @@ class FirestoreService {
     }
   }
 
-  Future<List<JobProviderModel>> getJobProvidersAwaitingVerification() async {
-    List<JobProviderModel> jobProviders = [];
-    final querySnapshot = await FirebaseFirestore.instance
+  Stream<List<JobProviderModel>> getJobProvidersAwaitingVerification() {
+    return _db
         .collection('Users')
         .where('role', isEqualTo: 'JobProvider')
         .where('isActive', isEqualTo: false)
         .where('isComplete', isEqualTo: true)
-        .get();
-    jobProviders = querySnapshot.docs.map((doc) {
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) {
       return JobProviderModel.fromMap(doc.data());
-    }).toList();
-
-    return jobProviders;
+    }).toList());
   }
 
   Future<void> updateJob(String jobAdId, Map<String, dynamic> job) async {

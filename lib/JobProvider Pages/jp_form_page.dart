@@ -56,9 +56,6 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: textFormField(
-                      onChanged: () {
-                        setState(() {});
-                      },
                       "Enter organization name",
                       Icons.business_sharp,
                       false,
@@ -75,9 +72,6 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                     ? Padding(
                         padding: const EdgeInsets.only(top: 15),
                         child: textFormField(
-                            onChanged: () {
-                              setState(() {});
-                            },
                             keyboard: TextInputType.text,
                             "E-mail",
                             Icons.email_outlined,

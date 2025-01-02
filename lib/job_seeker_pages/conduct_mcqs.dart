@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:saat_recruitment/Services/firestore_services.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/apply_to_job.dart';
 
+import 'dashboard/upload_cv_resume.dart';
+
 class ConductMcqs extends StatefulWidget {
   final List<Map<String, dynamic>> mcqList;
   final String uid;
@@ -186,15 +188,25 @@ class _ConductMcqsState extends State<ConductMcqs> {
                             TextButton(
                               onPressed: () {
                                 if (_score >= 7) {
+                                  if(widget.existingResumeUrl==""){
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                             UploadCvResume(uid: widget.uid, existingResumeUrl: widget.existingResumeUrl, jobAdId:widget.jobAdId,)));
+
+                                  }
+                                  else{
                                   Navigator.pop(context);
                                   Navigator.pop(context);
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => ApplyToJob(
                                               widget.uid, widget.jobAdId,
                                               existingResumeUrl:
-                                                  widget.existingResumeUrl)));
+                                                  widget.existingResumeUrl)));}
                                 } else {
                                   firestoreService.saveApplicationAtJS(widget.jobAdId, uid!,"UnSuccessful");
                                   Navigator.pop(context);

@@ -13,91 +13,106 @@ class AdminPanel extends StatefulWidget {
 }
 
 class AdminPanelState extends State<AdminPanel> {
-  List<JobProviderModel> _jobProviders = [];
-  Future<void> _fetchJobProviders() async {
-    FirestoreService firestoreService = FirestoreService();
-    List<JobProviderModel> jobProviders =
-        await firestoreService.getJobProvidersAwaitingVerification();
-    setState(() {
-      _jobProviders = jobProviders;
-    });
-  }
+  FirestoreService firestoreService = FirestoreService();
+  // Future<void> _fetchJobProviders() async {
+  //
+  //   List<JobProviderModel> jobProviders =
+  //     //  await firestoreService.getJobProvidersAwaitingVerification();
+  //   setState(() {
+  //     _jobProviders = jobProviders;
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
-    _fetchJobProviders();
+    //  _fetchJobProviders();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xff1C4374),
-        title: const Text(
-          "Admin Panel",
-          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
-        ),
-      ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 50.0),
-              child: Text(
-                'Admin Panel',
-                style: TextStyle(
-                    color: Color(0xff1C4374),
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900),
-              ),
-            ),
-            const Divider(height: 10),
-            ListTile(
-              title: const Row(
-                children: [
-                  Icon(Icons.logout_outlined),
-                  Text(
-                    'Logout',
-                    style: TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              },
-            ),
-            const Divider(height: 10),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 10.0),
-            child: Text(
-              'Job providers awaiting for verification',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: const Color(0xff1C4374),
+          title: const Text(
+            "Admin Panel",
+            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
           ),
-          const Divider(color: Color(0xff1C4374),thickness: 1.5,),
-          Expanded(
-            child: _jobProviders.isEmpty
-                ? const Center(
+        ),
+        drawer: Drawer(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 50.0),
+                child: Text(
+                  'Admin Panel',
+                  style: TextStyle(
+                      color: Color(0xff1C4374),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900),
+                ),
+              ),
+              const Divider(height: 10),
+              ListTile(
+                title: const Row(
+                  children: [
+                    Icon(Icons.logout_outlined),
+                    Text(
+                      'Logout',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                },
+              ),
+              const Divider(height: 10),
+            ],
+          ),
+        ),
+        body: StreamBuilder<List<JobProviderModel>>(
+            stream: firestoreService.getJobProvidersAwaitingVerification(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+
+              final jobProviders = snapshot.data;
+
+              if (jobProviders == null || jobProviders.isEmpty) {
+                return const Center(
+                  child: Text('No job providers awaiting verification.'),
+                );
+              }
+
+              return Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10.0),
                     child: Text(
-                    "No Job Providers to be validated!",
-                    style: TextStyle(fontWeight: FontWeight.w800),
-                  ))
-                : RefreshIndicator(
-                    onRefresh: _fetchJobProviders,
+                      'Job providers awaiting for verification',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const Divider(
+                    color: Color(0xff1C4374),
+                    thickness: 1.5,
+                  ),
+                  Expanded(
                     child: ListView.builder(
-                      itemCount: _jobProviders.length,
+                      itemCount: jobProviders.length,
                       itemBuilder: (context, index) {
-                        final jobProvider = _jobProviders[index];
+                        final jobProvider = jobProviders[index];
                         return InkWell(
                           onTap: () {
                             Navigator.push(
@@ -116,8 +131,6 @@ class AdminPanelState extends State<AdminPanel> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
@@ -139,6 +152,9 @@ class AdminPanelState extends State<AdminPanel> {
                                           )
                                         ],
                                       ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
                                       Row(
                                         children: [
                                           const Text(
@@ -147,11 +163,18 @@ class AdminPanelState extends State<AdminPanel> {
                                                 fontWeight: FontWeight.w700,
                                                 color: Colors.white),
                                           ),
-                                          Text(
-                                            jobProvider.industry.toUpperCase(),
-                                            style: const TextStyle(
-                                                color: Colors.white),
-                                            overflow: TextOverflow.ellipsis,
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.30,
+                                            child: Text(
+                                              jobProvider.industry
+                                                  .toUpperCase(),
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           )
                                         ],
                                       )
@@ -204,9 +227,8 @@ class AdminPanelState extends State<AdminPanel> {
                       },
                     ),
                   ),
-          ),
-        ],
-      ),
-    );
+                ],
+              );
+            }));
   }
 }

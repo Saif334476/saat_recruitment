@@ -50,7 +50,7 @@ class _ReviewAndSubmitPageState extends State<ReviewAndSubmitPage> {
 
       final docUrl = await fileUploadService.uploadDocument(widget.uploadedDocument, uid!);
       await FirebaseFirestore.instance.collection("Users").doc(uid).set(
-          {"isComplete": true, 'isActive': false, 'docUrl': docUrl,'profilePicUrl':profilePicUrl},
+          {"isComplete": true, 'isActive': false, 'docUrl': docUrl,'profilePicUrl':profilePicUrl,'id':uid},
           SetOptions(merge: true));
       JobProviderModel jobProvider = JobProviderModel(
         name: widget.name,

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter/material.dart';
 
-import 'JobProvider Pages/jp_setup_password.dart';
+import 'password_setup_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   final String user;
@@ -134,7 +134,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CompanySetupPassword(
+                            builder: (context) => SetupPasswordScreen(
                               widget.emailController,
                               credentials: "JobSeeker",
                               emailController: widget.emailController,
@@ -153,7 +153,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CompanySetupPassword(
+                            builder: (context) => SetupPasswordScreen(
                                   widget.emailController,
                                   credentials: "JobProvider",
                                   emailController: widget.emailController,

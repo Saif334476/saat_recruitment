@@ -16,7 +16,7 @@ class CompanyDashBoard extends StatefulWidget {
 class CompanyDashBoardState extends State<CompanyDashBoard> {
   int _currentIndex = 0;
   late PageController _pageController;
-  bool? isActive;
+  bool isActive=false;
   final uid = FirebaseAuth.instance.currentUser?.uid;
 
   void navigateTo(int index) {
@@ -29,20 +29,25 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
       curve: Curves.easeInCubic,
     );
   }
-
-  _checkUserStatus() async {
-    final doc =
-        await FirebaseFirestore.instance.collection('Users').doc(uid).get();
-    setState(() {
-      isActive = doc.get('isActive');
-    });
-  }
+  late Stream<DocumentSnapshot<Map<String, dynamic>>> userStatusStream;
 
   @override
   void initState() {
-    _checkUserStatus();
-    _pageController = PageController();
     super.initState();
+    _pageController = PageController();
+
+    userStatusStream = FirebaseFirestore.instance.collection('Users').doc(uid).snapshots();
+
+    userStatusStream.listen((snapshot) {
+      if (snapshot.exists) {
+        final updatedIsActive = snapshot.data()?['isActive'] ?? false;
+        if (isActive != updatedIsActive) {
+          setState(() {
+            isActive = updatedIsActive;
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -50,7 +55,6 @@ class CompanyDashBoardState extends State<CompanyDashBoard> {
     _pageController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

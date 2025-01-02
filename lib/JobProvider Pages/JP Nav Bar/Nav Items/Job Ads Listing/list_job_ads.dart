@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/JobProvider%20Pages/JP%20Nav%20Bar/Nav%20Items/Job%20Ads%20Listing/applicants_on_ad.dart';
 import 'package:saat_recruitment/Services/firestore_services.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../../Models/job.dart';
 import '../Ad Posting/new_ad_posting.dart';
 
@@ -24,8 +24,7 @@ class JobAdsListViewState extends State<JobAdsListView> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.75,
+    return Expanded(
       child: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('jobs')
@@ -64,7 +63,7 @@ class JobAdsListViewState extends State<JobAdsListView> {
                               onLongPress: () async {
                                 final jobAdId = (jobAdDoc.id);
                                 final job = await _fetchJob(jobAdId);
-
+      
                                 final jobAdData = job;
                                 Navigator.push(
                                   context,

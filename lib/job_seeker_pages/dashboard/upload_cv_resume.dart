@@ -5,15 +5,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saat_recruitment/job_seeker_pages/dashboard/apply_to_job.dart';
 
 class UploadCvResume extends StatefulWidget {
-  const UploadCvResume({super.key});
+  final dynamic uid;
+
+  final dynamic existingResumeUrl;
+
+  final dynamic jobAdId;
+
+  const UploadCvResume(
+      {super.key,
+      required this.uid,
+      required this.existingResumeUrl,
+      required this.jobAdId});
 
   @override
   State<UploadCvResume> createState() => _UploadCvResumeState();
 }
 
 class _UploadCvResumeState extends State<UploadCvResume> {
+  String? _resumeUrl;
   File? convertedFile;
   FilePickerResult? result;
   String? _selectedFileName;
@@ -39,7 +51,8 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                 child: Text(
                   "You don't have Uploaded your CV/Resume yet,Please tap the icon below to continue application",
                   style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.w700),textAlign: TextAlign.center,
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
+                  textAlign: TextAlign.center,
                 ),
               ),
               Padding(
@@ -48,7 +61,7 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                     onPressed: () async {
                       result = await FilePicker.platform.pickFiles(
                         type: FileType.custom,
-                        allowedExtensions: ['pdf', 'jpg', 'jpeg'],
+                        allowedExtensions: ['pdf'],
                       );
                       if (result != null && result!.files.isNotEmpty) {
                         PlatformFile file = result!.files.first;
@@ -71,22 +84,23 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.file_present,color: Colors.lightBlue,),
+                        const Icon(
+                          Icons.file_present,
+                          color: Colors.lightBlue,
+                        ),
                         const SizedBox(width: 8),
                         SizedBox(
                           width: MediaQuery.of(context).size.width / 2,
-                          child: Expanded(
-                            child: Text(
-                              _selectedFileName!,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1, // Limit to 3 lines
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.lightBlue,
-                              ),
-                              textAlign: TextAlign.center,
+                          child: Text(
+                            _selectedFileName!,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1, // Limit to 3 lines
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.lightBlue,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ],
@@ -96,30 +110,38 @@ class _UploadCvResumeState extends State<UploadCvResume> {
                       child: CupertinoButton(
                           color: const Color(0xff193d67),
                           child: const Text(
-                            "Upload & Submit",
+                            "Upload",
                             style: TextStyle(
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white),
                           ),
                           onPressed: () async {
-                            String? resumeUrl;
-                            if (_isFileSelected) {
+                            if (_isFileSelected==true) {
                               final storageRef = FirebaseStorage.instance
-                                  .ref('resumes/$uId.jpeg');
+                                  .ref('resumes/$uId.pdf');
                               final uploadTask =
                                   storageRef.putFile(convertedFile!);
-                              resumeUrl =
-                                  await (await uploadTask).ref.getDownloadURL();
+                              final url=await (await uploadTask).ref.getDownloadURL();
+                              setState(()  {
+                                _resumeUrl =url;
+
+                              });
+
 
                               await FirebaseFirestore.instance
                                   .collection('Users')
                                   .doc(uId)
-                                  .update({
-                                'resumeUrl': resumeUrl,
+                                  .set({
+                                'resumeUrl': _resumeUrl,
                                 'resumeFileName': _selectedFileName ?? "",
-                              });
+                              },SetOptions(merge: true));
                             }
-                            Navigator.pop(context);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ApplyToJob(
+                                        widget.uid, widget.jobAdId,
+                                        existingResumeUrl: _resumeUrl!)));
                           }),
                     )
                   ],

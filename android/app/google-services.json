@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:568548219637:android:556a250c5a57e9db1dc3bc",
+        "android_client_info": {
+          "package_name": "com.example.flutter_saat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHPKGphZOL-i4D3RP70pOxWeSFwyngkwA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:568548219637:android:2c5858f642c314dc1dc3bc",
         "android_client_info": {
           "package_name": "com.example.saat"
@@ -26,9 +45,66 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:568548219637:android:87ee57c43b9541e41dc3bc",
+        "android_client_info": {
+          "package_name": "com.example.saat_rec"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHPKGphZOL-i4D3RP70pOxWeSFwyngkwA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:568548219637:android:48d7b62f613781c51dc3bc",
         "android_client_info": {
           "package_name": "com.example.saat_recruitment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHPKGphZOL-i4D3RP70pOxWeSFwyngkwA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568548219637:android:820d80020adb86f31dc3bc",
+        "android_client_info": {
+          "package_name": "com.example.sr_whatsapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHPKGphZOL-i4D3RP70pOxWeSFwyngkwA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568548219637:android:e5673180f383bcc41dc3bc",
+        "android_client_info": {
+          "package_name": "com.example.whatsapp_clone"
         }
       },
       "oauth_client": [],

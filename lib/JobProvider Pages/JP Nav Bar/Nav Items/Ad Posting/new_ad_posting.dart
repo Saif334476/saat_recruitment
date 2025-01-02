@@ -130,9 +130,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                               height: 30,
                             ),
                             textFormField(
-                                onChanged: () {
-                                  setState(() {});
-                                },
+
                                 "Enter Job Title",
                                 Icons.title_outlined,
                                 false,
@@ -268,9 +266,7 @@ class CompanyNewAdPostingState extends State<CompanyNewAdPosting> {
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: textFormField(
-                                  onChanged: () {
-                                    setState(() {});
-                                  },
+
                                   "Salary",
                                   Icons.currency_rupee_outlined,
                                   false,

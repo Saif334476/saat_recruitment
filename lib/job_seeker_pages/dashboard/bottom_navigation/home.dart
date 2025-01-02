@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:saat_recruitment/job_seeker_pages/dashboard/job_info.dart';
-import 'package:share/share.dart';
+
+import 'package:share_plus/share_plus.dart';
 import 'job_categories.dart';
 
 class JobSeekerHomePage extends StatefulWidget {

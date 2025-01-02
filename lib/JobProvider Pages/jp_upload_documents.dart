@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +28,7 @@ class JpUploadDocument extends StatefulWidget {
 class JpUploadDocumentState extends State<JpUploadDocument> {
   final _formKey = GlobalKey<FormState>();
   String? _selectedDocumentType;
- late File _uploadedDocument;
+  late File _uploadedDocument;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +120,7 @@ class JpUploadDocumentState extends State<JpUploadDocument> {
                       color: const Color(0xff1C4374),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          if (_uploadedDocument!.path.isEmpty) {
+                          if (_uploadedDocument.path.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Please upload a file'),
@@ -178,7 +176,7 @@ class FileUploadButton extends StatefulWidget {
 
 class _FileUploadButtonState extends State<FileUploadButton> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
-  late File _uploadedDocument;
+  File? _uploadedDocument;
   bool _isFileSelected = false;
   String? _selectedFileName;
 
@@ -189,17 +187,17 @@ class _FileUploadButtonState extends State<FileUploadButton> {
         CupertinoButton(
           color: Colors.transparent,
           onPressed: () async {
-            final FilePickerResult? result = await FilePicker.platform.pickFiles(
+          final  FilePickerResult? result = await FilePicker.platform.pickFiles(
               type: FileType.custom,
               allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg'],
             );
-            if (result != null && result.files.isNotEmpty) {
+            if ( result!.files.isNotEmpty) {
               final PlatformFile file = result.files.first;
               await Future.delayed(const Duration(seconds: 0));
               final File convertedFile = File(file.path!);
               setState(() {
                 _uploadedDocument = convertedFile;
-                _selectedFileName = file.name;
+                _selectedFileName = file.name.toString();
                 _isFileSelected = true;
               });
              widget.onFileSelected(convertedFile);
@@ -228,13 +226,12 @@ class _FileUploadButtonState extends State<FileUploadButton> {
             color: Color(0xff559BD4),
           ),
         ),
-        if (_uploadedDocument == null)
-          const Text(
+
+        (_isFileSelected==false)? const Text(
             'Please upload a document',
             style: TextStyle(
                 color: Colors.red, fontWeight: FontWeight.w700, fontSize: 20),
-          ),
-        if (_isFileSelected)
+          ):
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -242,18 +239,16 @@ class _FileUploadButtonState extends State<FileUploadButton> {
               const SizedBox(width: 8),
               SizedBox(
                 width: MediaQuery.of(context).size.width / 2,
-                child: Expanded(
-                  child: Text(
-                    _selectedFileName!,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1, // Limit to 3 lines
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.lightBlue,
-                    ),
-                    textAlign: TextAlign.center,
+                child: Text(
+                  _selectedFileName!,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1, // Limit to 3 lines
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.lightBlue,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],

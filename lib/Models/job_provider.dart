@@ -42,7 +42,8 @@ class JobProviderModel {
       industry: map['Industry'] ,
       companySize: map['companySize'],
       email: map['Email'],
-      docUrl: map['docUrl'], id: map['id'],
+      docUrl: map['docUrl'],
+      id: map['id'],
     );
   }
 }

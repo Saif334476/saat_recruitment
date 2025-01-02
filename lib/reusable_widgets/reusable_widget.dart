@@ -125,17 +125,18 @@ TextFormField textFormField(
   String text,
   IconData icon,
   bool obscuredText, {
-  required Function onChanged,
   required TextInputType keyboard,
   required TextEditingController controller,
   required String? Function(String?) validator,
+      Function(String)? onChanged,
   IconButton? suffixIcon,
   int? length,
 }) {
   return TextFormField(
-    onChanged: onChanged(),
-    obscureText: obscuredText,
+
+  obscureText: obscuredText,
     keyboardType: keyboard,
+    onChanged: onChanged,
     maxLength: length,
     decoration: InputDecoration(
         errorStyle: const TextStyle(color: Colors.red),
